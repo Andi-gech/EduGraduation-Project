@@ -1,0 +1,9 @@
+/* swagger-custom.css */
+.topbar {
+  background-color: #f8f9fa; /* Change background color */
+}
+
+.topbar .link img {
+  content: url("https://placement.ethernet.edu.et/favicon.png"); /* Change the logo */
+  width: 150px; /* Adjust width as needed */
+}
