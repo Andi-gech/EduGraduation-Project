@@ -129,7 +129,7 @@ export default function Subscribe() {
             onPress={handlePayment}
             className="w-[200px] mt-[100px] bg-lime-600 rounded-md py-3 flex items-center justify-center"
           >
-            <Text className=" text-black text-white text-lg font-bold">
+            <Text className=" text-black dark:text-white text-lg font-bold">
               Pay Now
             </Text>
           </TouchableOpacity>
