@@ -73,7 +73,7 @@ export default function Subscribe() {
       <Header name="Subscription" />
       {sucess && (
         <View className=" absolute w-full h-full z-50    flex items-center justify-center">
-          <View className=" absolute top-0 w-full h-full bg-black  rounded-md flex items-center justify-center"></View>
+          <View className=" absolute top-0 w-full h-full bg-white dark:bg-black  rounded-md flex items-center justify-center"></View>
           <View className="w-[300px] h-[300px] bg-white dark:bg-zinc-900 rounded-md flex items-center justify-center">
             <Ionicons name="checkmark-circle" size={150} color="white" />
             <Text className=" text-black dark:text-white text-center text-[20px] font-bold">
