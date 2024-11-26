@@ -26,30 +26,32 @@ export default function Class() {
     );
   }
   return (
-    <LinearGradient
-      colors={["black", "black"]}
-      locations={[0.0, 0.6]}
-      className="flex relative flex-1 px-[10px]"
-    >
+    <View className="flex bg-white dark:bg-black relative flex-1 px-[10px]">
       {isLoading && <Loading />}
       <Header name="My Classes" />
       <View className="w-[99%]  mb-[20px]   flex-col  px-2 mt-2 flex justify-start">
         <View className="mt-3 w-[]  ">
           <View className="flex h-[30px]    items-center flex-row">
-            <Text className="font-bold text-white ">Department:</Text>
-            <Text className="ml-2  font-bold text-white">
+            <Text className="font-bold   text-black dark:text-white ">
+              Department:
+            </Text>
+            <Text className="ml-2  font-bold   text-black dark:text-white">
               {userdata.userdata.department}
             </Text>
           </View>
           <View className="flex h-[30px]    items-center flex-row">
-            <Text className="font-bold text-white ">Acadamic Year:</Text>
-            <Text className="ml-2  font-bold text-white">
+            <Text className="font-bold   text-black dark:text-white ">
+              Acadamic Year:
+            </Text>
+            <Text className="ml-2  font-bold   text-black dark:text-white">
               {userdata.userdata.yearLevel} Year
             </Text>
           </View>
           <View className="flex h-[30px]   items-center flex-row">
-            <Text className="font-bold text-white ">Acadamic Semister:</Text>
-            <Text className="ml-2   font-bold text-white">
+            <Text className="font-bold   text-black dark:text-white ">
+              Acadamic Semister:
+            </Text>
+            <Text className="ml-2   font-bold   text-black dark:text-white">
               {userdata.userdata.semister} Semister
             </Text>
           </View>
@@ -62,7 +64,7 @@ export default function Class() {
         </TouchableHighlight>
       </View>
       <View className="flex flex-row justify-between  mb-4  w-full  ">
-        <Text className="text-white text-[20px] font-bold">
+        <Text className=" text-black dark:text-white text-[20px] font-bold">
           Current Courses
         </Text>
       </View>
@@ -92,6 +94,6 @@ export default function Class() {
       <Text className=" text-blue-600 underline mt-[10px] mb-[30px]">
         Show All Mark Progress
       </Text>
-    </LinearGradient>
+    </View>
   );
 }

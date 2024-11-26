@@ -73,10 +73,9 @@ export default function Permission() {
       onPress={Keyboard.dismiss}
       className="   flex-1 flex items-center duration-75 transition-all ease-in-out   flex-col"
     >
-      <LinearGradient
-        colors={["black", "black"]}
+      <View
         locations={[0.0, 0.6]}
-        className=" flex-1 flex items-center     flex-col"
+        className=" flex-1 bg-white dark:bg-black flex items-center     flex-col"
       >
         <View className="relative w-full  flex flex-col px-2 py-2   items-center">
           {mutation.isPending && <Loading />}
@@ -85,7 +84,7 @@ export default function Permission() {
 
           <Header name={"Permission"} />
           <View className="w-[95%] flex flex-col   min-h-[100px]">
-            <Text className="text-white font-semibold my-2 text-[15px]">
+            <Text className="text-black dark:text-white font-semibold my-2 text-[15px]">
               What is the reason for asking permission
             </Text>
             <TextInput
@@ -94,16 +93,18 @@ export default function Permission() {
               multiline={true}
               placeholderTextColor="gray"
               numberOfLines={9}
-              className="w-full   mt-2 px-2 h-[100px] bg-zinc-900 text-white rounded-[12px] "
+              className="w-full   mt-2 px-2 h-[100px] bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white rounded-[12px] "
             ></TextInput>
           </View>
           <View className="w-[95%] flex flex-col  mt-2  min-h-[100px]">
-            <Text className="text-white  font-semibold my-2 text-[15px]">
+            <Text className=" text-black dark:text-white  font-semibold my-2 text-[15px]">
               Enter Date{" "}
             </Text>
             {date ? (
               <View className="w-full flex items-center">
-                <Text className="text-white  my-2 text-[15px]">{date}</Text>
+                <Text className=" text-black dark:text-white  my-2 text-[15px]">
+                  {date}
+                </Text>
               </View>
             ) : null}
             <TouchableOpacity
@@ -140,7 +141,7 @@ export default function Permission() {
             <Ionicons name="chevron-forward" size={12} color="white" />
           </TouchableOpacity>
         </View>
-      </LinearGradient>
+      </View>
     </TouchableWithoutFeedback>
   );
 }

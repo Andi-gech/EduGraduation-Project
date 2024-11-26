@@ -1,4 +1,10 @@
-import { Image, Text, View, TouchableOpacity } from "react-native";
+import {
+  Image,
+  Text,
+  View,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import curvestyle from "../../assets/curvestyle.png";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -12,14 +18,11 @@ export default function App() {
   const handleStart = () => {
     router.replace("/login");
   };
+  const colorScheme = useColorScheme();
 
   return (
-    <LinearGradient
-      colors={["#010101", "#262626"]}
-      locations={[0.0, 0.5]}
-      className=" bg-white flex-1 flex items-center  flex-col"
-    >
-      <StatusBar style="light" />
+    <View className="bg-white  dark:bg-black flex-1 flex items-center  flex-col">
+      <StatusBar style={colorScheme} />
 
       <View className="mt-[70px]">
         <Logo />
@@ -30,15 +33,17 @@ export default function App() {
           <Text className="text-[23.52px] text-yellow-400  font-bold">
             Ethiopian Defence University
           </Text>
-          <Text className="text-[23.52px] text-white">
+          <Text className="text-[23.52px] textvl dark:text-white">
             Collage of Enginnering
           </Text>
         </View>
 
-        <Text className="text-[23.52px] text-white">Student Fixlet Portal</Text>
+        <Text className="text-[23.52px] textvl dark:text-white">
+          Student Fixlet Portal
+        </Text>
       </View>
-      <TouchableOpacity onPress={handleStart} className="mt-[89px]">
-        <View className=" h-[50px]  bg-yellow-400  px-4 rounded-md flex flex-row items-center justify-center">
+      <TouchableOpacity onPress={handleStart} className="mt-[89px] z-30">
+        <View className=" h-[50px]  z-40 bg-yellow-400  px-4 rounded-md flex flex-row items-center justify-center">
           <Text className="text-black text-center font-bold">Get Started</Text>
           <Ionicons name="arrow-forward" size={24} color="black" />
         </View>
@@ -47,8 +52,8 @@ export default function App() {
       <Image
         source={curvestyle}
         style={{}}
-        className="w-full h-full  opacity-[0.05] -z-10 absolute top-0"
+        className="w-full h-full dark:opacity-10 -z-2 absolute top-0"
       />
-    </LinearGradient>
+    </View>
   );
 }

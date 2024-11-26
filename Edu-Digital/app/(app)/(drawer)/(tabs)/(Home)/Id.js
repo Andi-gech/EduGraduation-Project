@@ -63,11 +63,7 @@ export default function Id() {
   };
 
   return (
-    <LinearGradient
-      colors={["black", "black"]}
-      locations={[0.0, 0.6]}
-      className="flex bg-black flex-1   "
-    >
+    <View className="flex  bg-white dark:bg-black flex-1   ">
       <Header name={"ID CARD"} className="self-start item" />
       {isError && (
         <View className="mt-[250px]">
@@ -189,7 +185,7 @@ export default function Id() {
             </ViewShot>
 
             <TouchableOpacity
-              className="w-[200px] h-[50px] rounded-md mt-[10px] flex items-center justify-center bg-purple-400"
+              className="w-[200px] h-[50px] rounded-md mt-[10px] flex items-center justify-center bg-yellow-400"
               onPress={handleCapture}
             >
               <Text className="text-white font-bold">Print</Text>
@@ -197,6 +193,6 @@ export default function Id() {
           </View>
         </ScrollView>
       )}
-    </LinearGradient>
+    </View>
   );
 }

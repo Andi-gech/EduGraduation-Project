@@ -5,6 +5,7 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  useColorScheme,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,6 +20,7 @@ if (
 
 export default function NotificationCard({ data }) {
   const [lineshown, setlineshown] = useState(false);
+  const colorScheme = useColorScheme();
 
   const toggleLines = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -28,11 +30,18 @@ export default function NotificationCard({ data }) {
   return (
     <TouchableOpacity
       onPress={toggleLines}
-      className="w-11/12 flex flex-row items-center justify-evenly bg-zinc-900 shadow-md my-1 p-2 rounded-lg min-h-16"
+      className="w-11/12 flex flex-row items-center justify-evenly bg-zinc-100 dark:bg-zinc-900 shadow-md my-1 p-2 rounded-lg min-h-16"
     >
-      <Ionicons name="notifications-outline" size={24} color="white" />
+      <Ionicons
+        name="notifications-outline"
+        size={24}
+        color={colorScheme === "light" ? "black" : "white"}
+      />
       <View className="flex-1 flex-col justify-evenly py-2 ml-2">
-        <Text numberOfLines={lineshown ? 5 : 2} className="text-white text-sm">
+        <Text
+          numberOfLines={lineshown ? 5 : 2}
+          className=" text-black dark:text-white text-sm"
+        >
           {data?.notification}
         </Text>
         <Text className="text-gray-400 mt-2 self-end text-xs font-bold">

@@ -1,4 +1,10 @@
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import React, { useState, useEffect, useMemo } from "react";
 import { Image, ImageBackground } from "expo-image";
 import RoundButton from "../../../../../Components/RoundButton";
@@ -25,6 +31,7 @@ export default function Home() {
   const navigation = useNavigation();
   const router = useRouter();
   const dispatch = useDispatch();
+  const colorScheme = useColorScheme();
   const { data, isLoading, isError, error } = UseFetchMyData();
 
   useEffect(() => {
@@ -97,11 +104,13 @@ export default function Home() {
   }
   return (
     <LinearGradient
-      colors={["#262626", "#010101"]}
-      locations={[0.0, 0.9]}
+      colors={
+        colorScheme === "dark" ? ["#010101", "#262626"] : ["#02618D", "#D4D4D4"]
+      }
+      locations={[0.0, 0.4]}
       className=" flex-1 flex items-center     flex-col"
     >
-      <StatusBar style="light" />
+      <StatusBar style={colorScheme} />
 
       <View className="flex relative justify-between py-4 flex-col z-0 w-[98%]    rounded-md h-[250px] mt-2  px-2">
         <View className="w-full flex flex-row justify-between items-center z-50 px-1">
@@ -118,7 +127,7 @@ export default function Home() {
         <View className="w-full z-50 h-[50px] flex flex-row  mt-[10px] items-center  px-2">
           {isLoading ? (
             <Skeleton
-              colorMode="dark"
+              colorMode={colorScheme}
               radius={"round"}
               width={50}
               height={50}
@@ -146,7 +155,7 @@ export default function Home() {
 
           <View className=" flex  flex-col ml-2">
             {isLoading ? (
-              <Skeleton colorMode="dark" width={200} height={20} />
+              <Skeleton colorMode={colorScheme} width={200} height={20} />
             ) : (
               <Text className="text-white text-[17px] font-bold ">
                 {String(memoizedData?.firstName).toUpperCase()}{" "}
@@ -156,7 +165,7 @@ export default function Home() {
 
             {isLoading ? (
               <View className="mt-1">
-                <Skeleton colorMode="dark" width={60} height={14} />
+                <Skeleton colorMode={colorScheme} width={60} height={14} />
               </View>
             ) : (
               <Text className="text-zinc-400 text-[14px] mt-[1px] font-bold ">
@@ -165,7 +174,7 @@ export default function Home() {
             )}
             {isLoading ? (
               <View className=" mt-1">
-                <Skeleton colorMode="dark" width={70} height={14} />
+                <Skeleton colorMode={colorScheme} width={70} height={14} />
               </View>
             ) : (
               <View className="   flex items-start justify-center mt-[4px] rounded-full">
@@ -179,7 +188,7 @@ export default function Home() {
         <View className="flex z-20 flex-row justify-between w-full px-1 ">
           {isLoading ? (
             <View className="   mt-[10px]  mx-2">
-              <Skeleton colorMode="dark" width={167} height={30} />
+              <Skeleton colorMode={colorScheme} width={167} height={30} />
             </View>
           ) : (
             <View className="w-[167px]  h-[20px]  flex flex-row  mt-[10px]  items-center  justify-center ">
@@ -196,26 +205,26 @@ export default function Home() {
         </View>
         {isLoading ? (
           <View className="-mb-[10px]">
-            <Skeleton colorMode="dark" width={"100%"} height={15} />
+            <Skeleton colorMode={colorScheme} width={"100%"} height={15} />
           </View>
         ) : (
           <Marque />
         )}
       </View>
 
-      <View className="w-[98%] pb-[64px] flex-1 bg-black rounded-t-[40px] ">
+      <View className="w-[98%] pb-[64px] flex-1  bg-white dark:bg-black rounded-t-[40px] ">
         <View className=" w-full  h-[50px] items-center justify-center flex-col">
           {isLoading ? (
             <View className="my-2">
-              <Skeleton colorMode="dark" width={10} height={10} />
+              <Skeleton colorMode={colorScheme} width={10} height={10} />
             </View>
           ) : (
             <View className="w-[10px] h-[10px] bg-yellow-400 rounded-full"></View>
           )}
           {isLoading ? (
-            <Skeleton colorMode="dark" width={100} height={15} />
+            <Skeleton colorMode={colorScheme} width={100} height={15} />
           ) : (
-            <Text className="text-white">Hub Essentials</Text>
+            <Text className=" text-black dark:text-white">Hub Essentials</Text>
           )}
         </View>
         <ScrollView
@@ -226,10 +235,16 @@ export default function Home() {
             {isCafeSubscribeBtnActive && (
               <TouchableOpacity
                 onPress={() => navigation.navigate("Subscribe")}
-                className="w-[130px] h-[70px] rounded-md shrink-0  flex flex-col items-center justify-center bg-zinc-800 shadow-sm mx-2  mt-2"
+                className="w-[130px] h-[70px] rounded-md shrink-0  flex flex-col items-center justify-center  bg-zinc-100 dark:bg-zinc-800 shadow-sm mx-2  mt-2"
               >
-                <Ionicons name="cash-outline" size={24} color="white" />
-                <Text className=" mt-2 text-white">Cafe Subscription</Text>
+                <Ionicons
+                  name="cash-outline"
+                  size={24}
+                  color={colorScheme === "dark" ? "white" : "black"}
+                />
+                <Text className=" mt-2 text-black dark:text-white">
+                  Cafe Subscription
+                </Text>
                 <Text className="text-blue-400 absolute top-0 left-0 text-[12px] mt-[1px] font-bold ">
                   {formattedTime}
                 </Text>
@@ -238,7 +253,7 @@ export default function Home() {
             {isLoading ? (
               <View className="mt-3 mx-2">
                 <Skeleton
-                  colorMode="dark"
+                  colorMode={colorScheme}
                   width={130}
                   height={70}
                   className="mt-2"
@@ -254,7 +269,7 @@ export default function Home() {
             {isLoading ? (
               <View className="mt-3 mx-2">
                 <Skeleton
-                  colorMode="dark"
+                  colorMode={colorScheme}
                   width={130}
                   height={70}
                   className="mt-2"
@@ -286,7 +301,7 @@ export default function Home() {
             {isLoading ? (
               <View className="mt-3 mx-2">
                 <Skeleton
-                  colorMode="dark"
+                  colorMode={colorScheme}
                   width={130}
                   height={70}
                   className="mt-2"
@@ -303,7 +318,7 @@ export default function Home() {
             {isLoading ? (
               <View className="mt-3 mx-2">
                 <Skeleton
-                  colorMode="dark"
+                  colorMode={colorScheme}
                   width={130}
                   height={70}
                   className="mt-2"
@@ -320,7 +335,7 @@ export default function Home() {
             {isLoading ? (
               <View className="mt-3 mx-2">
                 <Skeleton
-                  colorMode="dark"
+                  colorMode={colorScheme}
                   width={130}
                   height={70}
                   className="mt-2"
@@ -337,7 +352,7 @@ export default function Home() {
             {/* {isLoading ? (
               <View className="mt-3 mx-2">
                 <Skeleton
-                  colorMode="dark"
+                  colorMode={colorScheme}
                   width={130}
                   height={70}
                   className="mt-2"
@@ -354,7 +369,7 @@ export default function Home() {
             {isLoading ? (
               <View className="mt-3 mx-2">
                 <Skeleton
-                  colorMode="dark"
+                  colorMode={colorScheme}
                   width={130}
                   height={70}
                   className="mt-2"
@@ -374,9 +389,13 @@ export default function Home() {
         onPress={() => {
           navigation.navigate("Id");
         }}
-        className=" absolute bottom-[62px] bg-zinc-900 right-[7px] rounded-md w-[50px] h-[50px]  flex items-center justify-center shadow-sm  shadow-gray-500"
+        className=" absolute bottom-[62px] bg-zinc-50 dark:bg-zinc-900 right-[7px] rounded-md w-[50px] h-[50px]  flex items-center justify-center shadow-sm  shadow-gray-300 dark:shadow-gray-500"
       >
-        <AntDesign name="qrcode" size={32} color="white" />
+        <AntDesign
+          name="qrcode"
+          size={32}
+          color={colorScheme === "light" ? "black" : "white"}
+        />
       </TouchableOpacity>
     </LinearGradient>
   );

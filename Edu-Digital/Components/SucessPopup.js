@@ -1,13 +1,18 @@
-import { Modal, StyleSheet, Text, View } from "react-native";
+import { Modal, StyleSheet, Text, useColorScheme, View } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function SucessPopup({ visible }) {
+  const colorScheme = useColorScheme();
   return (
     <Modal transparent={true} animationType="slide" visible={visible}>
       <LinearGradient
-        colors={["#010101", "#262626"]}
+        colors={
+          colorScheme === "dark"
+            ? ["#010101", "#262626"]
+            : ["#f0f0f0", "#f0f0f0"]
+        }
         locations={[0.0, 0.8]}
         className="w-[98%] h-[30%] self-center bg-white shadow-sm shadow-black absolute rounded-md bottom-0 flex items-center justify-center "
       >

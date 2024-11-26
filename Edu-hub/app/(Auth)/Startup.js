@@ -19,7 +19,6 @@ export default function App() {
       locations={[0.0, 0.5]}
       className=" bg-white flex-1 flex items-center  flex-col"
     >
-      <StatusBar style="light" />
       <View className="mt-[70px]">
         <Logo />
       </View>

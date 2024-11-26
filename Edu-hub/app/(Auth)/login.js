@@ -58,7 +58,6 @@ export default function login() {
       className="relative flex-1 flex items-center   flex-col"
     >
       {mutation.isPending && <Loading />}
-      <StatusBar style="light" />
 
       <View className="flex items-start self-end mr-[15px]  justify-between  w-[61%] flex-row    mt-[30px]   ">
         <Logo />

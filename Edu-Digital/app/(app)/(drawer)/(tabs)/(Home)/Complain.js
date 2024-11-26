@@ -5,6 +5,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  useColorScheme,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import RoundButton from "../../../../../Components/RoundButton";
@@ -53,17 +54,14 @@ export default function Complain() {
       complain: complain,
     });
   };
+  const colorScheme = useColorScheme();
 
   return (
     <TouchableWithoutFeedback
       onPress={Keyboard.dismiss}
       className="flex flex-1 px-[10px]  mt-[5px]"
     >
-      <LinearGradient
-        colors={["black", "black"]}
-        locations={[0.0, 0.6]}
-        className="relative w-full h-full flex flex-col px-[10px]    items-center"
-      >
+      <View className="relative w-full h-full flex flex-col px-[10px]  bg-white dark:bg-black   items-center">
         {mutation.isPending && <Loading />}
         <SucessPopup visible={sucess} />
         <ErrorPopup message={errormessage} visible={error} />
@@ -71,14 +69,17 @@ export default function Complain() {
         <Header name="Tell us the issue " />
         <View className=" w-full pt-4 flex flex-col">
           <View className="w-[99%] flex-col  flex ">
-            <Text className="mt-2 my-[10px] text-white font-semibold ">
+            <Text className="mt-2 my-[10px] text-black dark:text-white font-semibold ">
               What issue are you facing
             </Text>
 
             <Picker
               numberOfLines={1}
               mode="dropdown"
-              itemStyle={{ height: 120, color: "white" }}
+              itemStyle={{
+                height: 120,
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
               ref={pickerref}
               selectedValue={selectedLanguage}
               onValueChange={(itemValue, itemIndex) =>
@@ -95,26 +96,28 @@ export default function Complain() {
             </Picker>
           </View>
           <View className="w-[99%] flex-col  flex ">
-            <Text className="my-[10px]  text-white font-semibold ">
+            <Text className="my-[10px]  text-black dark:text-white font-semibold ">
               Tell us more
             </Text>
             <TextInput
               onChangeText={(text) => setComplain(text)}
               multiline
               placeholder="Tell us more"
-              className="w-[99%] h-[100px] bg-zinc-900 text-white rounded-[12px] px-2 mt-2"
+              className="w-[99%] h-[100px] bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white rounded-[12px] px-2 mt-2"
             />
           </View>
           <View className="w-[99%] flex-col items-center justify-center mt-7  flex ">
             <TouchableOpacity
               onPress={() => handleSendRequest()}
-              className="w-[150px]  flex items-center justify-center rounded-md h-[50px] bg-zinc-800"
+              className="w-[150px]  flex items-center justify-center rounded-md h-[50px] bg-zinc-100 dark:bg-zinc-800"
             >
-              <Text className="text-white text-center font-bold">Submit</Text>
+              <Text className="text-black dark:text-white text-center font-bold">
+                Submit
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
-      </LinearGradient>
+      </View>
     </TouchableWithoutFeedback>
   );
 }

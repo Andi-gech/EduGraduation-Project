@@ -1,7 +1,7 @@
 import { useRootNavigationState, useRouter, useSegments } from "expo-router";
 
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import { isAuthenticated } from "../utils/auth";
 import { StatusBar } from "expo-status-bar";
 import Loading from "../Components/Loading";
@@ -9,6 +9,7 @@ import Loading from "../Components/Loading";
 const Index = () => {
   const segments = useSegments();
   const router = useRouter();
+  const colorScheme = useColorScheme();
   const isLoggedIn = isAuthenticated();
   const navigationState = useRootNavigationState();
 
@@ -27,7 +28,7 @@ const Index = () => {
 
   return (
     <View>
-      <StatusBar style="light" />
+      <StatusBar style={colorScheme} />
       {!navigationState?.key ? <Loading /> : <></>}
     </View>
   );

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Keyboard,
   TouchableOpacity,
+  useColorScheme,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
@@ -24,6 +25,7 @@ export default function AskChat() {
   const [showUsers, setShowUsers] = useState(false);
   const data = useSelector((state) => state.userData);
   const socket = useSelector((state) => state.socket.socket);
+  const colorScheme = useColorScheme();
   useEffect(() => {
     if (recentChats) {
       setChats(recentChats?.data?.sort((a, b) => a.createdAt - b.createdAt));
@@ -59,7 +61,7 @@ export default function AskChat() {
 
   return (
     <KeyboardAvoidingView behavior="padding" className="flex-1">
-      <LinearGradient colors={["black", "black"]} className="flex-1">
+      <View className="flex-1 bg-white dark:bg-black">
         {showUsers && <User onclose={() => setShowUsers(false)} />}
         <View className="relative">
           <Header name="Ask Chat" />
@@ -67,7 +69,11 @@ export default function AskChat() {
             onPress={() => setShowUsers(true)}
             className="absolute top-[40px] right-[10px]"
           >
-            <FontAwesome5 name="users" size={24} color="white" />
+            <FontAwesome5
+              name="users"
+              size={24}
+              color={colorScheme === "light" ? "black" : "white"}
+            />
           </TouchableOpacity>
         </View>
 
@@ -79,7 +85,7 @@ export default function AskChat() {
           <TextInput
             value={message}
             onChangeText={setMessage}
-            className="h-[50px] flex-1 mx-[10px] bg-zinc-900 text-white rounded-md px-2"
+            className="h-[50px] flex-1 mx-[10px] bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white rounded-md px-2"
             placeholder="Enter Message"
             placeholderTextColor={"gray"}
           />
@@ -90,7 +96,7 @@ export default function AskChat() {
             <Ionicons name="send-outline" color={"black"} size={28} />
           </TouchableHighlight>
         </View>
-      </LinearGradient>
+      </View>
     </KeyboardAvoidingView>
   );
 }

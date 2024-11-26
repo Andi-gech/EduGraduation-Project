@@ -24,13 +24,11 @@ export default function News() {
   };
 
   return (
-    <LinearGradient
-      colors={["#010101", "#010101"]}
-      locations={[0.0, 0.7]}
-      className="flex-1 relative flex items-center pt-[20px] flex-col"
-    >
+    <View className="flex-1 relative bg-white dark:bg-black flex items-center pt-[20px] flex-col">
       <View className="w-[99%] h-[50px] px-3 flex flex-row   items-center justify-between">
-        <Text className="text-white  text-[20px] font-bold">DEC Gallery</Text>
+        <Text className="text-black dark:text-white  text-[20px] font-bold">
+          DEC Gallery
+        </Text>
         <TouchableOpacity onPress={() => router.push("/AddPost")}>
           <Ionicons name="add" size={24} color="white" />
         </TouchableOpacity>
@@ -62,8 +60,10 @@ export default function News() {
           </Suspense>
           {data?.data?.length === 0 && (
             <View className="w-full  flex items-center justify-center min-h-[200px] ">
-              <Text className="text-white">No Posts Yet</Text>
-              <Text className="text-white">Pull Down For posts</Text>
+              <Text className="text-black dark:text-white">No Posts Yet</Text>
+              <Text className="text-black dark:text-white">
+                Pull Down For posts
+              </Text>
               <View className="items-center justify-center">
                 <Ionicons name="arrow-down" size={24} color="white" />
               </View>
@@ -71,6 +71,6 @@ export default function News() {
           )}
         </ScrollView>
       )}
-    </LinearGradient>
+    </View>
   );
 }

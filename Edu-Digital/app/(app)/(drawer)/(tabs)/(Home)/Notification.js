@@ -8,7 +8,7 @@ export default function Notification() {
   const { data, isLoading } = UseFetchNotification();
 
   return (
-    <View className="flex-1 px-2 flex items-center  bg-black duration-75 transition-all ease-in-out   flex-col">
+    <View className="flex-1 px-2 flex items-center bg-white  dark:bg-black duration-75 transition-all ease-in-out   flex-col">
       <Headers name="Notification" />
       {isLoading && <IsLoading />}
       {data?.data && (
@@ -16,7 +16,7 @@ export default function Notification() {
           className="w-full  flex  mb-[80px]  flex-col "
           showsVerticalScrollIndicator={false}
         >
-          <Text className="text-white  font-semibold my-2 text-[18px]">
+          <Text className="  text-black dark:text-white  font-semibold my-2 text-[18px]">
             General
           </Text>
           <View className=" w-full flex flex-col items-center justify-center  min-h-[100px]">
@@ -26,10 +26,12 @@ export default function Notification() {
                 <NotificationCard key={item._id} data={item} />
               ))}
             {data?.data?.filter((item) => item.type == "General") == 0 && (
-              <Text className="text-white">No Notification</Text>
+              <Text className="  text-black dark:text-white">
+                No Notification
+              </Text>
             )}
           </View>
-          <Text className="text-white  font-semibold my-2 text-[18px]">
+          <Text className="  text-black dark:text-white  font-semibold my-2 text-[18px]">
             Announcment
           </Text>
           <View className=" w-full flex flex-col items-center  justify-center  min-h-[100px]">
@@ -39,10 +41,12 @@ export default function Notification() {
                 <NotificationCard key={item._id} data={item} />
               ))}
             {data?.data?.filter((item) => item.type == "Announcment") == 0 && (
-              <Text className="text-white">No Notification</Text>
+              <Text className="  text-black dark:text-white">
+                No Notification
+              </Text>
             )}
           </View>
-          <Text className="text-white  font-semibold my-2 text-[18px]">
+          <Text className="  text-black dark:text-white  font-semibold my-2 text-[18px]">
             Notice
           </Text>
           <View className=" w-full flex-col flex items-center justify-center  min-h-[100px]">
@@ -52,7 +56,9 @@ export default function Notification() {
                 <NotificationCard key={item._id} data={item} />
               ))}
             {data?.data?.filter((item) => item.type == "Notice") == 0 && (
-              <Text className="text-white">No Notification</Text>
+              <Text className="  text-black dark:text-white">
+                No Notification
+              </Text>
             )}
           </View>
         </ScrollView>

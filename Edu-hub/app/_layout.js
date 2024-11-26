@@ -11,7 +11,6 @@ export default function Layout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StatusBar style="light" />
       <Provider store={store}>
         <Stack screenOptions={{ headerShown: false }} />
       </Provider>

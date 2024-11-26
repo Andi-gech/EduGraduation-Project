@@ -64,12 +64,7 @@ export default function Signup_step2() {
   };
 
   return (
-    <LinearGradient
-      colors={["#010101", "#262626"]}
-      locations={[0.0, 0.9]}
-      className="flex relative flex-1  bg-white items-center"
-    >
-      <StatusBar style="light" />
+    <View className="flex relative flex-1 bg-white  dark:bg-black  items-center">
       {mutation.isPending && <Loading />}
       <Header name="Complete Account Creation " />
 
@@ -79,7 +74,7 @@ export default function Signup_step2() {
         </Text>
       </View>
       <View className="w-full flex flex-col items-start mt-4 px-2">
-        <Text className="text-white">Email</Text>
+        <Text className=" text-black dark:text-white">Email</Text>
         <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
           <Input
             placeholder={"Enter Your Email"}
@@ -91,7 +86,7 @@ export default function Signup_step2() {
         </View>
       </View>
       <View className="w-full flex flex-col items-start mt-4 px-2">
-        <Text className="text-white">password</Text>
+        <Text className=" text-black dark:text-white">password</Text>
         <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
           <Input
             placeholder={"Enter Your Password"}
@@ -113,7 +108,7 @@ export default function Signup_step2() {
       <View className="w-[90%] h-[55px] flex flex-col items-start mt-[10px] ">
         <Buttons onPress={() => handleSendRequest()} name={"Register"} />
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 

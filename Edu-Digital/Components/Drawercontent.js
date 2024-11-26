@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  useColorScheme,
+} from "react-native";
 import {
   DrawerContentScrollView,
   DrawerItemList,
@@ -17,21 +23,23 @@ const CustomDrawerContent = (props) => {
     getSocket().disconnect();
     router.replace("/(Auth)/login");
   };
+  const colorScheme = useColorScheme();
 
   return (
-    <LinearGradient
-      colors={["black", "black"]}
-      locations={[0.0, 0.8]}
-      style={styles.container} // Apply styles
-    >
+    <View className="flex-1 flex justify-between relative bg-white dark:bg-black">
       <DrawerContentScrollView {...props}>
         <View style={styles.drawerContent}>
           <DrawerItemList {...props} />
         </View>
 
         <View className="w-full flex-row items-center justify-center h-[50px]">
-          <Icon name="globe" size={25} color="white" />
-          <Text className="ml-4 text-white">Eng</Text>
+          <Icon
+            name="globe"
+            size={25}
+            className="text-black dark:text-white"
+            color={colorScheme === "dark" ? "white" : "black"}
+          />
+          <Text className="ml-4 text-black dark:text-white">Eng</Text>
         </View>
 
         <TouchableOpacity
@@ -40,10 +48,10 @@ const CustomDrawerContent = (props) => {
             logout();
           }}
         >
-          <Text className="text-white">Logout</Text>
+          <Text className="text-black dark:text-white">Logout</Text>
         </TouchableOpacity>
       </DrawerContentScrollView>
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -58,7 +66,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   logoutButton: {
-    color: "white",
     marginBottom: 5,
     paddingVertical: 15,
     alignItems: "center",

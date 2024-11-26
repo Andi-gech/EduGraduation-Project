@@ -69,31 +69,23 @@ export default function Subscribe() {
   };
 
   return (
-    <LinearGradient
-      colors={["black", "black"]}
-      locations={[0.0, 0.6]}
-      className="flex-1 flex items-center flex-col"
-    >
+    <View className="flex-1  bg-white dark:bg-black flex items-center flex-col">
       <Header name="Subscription" />
       {sucess && (
         <View className=" absolute w-full h-full z-50    flex items-center justify-center">
           <View className=" absolute top-0 w-full h-full bg-black  rounded-md flex items-center justify-center"></View>
-          <LinearGradient
-            colors={["black", "black"]}
-            locations={[0.0, 0.6]}
-            className="w-[300px] h-[300px] bg-zinc-900 rounded-md flex items-center justify-center"
-          >
+          <View className="w-[300px] h-[300px] bg-white dark:bg-zinc-900 rounded-md flex items-center justify-center">
             <Ionicons name="checkmark-circle" size={150} color="white" />
-            <Text className="text-white text-center text-[20px] font-bold">
+            <Text className=" text-black dark:text-white text-center text-[20px] font-bold">
               Sucess
             </Text>
             <View className="flex flex-row items-center mt-[100px]  justify-center">
-              <Text className="text-white  text-center text-[12px] font-bold">
+              <Text className=" text-black dark:text-white  text-center text-[12px] font-bold">
                 redirecting to home page
               </Text>
               <ActivityIndicator size="small" color="white" />
             </View>
-          </LinearGradient>
+          </View>
         </View>
       )}
       {data?.data && (
@@ -107,25 +99,25 @@ export default function Subscribe() {
               source={chapa}
               className="w-[200px] h-[50px] object-scale-down"
             />
-            <Text className="text-white mt-2">
+            <Text className=" text-white mt-2">
               Pay Your Cafe Bill With Chapa
             </Text>
 
             <View className="w-full h-[100px] px-5 mt-5 rounded-md bg-opacity-40 flex items-center justify-center">
-              <Text className="text-white text-[30px] font-extrabold">
+              <Text className=" text-white text-[30px] font-extrabold">
                 {data?.data?.price} Birr
               </Text>
             </View>
           </LinearGradient>
 
           <View className="w-full flex px-5 mt-5">
-            <Text className="text-white text-center mt-5">
+            <Text className=" text-black dark:text-white text-center mt-5">
               Start Date:{" "}
               <Text className="font-bold mx-5">
                 {Format(data?.data.StartDate)}
               </Text>
             </Text>
-            <Text className="text-white text-center mt-5">
+            <Text className=" text-black dark:text-white text-center mt-5">
               End Date:{" "}
               <Text className="font-bold mx-5">
                 {Format(data?.data.EndDate)}
@@ -137,13 +129,15 @@ export default function Subscribe() {
             onPress={handlePayment}
             className="w-[200px] mt-[100px] bg-lime-600 rounded-md py-3 flex items-center justify-center"
           >
-            <Text className="text-white text-lg font-bold">Pay Now</Text>
+            <Text className=" text-black text-white text-lg font-bold">
+              Pay Now
+            </Text>
           </TouchableOpacity>
         </View>
       )}
 
       {(isLoading || isFetching) && <Loading />}
-    </LinearGradient>
+    </View>
   );
 }
 

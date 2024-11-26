@@ -34,7 +34,7 @@ export default function Clubs() {
     mutation.mutate(clubId);
   };
   return (
-    <View className="bg-black  flex-1">
+    <View className=" bg-white dark:bg-black  flex-1">
       <Header name="Join Clubs " />
       <ScrollView className="">
         <View className="flex  pb-[100px]  flex-col">
@@ -49,11 +49,15 @@ export default function Clubs() {
                   uri: "https://img.freepik.com/free-vector/college-university-students-illustration-classmates-different-nationalities_33099-479.jpg?t=st=1731931464~exp=1731935064~hmac=ee6296f4bcab42aa6339f4abd6731bdc01dc6af34177d518373e49159659abd2&w=740",
                 }}
               />
-              <View className="bg-zinc-900  opacity-90 w-full h-full absolute top-0 left-0"></View>
-              <Text className="  text-[25px] text-white">{club.clubname}</Text>
-              <Text className="text-white">{club.clubdescription}</Text>
+              <View className=" bg-zinc-100 dark:bg-zinc-900   opacity-90 w-full h-full absolute top-0 left-0"></View>
+              <Text className="  text-[25px]  text-black dark:text-white">
+                {club.clubname}
+              </Text>
+              <Text className=" text-black dark:text-white">
+                {club.clubdescription}
+              </Text>
               {club.clubMembers.includes(datas?.userdata?._id) ? (
-                <Text className="text-white">
+                <Text className=" text-black dark:text-white">
                   Thank you for being a member of this club
                 </Text>
               ) : (

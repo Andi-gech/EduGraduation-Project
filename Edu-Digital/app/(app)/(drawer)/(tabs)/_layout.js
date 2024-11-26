@@ -1,9 +1,11 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { View } from "react-native";
+import { useColorScheme, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function Layout() {
+  const colorScheme = useColorScheme();
+
   return (
     <Tabs
       initialRouteName="(Home)"
@@ -12,21 +14,24 @@ export default function Layout() {
         tabBarStyle: {
           display: "flex",
           position: "absolute",
-
-          elevation: 10,
+          flexDirection: "row",
 
           left: 0,
 
           borderTopWidth: 0.3,
           borderTopColor: "black",
-          height: 60,
+          height: 55,
           overflow: "hidden", // To ensure rounded corners work
         },
         tabBarShowLabel: false,
         headerShown: false,
         tabBarBackground: () => (
           <LinearGradient
-            colors={["#262626", "#010101"]}
+            colors={
+              colorScheme === "light"
+                ? ["white", "white"]
+                : ["#262626", "#010101"]
+            }
             locations={[0.0, 0.8]}
             style={{ flex: 1 }}
           />
@@ -41,14 +46,18 @@ export default function Layout() {
             <View
               className={
                 focused
-                  ? `h-[60px] w-[60px] flex items-center justify-center  border-t-[1px] border-zinc-500`
-                  : ""
+                  ? `h-[60px] w-[60px] flex pt-5 items-center justify-center  border-t-[1px] border-zinc-500`
+                  : "h-[60px] w-[60px] flex pt-5 items-center justify-center   "
               }
             >
               <Ionicons
                 size={20}
                 name="home-outline"
-                color={focused ? "white" : "gray"}
+                color={
+                  focused
+                    ? `${colorScheme === "light" ? "#0B71A8" : "white"}`
+                    : `${colorScheme === "light" ? "black" : "gray"}`
+                }
               />
             </View>
           ),
@@ -62,14 +71,18 @@ export default function Layout() {
             <View
               className={
                 focused
-                  ? `h-[60px] w-[60px] flex items-center justify-center border-t-[1px] border-zinc-500`
-                  : ""
+                  ? `h-[60px] w-[60px]  relative flex pt-5 items-center justify-center  border-t-[1px] border-zinc-500`
+                  : "h-[60px] w-[60px] flex pt-5 items-center justify-center   "
               }
             >
               <Ionicons
                 size={20}
                 name="calendar-outline"
-                color={focused ? "white" : "gray"}
+                color={
+                  focused
+                    ? `${colorScheme === "light" ? "#0B71A8" : "white"}`
+                    : `${colorScheme === "light" ? "black" : "gray"}`
+                }
               />
             </View>
           ),
@@ -83,14 +96,18 @@ export default function Layout() {
             <View
               className={
                 focused
-                  ? `h-[60px] w-[60px] flex items-center justify-center border-t-[1px] border-zinc-500`
-                  : ""
+                  ? `h-[60px] w-[60px] flex pt-5 items-center justify-center  border-t-[1px] border-zinc-500`
+                  : "h-[60px] w-[60px] flex pt-5 items-center justify-center   "
               }
             >
               <FontAwesome
                 size={20}
                 name="share-alt"
-                color={focused ? "white" : "gray"}
+                color={
+                  focused
+                    ? `${colorScheme === "light" ? "#0B71A8" : "white"}`
+                    : `${colorScheme === "light" ? "black" : "gray"}`
+                }
               />
             </View>
           ),
@@ -104,14 +121,18 @@ export default function Layout() {
             <View
               className={
                 focused
-                  ? `h-[60px] w-[60px] flex items-center justify-center border-t-[1px] border-zinc-500`
-                  : ""
+                  ? `h-[60px] w-[60px] flex pt-5 items-center justify-center  border-t-[1px] border-zinc-500`
+                  : "h-[60px] w-[60px] flex pt-5 items-center justify-center   "
               }
             >
               <Ionicons
                 size={20}
                 name={"map-outline"}
-                color={focused ? "white" : "gray"}
+                color={
+                  focused
+                    ? `${colorScheme === "light" ? "#0B71A8" : "white"}`
+                    : `${colorScheme === "light" ? "black" : "gray"}`
+                }
               />
             </View>
           ),

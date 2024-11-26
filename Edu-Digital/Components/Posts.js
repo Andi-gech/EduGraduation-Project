@@ -1,4 +1,10 @@
-import { Text, View, TouchableOpacity, Dimensions } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  useColorScheme,
+} from "react-native";
 import { Image } from "expo-image";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -63,17 +69,20 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
   };
 
   const blurhash = "L8Glk-009GQ+MvxoVDD$*J+uxu9E";
+  const colorScheme = useColorScheme();
 
   return (
-    <View className="  border-t-[1px] border-b-[1px] pb-2 border-zinc-900 stroke-white z-50 rounded-lg overflow-hidden my-[20px] w-screen self-center">
+    <View className="  border-t-[1px] border-b-[1px] pb-2 border-zinc-200 dark:border-zinc-900 stroke-white z-50 rounded-lg overflow-hidden my-[20px] w-screen self-center">
       <View className="w-full h-[50px] px-2 flex flex-row items-center">
         <Image
           source={{
             uri: `https://eduapi.senaycreatives.com/${user?.profilePic}`,
           }}
-          className="w-[30px] h-[30px] rounded-full"
+          className="w-[30px] h-[30px] bg-zinc-100 dark:bg-zinc-900 rounded-full"
         ></Image>
-        <Text className="text-white font-semibold ml-3">{user?.firstName}</Text>
+        <Text className="text-black dark:text-white font-semibold ml-3">
+          {user?.firstName}
+        </Text>
       </View>
 
       {image && (
@@ -82,7 +91,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
             source={{
               uri: `https://eduapi.senaycreatives.com/${image}`,
             }}
-            className="w-full h-full object-cover"
+            className="w-full bg-zinc-100 dark:bg-zinc-950 h-full object-cover"
             style={{
               aspectRatio: 1,
               width: Dimensions.get("window").width,
@@ -100,23 +109,31 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
           <Ionicons
             name={liked ? "heart" : "heart-outline"}
             size={30}
-            color={liked ? "red" : "white"}
+            color={liked ? "red" : colorScheme === "light" ? "black" : "white"}
           />
-          <Text className="text-white text-[18px] mx-1">{likeCount}</Text>
+          <Text className="text-black dark:text-white text-[18px] mx-1">
+            {likeCount}
+          </Text>
         </TouchableOpacity>
 
         <View className="mx-3">
-          <Ionicons name="share-outline" size={30} color="white" />
+          <Ionicons
+            name="share-outline"
+            size={30}
+            color={colorScheme === "light" ? "black" : "white"}
+          />
         </View>
       </View>
       <View className="px-2 flex flex-row items-center">
-        <Text className="text-white text-[15px] font-semibold mr-2">
+        <Text className="text-black dark:text-white text-[15px] font-semibold mr-2">
           @{user.firstName}
         </Text>
-        <Text className="text-white text-md leading-6">{content}</Text>
+        <Text className="text-black dark:text-white text-md leading-6">
+          {content}
+        </Text>
       </View>
       <View className="px-2">
-        <Text className="text-gray-300 text-[12px]  leading-6">
+        <Text className=" text-gray-500 dark:text-gray-300 text-[12px]  leading-6">
           #Music #Dance #Art #Fashion #Design
         </Text>
       </View>

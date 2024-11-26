@@ -14,9 +14,9 @@ export default function DownloadCard({ item }) {
   };
 
   return (
-    <View className="w-[90%] relative mx-[10px] mt-[10px] h-[70px] flex-row shadow-sm rounded-md shadow-gray-900 bg-zinc-950 items-center px-2 justify-between">
+    <View className="w-[90%] relative mx-[10px] mt-[10px] h-[70px] flex-row shadow-sm rounded-md  shadow-gray-300 dark:shadow-gray-900 bg-zinc-50 dark:bg-zinc-950 items-center px-2 justify-between">
       <View className="flex flex-col justify-center items-center">
-        <Text className="text-white font-semibold text-md">
+        <Text className=" text-black dark:text-white font-semibold text-md">
           {item?.course?.Coursename}
         </Text>
       </View>
@@ -30,7 +30,7 @@ export default function DownloadCard({ item }) {
           color="white"
         />
       </TouchableHighlight>
-      <Text className="text-white flex text-end py-1 px-1 absolute bottom-0 left-0 text-[10px]">
+      <Text className=" text-black dark:text-white flex text-end py-1 px-1 absolute bottom-0 left-0 text-[10px]">
         {item?.size} MB
       </Text>
     </View>

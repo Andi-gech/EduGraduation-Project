@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import { Image } from "expo-image";
 import React, { useState } from "react";
 import RoundButton from "../../../Components/RoundButton";
@@ -63,13 +63,10 @@ export default function Profile() {
   };
 
   const router = useRouter();
+  const colorScheme = useColorScheme();
 
   return (
-    <LinearGradient
-      colors={["#010101", "#262626"]}
-      locations={[0.0, 1]}
-      className="flex-1 items-center  "
-    >
+    <View className="flex-1 items-center bg-white  dark:bg-black ">
       {Loadings && <Loading />}
       <Header name="Profile Settings" />
       <View className="w-[99%]  flex-1  px-2    flex-row  justify-center  items-start   mt-2 flex ">
@@ -80,14 +77,18 @@ export default function Profile() {
                 `https://eduapi.senaycreatives.com/${data?.data?.profilePic}` ||
                 "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
             }}
-            className="w-[150px] h-[150px] bg-zinc-600 rounded-full"
+            className="w-[150px] h-[150px] bg-zinc-50 dark:bg-zinc-600 rounded-full"
           />
-          <View className="w-[40px] h-[40px] bg-zinc-800 rounded-full absolute top-0 right-0">
+          <View className="w-[40px] h-[40px] bg-zinc-100 dark:bg-zinc-800 rounded-full absolute top-0 right-0">
             <TouchableOpacity
               onPress={() => pickImage()}
-              className=" z-[30]   h-[40px] w-[40px] flex items-center justify-center bottom-0 right-0 bg-gray-800 rounded-full"
+              className=" z-[30]   h-[40px] w-[40px] flex items-center justify-center bottom-0 right-0 bg-zinc-100 dark:bg-zinc-800 rounded-full"
             >
-              <Feather name="camera" size={30} color="white" />
+              <Feather
+                name="camera"
+                size={30}
+                color={colorScheme === "light" ? "black" : "white"}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -102,6 +103,6 @@ export default function Profile() {
         visible={visible}
         image={image}
       />
-    </LinearGradient>
+    </View>
   );
 }

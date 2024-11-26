@@ -5,6 +5,7 @@ import {
   Animated,
   Platform,
   UIManager,
+  useColorScheme,
 } from "react-native";
 import React, { useState } from "react";
 import { CalendarList } from "react-native-calendars";
@@ -98,11 +99,14 @@ export default function Calendar() {
       setSelectedEvent("");
     }
   };
+  const colorScheme = useColorScheme();
 
   return (
-    <View style={darkStyles.container}>
+    <View className=" flex-1 bg-white dark:bg-black">
       <View style={darkStyles.header}>
-        <Text style={darkStyles.headerText}>Academic Calendar</Text>
+        <Text className=" text-black font-bold text-[20px] dark:text-white  ">
+          Academic Calendar
+        </Text>
       </View>
       {isLoading && <IsLoading />}
       {periodEvents && (
@@ -111,11 +115,11 @@ export default function Calendar() {
           markedDates={generateMarkedDates(periodEvents)}
           onDayPress={onDayPress}
           theme={{
-            calendarBackground: "#000",
-            dayTextColor: "#fff",
+            calendarBackground: colorScheme === "dark" ? "#000" : "#fff",
+            dayTextColor: colorScheme === "dark" ? "#fff" : "#000",
             textDisabledColor: "#555",
-            monthTextColor: "#fff",
-            arrowColor: "#fff",
+            monthTextColor: colorScheme === "dark" ? "#fff" : "#000",
+            arrowColor: colorScheme === "dark" ? "#fff" : "#000",
           }}
         />
       )}
@@ -129,10 +133,6 @@ export default function Calendar() {
 }
 
 const darkStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000",
-  },
   header: {
     width: "100%",
     height: 60,

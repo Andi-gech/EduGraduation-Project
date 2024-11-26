@@ -100,7 +100,6 @@ export default function Home() {
       locations={[0.0, 0.2]}
       className=" flex-1 flex items-center     flex-col"
     >
-      <StatusBar style="light" />
       <View className="flex relative justify-between py-4 flex-col z-0 w-[98%]    rounded-md h-[250px] mt-2  px-2">
         <View className="w-full flex flex-row justify-between items-center z-50 px-1">
           <RoundButton onPress={() => navigation.openDrawer()} icon={"bars"} />

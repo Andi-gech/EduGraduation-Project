@@ -2,8 +2,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import CustomDrawerContent from "../../../Components/Drawercontent";
+import { useColorScheme } from "react-native";
 
 export default function Layout() {
+  const colorScheme = useColorScheme();
   return (
     <GestureHandlerRootView>
       <Drawer
@@ -12,10 +14,10 @@ export default function Layout() {
           headerShown: false,
 
           drawerStyle: {
-            backgroundColor: "black",
+            backgroundColor: colorScheme === "light" ? "black" : "white",
           },
           drawerLabelStyle: {
-            color: "white",
+            color: colorScheme === "light" ? "black" : "white",
             marginTop: 10,
           },
         }}
@@ -28,7 +30,11 @@ export default function Layout() {
             drawerIcon: ({ color, size, focused }) => (
               <FontAwesome
                 name="home"
-                color={focused ? "orange" : "white"}
+                color={
+                  focused
+                    ? "orange"
+                    : `${colorScheme === "light" ? "black" : "white"}`
+                }
                 size={size}
               />
             ),
@@ -41,7 +47,13 @@ export default function Layout() {
             drawerIcon: ({ color, size, focused }) => (
               <FontAwesome
                 name="user"
-                color={focused ? "orange" : "white"}
+                color={
+                  focused
+                    ? "orange"
+                    : focused
+                    ? "orange"
+                    : `${colorScheme === "light" ? "black" : "white"}`
+                }
                 size={size}
               />
             ),

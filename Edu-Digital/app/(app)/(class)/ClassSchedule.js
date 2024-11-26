@@ -21,11 +21,7 @@ export default function ClassSchedule() {
   ];
 
   return (
-    <LinearGradient
-      colors={["black", "black"]}
-      locations={[0.0, 0.8]}
-      className="flex-1   bg-white"
-    >
+    <View className="flex-1   bg-white dark:bg-black">
       {isLoading && <Loading />}
       <Header name="Class Schedule" />
       <ScrollView className="w-full flex flex-col">
@@ -41,12 +37,14 @@ export default function ClassSchedule() {
                 return (
                   <View
                     key={data.time}
-                    className="w-[80%]  h-[50px]  shadow-sm shadow-gray-800  bg-zinc-900  ml-[20px] mt-2 flex  flex-col   items-center"
+                    className="w-[80%]  h-[50px]  shadow-sm  shadow-gray-200 dark:shadow-gray-800  bg-white dark:bg-zinc-900  ml-[20px] mt-2 flex  flex-col   items-center"
                   >
-                    <Text className="text-white text-lg ml-3 font-bold">
+                    <Text className=" text-black dark:text-white text-lg ml-3 font-bold">
                       {data.courseName}
                     </Text>
-                    <Text className="text-gray-400">{data.time}</Text>
+                    <Text className="text-black dark:text-white">
+                      {data.time}
+                    </Text>
                   </View>
                 );
               })}
@@ -56,6 +54,6 @@ export default function ClassSchedule() {
 
         {}
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
