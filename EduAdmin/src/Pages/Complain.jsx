@@ -36,7 +36,7 @@ export default function Complain() {
   // Mutation for updating the status
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }) => {
-      return axios.put(`http://eduapi.senaycreatives.com/complain/${id}`, {
+      return axios.put(`http://localhost:3000/complain/${id}`, {
         status,
       });
     },

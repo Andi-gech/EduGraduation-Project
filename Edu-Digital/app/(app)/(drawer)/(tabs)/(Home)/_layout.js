@@ -27,6 +27,14 @@ export default function Layout() {
           animationDuration: 200,
         }}
       />
+      <Stack.Screen
+        name="Subscribe"
+        options={{
+          headerShown: false,
+          animation: "slide_from_bottom",
+          animationDuration: 200,
+        }}
+      />
     </Stack>
   );
 }

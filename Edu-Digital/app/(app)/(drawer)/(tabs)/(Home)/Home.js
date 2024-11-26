@@ -1,6 +1,6 @@
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import React, { useState, useEffect, useMemo } from "react";
-import { Image } from "expo-image";
+import { Image, ImageBackground } from "expo-image";
 import RoundButton from "../../../../../Components/RoundButton";
 
 import { Ionicons, AntDesign } from "@expo/vector-icons";
@@ -14,6 +14,7 @@ import calculateRemainingTime from "../../../../../utils/calculateRemainingTime"
 import formatDuration from "../../../../../utils/formatDuration";
 import AppCard from "../../../../../Components/AppsCard";
 import Marque from "../../../../../Components/Marque";
+import pattern from "../../../../../assets/curvestyle.png";
 import { useDispatch } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import { setUserData } from "../../../../../Redux/actions";
@@ -45,7 +46,7 @@ export default function Home() {
   } = UseFetchCafeStatus();
   const [timeRemaining, setTimeRemaining] = useState(0);
 
-  const isFirstFiveDaysOfMonth = new Date().getDate() <= 15;
+  const isFirstFiveDaysOfMonth = new Date().getDate() <= 25;
   const isAlreadySubscribed = cafestatus?.data?.status;
   const blurhash = "L8Glk-009GQ+MvxoVDD$*J+uxu9E";
   const isCafeSubscribeBtnActive = useMemo(() => {
@@ -76,9 +77,10 @@ export default function Home() {
   const memoizedData = useMemo(() => data?.data, [data]);
 
   const profileImageUri = useMemo(
-    () => `http://192.168.1.15:3000/${memoizedData?.profilePic}`,
+    () => `https://eduapi.senaycreatives.com/${memoizedData?.profilePic}`,
     [memoizedData?.profilePic]
   );
+
   if (isError || isCafeStatusError) {
     return (
       <LinearGradient
@@ -95,16 +97,21 @@ export default function Home() {
   }
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
-      locations={[0.0, 0.2]}
+      colors={["#262626", "#010101"]}
+      locations={[0.0, 0.9]}
       className=" flex-1 flex items-center     flex-col"
     >
       <StatusBar style="light" />
+
       <View className="flex relative justify-between py-4 flex-col z-0 w-[98%]    rounded-md h-[250px] mt-2  px-2">
         <View className="w-full flex flex-row justify-between items-center z-50 px-1">
-          <RoundButton onPress={() => navigation.openDrawer()} icon={"bars"} />
+          <RoundButton
+            onPress={() => navigation.openDrawer()}
+            size={23}
+            icon={"bars"}
+          />
           <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
-            <Ionicons name="notifications-outline" size={24} color="white" />
+            <Ionicons name="notifications-outline" size={23} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -118,10 +125,11 @@ export default function Home() {
             />
           ) : (
             <>
-              {!profileImageUri ? (
+              {!memoizedData?.profilePic ? (
                 <Ionicons
                   name="person-circle-outline"
-                  size={60}
+                  size={50}
+                  className="bg-white rounded-full w-[60px] h-[60px]"
                   color="white"
                 />
               ) : (
@@ -152,7 +160,7 @@ export default function Home() {
               </View>
             ) : (
               <Text className="text-zinc-400 text-[14px] mt-[1px] font-bold ">
-                0008/12
+                {memoizedData?.studentid}
               </Text>
             )}
             {isLoading ? (
@@ -195,7 +203,7 @@ export default function Home() {
         )}
       </View>
 
-      <View className="w-[98%] pb-[64px] flex-1 bg-zinc-950 rounded-t-[40px] ">
+      <View className="w-[98%] pb-[64px] flex-1 bg-black rounded-t-[40px] ">
         <View className=" w-full  h-[50px] items-center justify-center flex-col">
           {isLoading ? (
             <View className="my-2">
@@ -210,11 +218,14 @@ export default function Home() {
             <Text className="text-white">Hub Essentials</Text>
           )}
         </View>
-        <ScrollView className="w-full  mb-[0px]  ">
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          className="w-full  mb-[0px]  "
+        >
           <View className="w-full  mb-[0px] flex flex-row flex-wrap items-center  justify-center">
             {isCafeSubscribeBtnActive && (
               <TouchableOpacity
-                onPress={() => navigation.navigate("Permission")}
+                onPress={() => navigation.navigate("Subscribe")}
                 className="w-[130px] h-[70px] rounded-md shrink-0  flex flex-col items-center justify-center bg-zinc-800 shadow-sm mx-2  mt-2"
               >
                 <Ionicons name="cash-outline" size={24} color="white" />
@@ -257,8 +268,15 @@ export default function Home() {
                   router.push({
                     pathname: "(class)",
                     params: {
-                      semister: Number(memoizedData?.semester),
-                      year: Number(memoizedData?.yearLevel),
+                      department: memoizedData?.Class?.department
+                        ? memoizedData?.Class?.department
+                        : "CSE",
+                      year: memoizedData?.Class?.yearLevel
+                        ? memoizedData?.Class?.yearLevel
+                        : 1,
+                      semister: memoizedData?.Class?.semister
+                        ? memoizedData?.Class?.semister
+                        : 1,
                     },
                   });
                 }}

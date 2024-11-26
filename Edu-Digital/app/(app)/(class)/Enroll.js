@@ -14,9 +14,7 @@ import Loading from "../../../Components/Loading";
 
 export default function Enroll() {
   const { data, isLoading: loading } = UseFetchCourseOffering();
-  const { data: MyCourse, isLoading } = UseFetchMyCourse();
-
-  console.log(MyCourse?.data);
+  const { data: MyCourse, isLoading, error } = UseFetchMyCourse();
 
   const sendData = async (postdata) => {
     return await api.post(`/enrollment/enroll`, postdata);
@@ -28,9 +26,7 @@ export default function Enroll() {
     onSuccess: async (response) => {
       queryClient.invalidateQueries("enrollment");
     },
-    onError: (error) => {
-      console.log(error.response.data);
-    },
+    onError: (error) => {},
   });
   const handleEnroll = (id) => {
     mutation.mutate({ course: id });
@@ -38,7 +34,7 @@ export default function Enroll() {
 
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
+      colors={["black", "black"]}
       locations={[0.0, 0.6]}
       className="flex-1 flex items-center   flex-col"
     >

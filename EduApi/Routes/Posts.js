@@ -311,9 +311,9 @@ Router.put("/like/:id", AuthMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(400).send("Post not found");
-    if (post.likedBy.includes(req.user._id))
+    if (post.likedBy.includes(req.user.userid))
       return res.status(400).send("Already liked");
-    post.likedBy.push(req.user._id);
+    post.likedBy.push(req.user.userid);
     await post.save();
     return res.send(post);
   } catch (err) {
@@ -398,9 +398,9 @@ Router.put("/unlike/:id", AuthMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(400).send("Post not found");
-    if (!post.likedBy.includes(req.user._id))
+    if (!post.likedBy.includes(req.user.userid))
       return res.status(400).send("Not liked yet");
-    post.likedBy = post.likedBy.filter((id) => id != req.user._id);
+    post.likedBy = post.likedBy.filter((id) => id != req.user.userid);
     await post.save();
     return res.send(post);
   } catch (err) {

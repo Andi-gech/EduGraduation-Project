@@ -21,7 +21,10 @@ export default function ScialClubs() {
 
   const mutation = useMutation({
     mutationFn: async (newSocial) => {
-      return await axios.post("http://192.168.1.15:3000/Social", newSocial);
+      return await axios.post(
+        "https://eduapi.senaycreatives.com/Social",
+        newSocial
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries("fechinactiveuser");

@@ -74,7 +74,7 @@ export default function Permission() {
       className="   flex-1 flex items-center duration-75 transition-all ease-in-out   flex-col"
     >
       <LinearGradient
-        colors={["#010101", "#262626"]}
+        colors={["black", "black"]}
         locations={[0.0, 0.6]}
         className=" flex-1 flex items-center     flex-col"
       >
@@ -126,7 +126,7 @@ export default function Permission() {
           </View>
           <TouchableOpacity
             onPress={() => handleSendRequest()}
-            className="w-[150px]  flex items-center justify-center rounded-md h-[50px] bg-black"
+            className="w-[150px]  flex items-center justify-center rounded-md h-[50px] bg-zinc-800"
           >
             <Text className="text-white text-center font-bold">Submit</Text>
           </TouchableOpacity>

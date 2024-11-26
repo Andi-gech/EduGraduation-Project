@@ -20,7 +20,7 @@ const CustomDrawerContent = (props) => {
 
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
+      colors={["black", "black"]}
       locations={[0.0, 0.8]}
       style={styles.container} // Apply styles
     >

@@ -64,7 +64,7 @@ export default function Id() {
 
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
+      colors={["black", "black"]}
       locations={[0.0, 0.6]}
       className="flex bg-black flex-1   "
     >
@@ -112,7 +112,7 @@ export default function Id() {
                 <View className="flex flex-row w-full">
                   <Image
                     source={{
-                      uri: `http://192.168.1.15:3000/${data?.data?.Photo}`,
+                      uri: `https://eduapi.senaycreatives.com/${data?.data?.Photo}`,
                     }}
                     className="w-[110px] ml-2 h-[130px] z-0 mt-3 "
                   />

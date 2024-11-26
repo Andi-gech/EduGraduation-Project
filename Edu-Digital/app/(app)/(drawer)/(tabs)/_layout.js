@@ -14,6 +14,7 @@ export default function Layout() {
           position: "absolute",
 
           elevation: 10,
+
           left: 0,
 
           borderTopWidth: 0.3,
@@ -40,7 +41,7 @@ export default function Layout() {
             <View
               className={
                 focused
-                  ? `h-[60px] w-[60px] flex items-center justify-center border-t-[1px] border-zinc-500`
+                  ? `h-[60px] w-[60px] flex items-center justify-center  border-t-[1px] border-zinc-500`
                   : ""
               }
             >

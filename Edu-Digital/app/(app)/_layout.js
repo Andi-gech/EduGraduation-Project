@@ -19,12 +19,8 @@ export default function Layout() {
       });
       return response.data;
     },
-    onSuccess: (data) => {
-      console.log("Registered for push notifications");
-    },
-    onError: (error) => {
-      console.error(error);
-    },
+    onSuccess: (data) => {},
+    onError: (error) => {},
   });
 
   useEffect(() => {

@@ -9,9 +9,11 @@ import { Ionicons } from "@expo/vector-icons";
 import UseFetchMyCourse from "../../../hooks/UseFetchMyCourse";
 import Header from "../../../Components/Header";
 import { LinearGradient } from "expo-linear-gradient";
+import { useSelector } from "react-redux";
 
 export default function Class() {
   const params = useLocalSearchParams();
+  const userdata = useSelector((state) => state.userData);
   const router = useRouter();
   const { data, error, isLoading } = UseFetchMyCourse();
 
@@ -25,7 +27,7 @@ export default function Class() {
   }
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
+      colors={["black", "black"]}
       locations={[0.0, 0.6]}
       className="flex relative flex-1 px-[10px]"
     >
@@ -35,18 +37,20 @@ export default function Class() {
         <View className="mt-3 w-[]  ">
           <View className="flex h-[30px]    items-center flex-row">
             <Text className="font-bold text-white ">Department:</Text>
-            <Text className="ml-2  font-bold text-white">CSE</Text>
+            <Text className="ml-2  font-bold text-white">
+              {userdata.userdata.department}
+            </Text>
           </View>
           <View className="flex h-[30px]    items-center flex-row">
             <Text className="font-bold text-white ">Acadamic Year:</Text>
             <Text className="ml-2  font-bold text-white">
-              {params.year} Year
+              {userdata.userdata.yearLevel} Year
             </Text>
           </View>
           <View className="flex h-[30px]   items-center flex-row">
             <Text className="font-bold text-white ">Acadamic Semister:</Text>
             <Text className="ml-2   font-bold text-white">
-              {params.semister} Semister
+              {userdata.userdata.semister} Semister
             </Text>
           </View>
         </View>

@@ -22,16 +22,16 @@ export default function ClassSchedule() {
 
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
+      colors={["black", "black"]}
       locations={[0.0, 0.8]}
       className="flex-1   bg-white"
     >
       {isLoading && <Loading />}
       <Header name="Class Schedule" />
       <ScrollView className="w-full flex flex-col">
-        {week.map((day) => {
+        {week.map((day, index) => {
           return (
-            <View key={day} className="w-full mt-2">
+            <View key={index} className="w-full mt-2">
               <View className="w-[99%] h-[50px]  border-l-4 border-red-700   ml-2 mt-2 flex  flex-row   items-center">
                 <Text className="text-white text-lg  ml-3 font-bold">
                   {day}

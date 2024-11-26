@@ -78,6 +78,16 @@ Router.get("/room", AuthMiddleware, async (req, res) => {
   const chat = await Chatroom.distinct("name");
   res.send(chat);
 });
+Router.get("/:room/recentChats", async (req, res) => {
+  const chathistory = await Chat.find({
+    room: req.params.room,
+  })
+    .sort({ date: -1 })
+    .limit(10);
+
+  res.send(chathistory);
+});
+
 /**
  * @swagger
  * /chatrooms:

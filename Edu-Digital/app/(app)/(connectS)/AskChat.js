@@ -14,13 +14,21 @@ import { LinearGradient } from "expo-linear-gradient";
 import ChatBox from "../../../Components/ChatBox";
 import Header from "../../../Components/Header";
 import User from "../../../Components/User";
+import UseFetchChat from "../../../hooks/UseFetchChats";
 
 export default function AskChat() {
   const [message, setMessage] = useState("");
+  const { data: recentChats } = UseFetchChat();
+
   const [chats, setChats] = useState([]);
   const [showUsers, setShowUsers] = useState(false);
   const data = useSelector((state) => state.userData);
   const socket = useSelector((state) => state.socket.socket);
+  useEffect(() => {
+    if (recentChats) {
+      setChats(recentChats?.data?.sort((a, b) => a.createdAt - b.createdAt));
+    }
+  }, [recentChats]);
 
   useEffect(() => {
     if (socket) {
@@ -47,11 +55,12 @@ export default function AskChat() {
       Keyboard.dismiss();
     }
   };
+  console.log(chats, "chats");
 
   return (
     <KeyboardAvoidingView behavior="padding" className="flex-1">
       <LinearGradient colors={["black", "black"]} className="flex-1">
-        {showUsers && <User onClose={() => setShowUsers(false)} />}
+        {showUsers && <User onclose={() => setShowUsers(false)} />}
         <View className="relative">
           <Header name="Ask Chat" />
           <TouchableOpacity

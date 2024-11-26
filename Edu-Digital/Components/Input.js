@@ -15,7 +15,8 @@ export default function Input({ placeholder, type, onchange, value }) {
         }}
         secureTextEntry={showpassword}
         placeholder={placeholder}
-        className="w-full  px-2 h-full  placeholder-white bg-zinc-900 rounded-[12px] "
+        placeholderTextColor={"gray"}
+        className="w-full  px-2 h-full  text-white  bg-zinc-900 rounded-[12px] "
       />
       {type === "password" && (
         <TouchableOpacity

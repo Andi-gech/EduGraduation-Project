@@ -20,6 +20,7 @@ export default function App() {
       className=" bg-white flex-1 flex items-center  flex-col"
     >
       <StatusBar style="light" />
+
       <View className="mt-[70px]">
         <Logo />
       </View>

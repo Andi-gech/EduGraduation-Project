@@ -9,6 +9,7 @@ import { useRouter } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
 import Header from "../../../Components/Header";
 import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 
 export default function Signup() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function Signup() {
 
   const [department, setDepartment] = useState("");
   const [isMilitary, setIsMilitary] = useState();
+  const [student_id, setStudent_id] = useState();
 
   const pickerref = useRef();
   const handleSendRequest = () => {
@@ -34,16 +36,18 @@ export default function Signup() {
         year: year,
         semister: semister,
         is_military: isMilitary,
+        student_id: student_id,
       },
     });
   };
 
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
+      colors={["#010101", "black"]}
       locations={[0.0, 0.9]}
       className="flex flex-1  bg-white items-center"
     >
+      <StatusBar style="light" />
       <View className="w-full flex flex-col  items-start  px-2">
         <Header name="Create Your Account " />
 
@@ -168,6 +172,16 @@ export default function Signup() {
             <Picker.Item label="AeroNautical" value="AeroNautical" />
             <Picker.Item label="Production" value="Production" />
           </Picker>
+        </View>
+        <View className="w-full flex flex-col items-start mt-4 px-2">
+          <Text className="text-white">Student ID</Text>
+          <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
+            <Input
+              placeholder={"Enter Student ID"}
+              onchange={(e) => setStudent_id(e)}
+              value={student_id}
+            />
+          </View>
         </View>
         <View className="w-full flex flex-row items-center mt-4 px-2">
           <Text className="text-white">Gender:</Text>

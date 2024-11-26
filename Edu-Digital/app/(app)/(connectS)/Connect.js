@@ -11,7 +11,7 @@ export default function Connect() {
   const router = useRouter();
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
+      colors={["black", "black"]}
       locations={[0.0, 0.8]}
       className="  flex-1 bg-white"
     >

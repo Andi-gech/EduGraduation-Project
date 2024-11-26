@@ -7,30 +7,23 @@ import api from "../utils/api";
 import { useSelector } from "react-redux";
 
 export default function Posts({ content, image, id, time, likedBy, user }) {
-  const data = useSelector((state) => state.user);
-  const [liked, setLiked] = useState(likedBy.includes(data?.user));
+  const data = useSelector((state) => state.userData);
+
+  const [liked, setLiked] = useState(likedBy.includes(data.userdata._id));
   const [likeCount, setLikeCount] = useState(likedBy?.length);
 
   const mutation = useMutation({
     mutationFn: async (data) => await api.put(`/post/like/${id}`, data),
     mutationKey: ["likepost"],
-    onSuccess: async (response) => {
-      console.log(response.data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
+    onSuccess: async (response) => {},
+    onError: (error) => {},
   });
 
   const unlikeMutation = useMutation({
     mutationFn: async (data) => await api.put(`/post/unlike/${id}`, data),
     mutationKey: ["unlikepost"],
-    onSuccess: async (response) => {
-      console.log(response.data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
+    onSuccess: async (response) => {},
+    onError: (error) => {},
   });
 
   const handleLike = () => {
@@ -76,7 +69,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
       <View className="w-full h-[50px] px-2 flex flex-row items-center">
         <Image
           source={{
-            uri: `http://192.168.1.15:3000/${user?.profilePic}`,
+            uri: `https://eduapi.senaycreatives.com/${user?.profilePic}`,
           }}
           className="w-[30px] h-[30px] rounded-full"
         ></Image>
@@ -86,7 +79,9 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
       {image && (
         <View className="w-full ">
           <Image
-            source={{ uri: `http://192.168.1.15:3000/${image}` }}
+            source={{
+              uri: `https://eduapi.senaycreatives.com/${image}`,
+            }}
             className="w-full h-full object-cover"
             style={{
               aspectRatio: 1,

@@ -15,13 +15,11 @@ export default function Clubs() {
   const queryclient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (clubId) => {
-      console.log("Joining club with id:", clubId);
       const response = await api.put(`/Social/join/${clubId}`);
       return response.data;
     },
 
     onSuccess: (data) => {
-      console.log("Club joined successfully:", data);
       queryclient.invalidateQueries("clubs");
     },
     onError: (error) => {
@@ -40,10 +38,10 @@ export default function Clubs() {
       <Header name="Join Clubs " />
       <ScrollView className="">
         <View className="flex  pb-[100px]  flex-col">
-          {data?.data?.map((club) => (
+          {data?.data?.map((club, index) => (
             <View
               className="w-full h-[200px] flex items-center justify-center mt-4 bg-red-700"
-              key={club.id}
+              key={index}
             >
               <Image
                 className="absolute top-0  left-0 w-full h-full"

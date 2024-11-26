@@ -13,6 +13,7 @@ import Loading from "../../../Components/Loading";
 import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
 import Header from "../../../Components/Header";
+import { StatusBar } from "expo-status-bar";
 
 export default function Signup_step2() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function Signup_step2() {
   const mutation = useMutation({
     mutationKey: ["signup"],
     mutationFn: (data) =>
-      axios.post("http://192.168.1.15:3000/auth/register", data),
+      axios.post("https://eduapi.senaycreatives.com/auth/register", data),
     onSuccess: async (response) => {
       router.push("/(Auth)/login");
     },
@@ -44,6 +45,7 @@ export default function Signup_step2() {
         firstName: params.first_name,
         lastName: params.last_name,
         gender: params.gender,
+        studentid: params.student_id,
 
         isMilitary: params.is_military,
       },
@@ -67,6 +69,7 @@ export default function Signup_step2() {
       locations={[0.0, 0.9]}
       className="flex relative flex-1  bg-white items-center"
     >
+      <StatusBar style="light" />
       {mutation.isPending && <Loading />}
       <Header name="Complete Account Creation " />
 

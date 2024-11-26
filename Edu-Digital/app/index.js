@@ -3,6 +3,7 @@ import { useRootNavigationState, useRouter, useSegments } from "expo-router";
 import React from "react";
 import { Text, View } from "react-native";
 import { isAuthenticated } from "../utils/auth";
+import { StatusBar } from "expo-status-bar";
 import Loading from "../Components/Loading";
 
 const Index = () => {
@@ -24,6 +25,11 @@ const Index = () => {
     }
   }, [isLoggedIn, segments, navigationState?.key]);
 
-  return <View>{!navigationState?.key ? <Loading /> : <></>}</View>;
+  return (
+    <View>
+      <StatusBar style="light" />
+      {!navigationState?.key ? <Loading /> : <></>}
+    </View>
+  );
 };
 export default Index;

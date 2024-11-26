@@ -4,7 +4,7 @@ import api from "../utils/api";
 
 export default function UseFetchChat() {
   const FetchChat = async () => {
-    return await api.get(`/chatroom/ask`);
+    return await api.get(`/chatroom/ask/recentChats`);
   };
 
   return useQuery({

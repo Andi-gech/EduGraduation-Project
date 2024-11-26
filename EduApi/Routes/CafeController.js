@@ -8,6 +8,69 @@ const { CafeGate } = require("../Model/CafeGate");
 const { Auth, validateAuth } = require("../Model/Auth");
 const { signData, verifyData } = require("../utils/Signiture");
 const { encrypt, decrypt } = require("../utils/Crypto");
+const Chapa = require("chapa");
+const AuthMiddleware = require("../MiddleWare/AuthMiddleware");
+
+let myChapa = new Chapa("CHASECK_TEST-gFVzUEvX8t2gMphMHXxf4v75KOnyHIPE");
+Router.get("/initiateChapa", AuthMiddleware, async (req, res) => {
+  try {
+    const redirecturl = req.query.redirecturl; // Get query parameter
+    console.log("Redirect URL:", redirecturl);
+
+    if (!redirecturl) {
+      return res.status(400).send("Missing redirect URL");
+    }
+
+    // Continue with the rest of your logic
+    const subs = await Cafe.findOne({
+      user: req.user.userid,
+      enddate: { $gt: Date.now() },
+    });
+
+    if (subs) return res.status(400).send("Already Subscribed");
+
+    const user = await User.findById(req.user.userid)
+      .select("-password")
+      .populate("auth");
+
+    const Cafeprice = 1255;
+
+    const customerInfo = {
+      amount: Cafeprice,
+      currency: "ETB",
+      email: user.auth.email,
+      first_name: user.firstName,
+      last_name: user.lastName,
+
+      customization: {
+        title: "Test Title",
+        description: "Test Description",
+      },
+      meta: {
+        reference: req.user.userid,
+      },
+    };
+
+    myChapa
+      .initialize(customerInfo, { autoRef: true })
+      .then((response) => {
+        return res.send({
+          response,
+          email: user.auth.email,
+          price: Cafeprice,
+          StartDate: new Date(),
+          EndDate: new Date(new Date().setDate(new Date().getDate() + 30)),
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+        res.status(500).send("Error initializing payment");
+      });
+  } catch (err) {
+    res.status(500).send(err.message || "Something went wrong");
+  }
+});
+
 /**
  * @swagger
  * /cafe/subscribe:
@@ -71,30 +134,16 @@ const { encrypt, decrypt } = require("../utils/Crypto");
  *                   description: Error message describing the issue.
  *                   example: "Internal server error"
  */
-Router.post(
-  "/subscribe",
-  Authetication,
+Router.post("/cafeinfo/verify", async (req, res) => {
+  console.log(req.body.meta.reference);
 
-  async (req, res) => {
-    const { error } = validateCafe(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-    const subs = await Cafe.findOne({
-      user: req.user.userid,
-      enddate: { $gt: Date.now() },
-    });
-    if (subs) return res.status(400).send("Already Subscribed");
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
-    // if (currentDay > 29)
-    //   return res.status(400).send("Month Subscription not available");
-    const cafe = new Cafe({
-      location: req.body.location,
-      user: req.user.userid,
-    });
-    await cafe.save();
-    return res.send(cafe);
-  }
-);
+  const cafe = new Cafe({
+    location: "JIJIGA",
+    user: req.body.meta.reference,
+  });
+  await cafe.save();
+  return res.send(cafe);
+});
 /**
  * @swagger
  * /cafe/unsubscribe/{id}:

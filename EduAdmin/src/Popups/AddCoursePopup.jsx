@@ -24,7 +24,7 @@ const AddCoursePopup = ({ onClose, offeringid }) => {
   const mutation = useMutation({
     mutationFn: (data) =>
       axios.put(
-        `http://192.168.1.15:3000/enrollment/add/course/${offeringid}`,
+        `https://eduapi.senaycreatives.com/enrollment/add/course/${offeringid}`,
         data
       ),
     mutationKey: "addCourse",

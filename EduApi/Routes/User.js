@@ -517,7 +517,7 @@ Router.get("/get/Digitalid", AuthMiddleware, async (req, res) => {
 Router.get("/getAll/Digitalid", async (req, res) => {
   try {
     const idCards = await IDCard.find({
-      isComplete: true,
+      isComplete: false,
     });
     res.send(idCards);
   } catch (error) {

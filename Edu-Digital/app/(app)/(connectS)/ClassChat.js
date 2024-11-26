@@ -37,7 +37,7 @@ export default function ClassChat() {
   return (
     <KeyboardAvoidingView behavior="padding" className="flex-1 ">
       <LinearGradient
-        colors={["#010101", "#262626"]}
+        colors={["black", "black"]}
         locations={[0.0, 0.6]}
         className=" flex-1 flex bg-white"
       >

@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function UseFetchUser() {
   const Fetchqr = async () => {
-    return await axios.get(`http://192.168.1.15:3000/user`);
+    return await axios.get(`https://eduapi.senaycreatives.com/user`);
   };
 
   return useQuery({

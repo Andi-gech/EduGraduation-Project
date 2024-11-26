@@ -8,7 +8,7 @@ import Header from "../../../../../Components/Header";
 export default function RequestHistory() {
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
+      colors={["black", "black"]}
       locations={[0.0, 0.6]}
       className="flex-1 flex items-center   flex-col"
     >

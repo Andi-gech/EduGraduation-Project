@@ -5,8 +5,6 @@ import { Platform } from "react-native";
 import api from "../utils/api";
 
 export async function registerForPushNotificationsAsync(mutate) {
-  console.log("registering for push notifications");
-
   let token;
 
   if (Platform.OS === "android") {
@@ -39,7 +37,6 @@ export async function registerForPushNotificationsAsync(mutate) {
       })
     ).data;
 
-    console.log(token, "token");
     mutate(token); // Call the mutation function to send the token
   } else {
     alert("Must use physical device for Push Notifications");

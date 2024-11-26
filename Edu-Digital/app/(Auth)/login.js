@@ -10,7 +10,6 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "../../Components/Loading";
 import { LinearGradient } from "expo-linear-gradient";
-
 import { StatusBar } from "expo-status-bar";
 
 export default function login() {
@@ -21,7 +20,10 @@ export default function login() {
 
   const mutation = useMutation({
     mutationFn: async (newTodo) => {
-      return await axios.post("http://192.168.1.15:3000/auth/login", newTodo);
+      return await axios.post(
+        "https://eduapi.senaycreatives.com/auth/login",
+        newTodo
+      );
     },
     onSuccess: async (response) => {
       const isapproved = response.data.isapproved;
@@ -48,7 +50,7 @@ export default function login() {
 
   return (
     <LinearGradient
-      colors={["#010101", "#262626"]}
+      colors={["black", "black"]}
       locations={[0.0, 0.9]}
       className="relative flex-1 flex items-center   flex-col"
     >

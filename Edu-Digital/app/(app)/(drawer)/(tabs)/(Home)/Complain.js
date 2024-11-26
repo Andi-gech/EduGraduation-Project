@@ -60,7 +60,7 @@ export default function Complain() {
       className="flex flex-1 px-[10px]  mt-[5px]"
     >
       <LinearGradient
-        colors={["#010101", "#262626"]}
+        colors={["black", "black"]}
         locations={[0.0, 0.6]}
         className="relative w-full h-full flex flex-col px-[10px]    items-center"
       >
@@ -108,7 +108,7 @@ export default function Complain() {
           <View className="w-[99%] flex-col items-center justify-center mt-7  flex ">
             <TouchableOpacity
               onPress={() => handleSendRequest()}
-              className="w-[150px]  flex items-center justify-center rounded-md h-[50px] bg-black"
+              className="w-[150px]  flex items-center justify-center rounded-md h-[50px] bg-zinc-800"
             >
               <Text className="text-white text-center font-bold">Submit</Text>
             </TouchableOpacity>

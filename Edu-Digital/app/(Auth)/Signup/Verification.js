@@ -5,6 +5,7 @@ import Buttons from "../../../Components/Buttons";
 import { useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 
 export default function Verification() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function Verification() {
       locations={[0.0, 0.9]}
       className="flex-1 items-center  justify-center"
     >
+      <StatusBar style="light" />
       <View className="mt-2 w-[100px] h-[100px]">
         <PendingSvg className="w-[300px] h-[200px]" width={120} height={120} />
       </View>

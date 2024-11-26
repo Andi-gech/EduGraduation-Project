@@ -18,7 +18,9 @@ export default function ApprovalPopup({ onClose, id, authid }) {
   }, [id, refetch]);
   const mutation = useMutation({
     mutationFn: async () => {
-      return await axios.put(`http://192.168.1.15:3000/auth/approve/${authid}`);
+      return await axios.put(
+        `https://eduapi.senaycreatives.com/auth/approve/${authid}`
+      );
     },
     mutationKey: ["approve"],
     onSuccess: () => {
@@ -55,7 +57,7 @@ export default function ApprovalPopup({ onClose, id, authid }) {
           <img
             src={
               data?.data?.profilePic
-                ? `http://192.168.1.15:3000/${data?.data?.profilePic}`
+                ? `https://eduapi.senaycreatives.com/${data?.data?.profilePic}`
                 : "https://via.placeholder.com/250"
             }
             alt="Avatar"

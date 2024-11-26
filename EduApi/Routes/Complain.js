@@ -209,6 +209,7 @@ Router.get("/", async (req, res) => {
 
 Router.put("/:id", async (req, res) => {
   try {
+    console.log("Notification data:");
     const { status } = req.body;
     if (!status) return res.status(400).send("Status is required");
 
@@ -221,6 +222,20 @@ Router.put("/:id", async (req, res) => {
     if (!updatedComplain) {
       return res.status(404).send("Complaint not found");
     }
+    const notificationData = {
+      notification:
+        updatedComplain.status === "completed"
+          ? "Your complaint has been resolved"
+          : "Your complaint has been rejected",
+      user: updatedComplain.user,
+      type: "Notice",
+    };
+    console.log("Notification data:", notificationData);
+
+    const { notification, ticket } = await sendPushNotification(
+      updatedComplain.user,
+      notificationData
+    );
 
     return res.send(updatedComplain);
   } catch (error) {
