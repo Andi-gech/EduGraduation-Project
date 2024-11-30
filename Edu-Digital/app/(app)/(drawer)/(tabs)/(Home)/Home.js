@@ -91,7 +91,7 @@ export default function Home() {
   const memoizedData = useMemo(() => data?.data, [data]);
 
   const profileImageUri = useMemo(
-    () => `http://192.168.1.15:3000/${memoizedData?.profilePic}`,
+    () => `https://eduapi.senaycreatives.com/${memoizedData?.profilePic}`,
     [memoizedData?.profilePic]
   );
 

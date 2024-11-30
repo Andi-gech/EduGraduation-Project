@@ -4,7 +4,7 @@ import axios from "axios";
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: "http://192.168.1.15:3000", // Replace with your API's base URL
+  baseURL: "https://eduapi.senaycreatives.com", // Replace with your API's base URL
 });
 
 // Add a request interceptor

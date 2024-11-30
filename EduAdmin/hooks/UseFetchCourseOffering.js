@@ -5,7 +5,7 @@ export default function UseFetchCourseOffering(department, year, semister) {
   const FetchOfferings = async () => {
     // Fetch the user by their specific ID
     const response = await axios.get(
-      `http://192.168.1.15:3000/enrollment/Getoffering?department=${department}&yearLevel=${year}&semister=${semister}`
+      `https://eduapi.senaycreatives.com/enrollment/Getoffering?department=${department}&yearLevel=${year}&semister=${semister}`
     );
     return response;
   };

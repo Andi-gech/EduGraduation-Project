@@ -30,7 +30,7 @@ const ChatMessage = ({ message, sender }) => {
             ) : (
               <Image
                 source={{
-                  uri: `http://192.168.1.15:3000/${profile?.image}`,
+                  uri: `https://eduapi.senaycreatives.com/${profile?.image}`,
                 }}
                 placeholder={blurhash}
                 className="w-[50px] h-[50px] mx-2 rounded-full"

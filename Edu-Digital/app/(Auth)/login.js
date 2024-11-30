@@ -27,7 +27,10 @@ export default function login() {
 
   const mutation = useMutation({
     mutationFn: async (newTodo) => {
-      return await axios.post("http://192.168.1.15:3000/auth/login", newTodo);
+      return await axios.post(
+        "https://eduapi.senaycreatives.com/auth/login",
+        newTodo
+      );
     },
     onSuccess: async (response) => {
       const isapproved = response.data.isapproved;

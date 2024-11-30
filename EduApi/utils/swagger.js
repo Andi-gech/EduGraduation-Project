@@ -12,7 +12,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://192.168.1.15:3000",
+        url: "https://eduapi.senaycreatives.com",
       },
     ],
     components: {

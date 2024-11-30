@@ -87,7 +87,7 @@ export default function AddStudentPopup({ open, onClose }) {
   // Mutation for submitting the student data
   const mutation = useMutation(
     (newStudent) =>
-      axios.post("http://192.168.1.15:3000/auth/register", newStudent) // Replace with your actual API endpoint
+      axios.post("https://eduapi.senaycreatives.com/auth/register", newStudent) // Replace with your actual API endpoint
   );
 
   const handleNext = () => {
