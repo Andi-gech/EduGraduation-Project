@@ -56,7 +56,7 @@ export default function AddPost() {
     });
 
     try {
-      const response = await fetch(`https://eduapi.senaycreatives.com/post`, {
+      const response = await fetch(`http://192.168.1.15:3000/post`, {
         method: "POST",
         body: multform,
         headers: {
@@ -88,47 +88,50 @@ export default function AddPost() {
   };
 
   return (
-    <LinearGradient
-      colors={["#010101", "#010101"]}
-      locations={[0.0, 0.7]}
-      className="flex-1 flex items-center flex-col"
-    >
+    <View className="flex-1 flex bg-white dark:bg-black  items-center flex-col">
       <Header name={"Create Posts "} />
       {sucess && <SucessPopup message="Post Created" />}
       {error && <ErrorPopup message="Failed to create post" />}
       {Loadings && <Loading />}
+      {image && (
+        <View className=" p-2 flex items-center justify-center bg-gray-200 border-2 border-yellow-400 rounded-md">
+          <Image
+            source={{ uri: image }}
+            className="w-[80px] h-[80px] bg-zinc-600 rounded-md"
+          />
+        </View>
+      )}
       <TextInput
         value={content}
         onChange={(e) => setcontent(e.nativeEvent.text)}
         multiline
         placeholder="Tell us more"
-        className="w-[92%] h-[100px] bg-zinc-900 text-white rounded-[12px] px-2 mt-2"
+        className="w-[92%] h-[100px] bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white  rounded-[12px] px-2 mt-2"
       />
       <TouchableOpacity
         onPress={pickImage}
         className="w-[99%] flex-row items-center justify-center mt-7  flex "
       >
-        <Ionicons name="add-circle" size={24} color="white" />
-        <Text className="text-white mx-3 font-semibold">Add Image</Text>
+        <Ionicons
+          name="add-circle"
+          size={24}
+          className=" text-black dark:text-white "
+        />
+        <Text className=" text-black dark:text-white mx-3 font-semibold">
+          Add Image
+        </Text>
       </TouchableOpacity>
       {imageError && (
         <Text className="text-red-500 mx-3 mt-2">Please select an image</Text>
       )}
-      {image && (
-        <View className="w-[10px] h-[10px] flex items-center justify-center bg-gray-200 border-2 border-emerald-400 rounded-full">
-          <Image
-            source={{ uri: image }}
-            className="w-[150px] h-[150px] bg-zinc-600 rounded-full"
-          />
-        </View>
-      )}
+
       <TouchableOpacity
         onPress={onSubmit}
         className="w-[89%] rounded-md h-[50px] flex-row items-center justify-center mt-7 bg-yellow-400  flex "
       >
         <Text className="text-black mx-3 font-semibold">Post</Text>
       </TouchableOpacity>
-    </LinearGradient>
+    </View>
   );
 }
 

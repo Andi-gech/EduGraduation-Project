@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import UseFetchProfilepic from "../hooks/UseFetchProfilepic";
 
@@ -11,6 +12,7 @@ const ChatMessage = ({ message, sender }) => {
 
   // Memoize the profile picture data to avoid unnecessary refetching
   const { profile } = UseFetchProfilepic(sender);
+  console.log(profile);
 
   const isSender = sender === data?.userdata?._id;
 
@@ -22,13 +24,19 @@ const ChatMessage = ({ message, sender }) => {
         }`}
       >
         {!isSender && (
-          <Image
-            source={{
-              uri: `https://eduapi.senaycreatives.com/${profile?.image}`,
-            }}
-            placeholder={{ blurhash }}
-            className="w-[50px] h-[50px] mx-2 rounded-full"
-          />
+          <>
+            {!profile?.image ? (
+              <Ionicons name="person-circle" size={50} color="gray" />
+            ) : (
+              <Image
+                source={{
+                  uri: `http://192.168.1.15:3000/${profile?.image}`,
+                }}
+                placeholder={blurhash}
+                className="w-[50px] h-[50px] mx-2 rounded-full"
+              />
+            )}
+          </>
         )}
         <View
           style={

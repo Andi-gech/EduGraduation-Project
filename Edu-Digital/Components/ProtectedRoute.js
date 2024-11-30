@@ -29,7 +29,7 @@ const ProtectedRoute = ({ navigation, children }) => {
   if (loading) {
     return (
       <LinearGradient
-        colors={["#010101", "#262626"]}
+        colors={["black", "black"]}
         locations={[0.0, 0.9]}
         className="relative flex-1 flex items-center   flex-col"
       >

@@ -9,12 +9,10 @@ export default function SucessPopup({ visible }) {
     <Modal transparent={true} animationType="slide" visible={visible}>
       <LinearGradient
         colors={
-          colorScheme === "dark"
-            ? ["#010101", "#262626"]
-            : ["#f0f0f0", "#f0f0f0"]
+          colorScheme === "dark" ? ["#010101", "#262626"] : ["white", "white"]
         }
         locations={[0.0, 0.8]}
-        className="w-[98%] h-[30%] self-center bg-white shadow-sm shadow-black absolute rounded-md bottom-0 flex items-center justify-center "
+        className="w-[98%] h-[30%] self-center bg-white border-zinc-200 dark:border-zinc-900 border-[3px] shadow-sm shadow-black absolute rounded-md bottom-0 flex items-center justify-center "
       >
         <Ionicons
           name="checkmark-circle-outline"
@@ -22,8 +20,10 @@ export default function SucessPopup({ visible }) {
           color={"green"}
           className="text-green-400  bg-gray-300"
         />
-        <Text className="text-[20px]  text-white font-bold">Sucess</Text>
-        <Text className="text-[14px] text-white ">
+        <Text className="text-[20px]  text-black dark:text-white font-bold">
+          Sucess
+        </Text>
+        <Text className="text-[14px] text-black dark:text-white ">
           Your request has been sent
         </Text>
       </LinearGradient>

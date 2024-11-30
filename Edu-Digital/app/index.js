@@ -15,6 +15,7 @@ const Index = () => {
 
   React.useEffect(() => {
     if (!navigationState?.key) return;
+    console.log(navigationState?.key);
 
     const inAuthGroup = segments[0] === "(auth)";
 
@@ -28,7 +29,7 @@ const Index = () => {
 
   return (
     <View>
-      <StatusBar style={colorScheme} />
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       {!navigationState?.key ? <Loading /> : <></>}
     </View>
   );

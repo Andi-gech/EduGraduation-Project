@@ -16,10 +16,11 @@ import ChatBox from "../../../Components/ChatBox";
 import Header from "../../../Components/Header";
 import User from "../../../Components/User";
 import UseFetchChat from "../../../hooks/UseFetchChats";
+import Loading from "../../../Components/Loading";
 
 export default function AskChat() {
-  const [message, setMessage] = useState("");
-  const { data: recentChats } = UseFetchChat();
+  const [message, setMessage] = useState();
+  const { data: recentChats, isLoading } = UseFetchChat("ask");
 
   const [chats, setChats] = useState([]);
   const [showUsers, setShowUsers] = useState(false);
@@ -28,7 +29,9 @@ export default function AskChat() {
   const colorScheme = useColorScheme();
   useEffect(() => {
     if (recentChats) {
-      setChats(recentChats?.data?.sort((a, b) => a.createdAt - b.createdAt));
+      setChats(
+        recentChats?.data?.sort((a, b) => new Date(a.date) - new Date(b.date))
+      );
     }
   }, [recentChats]);
 
@@ -40,7 +43,6 @@ export default function AskChat() {
       });
     }
 
-    // Cleanup on component unmount
     return () => {
       socket?.off("message");
     };
@@ -57,11 +59,11 @@ export default function AskChat() {
       Keyboard.dismiss();
     }
   };
-  console.log(chats, "chats");
 
   return (
     <KeyboardAvoidingView behavior="padding" className="flex-1">
       <View className="flex-1 bg-white dark:bg-black">
+        {isLoading && <Loading />}
         {showUsers && <User onclose={() => setShowUsers(false)} />}
         <View className="relative">
           <Header name="Ask Chat" />

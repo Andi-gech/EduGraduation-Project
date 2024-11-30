@@ -41,7 +41,7 @@ export default function Profile() {
       setLoading(true);
 
       const response = await FileSystem.uploadAsync(
-        `https://eduapi.senaycreatives.com/user/updateProfilePic`,
+        `http://192.168.1.15:3000/user/updateProfilePic`,
         image,
         {
           fieldName: "profilePic",
@@ -74,7 +74,7 @@ export default function Profile() {
           <Image
             source={{
               uri:
-                `https://eduapi.senaycreatives.com/${data?.data?.profilePic}` ||
+                `http://192.168.1.15:3000/${data?.data?.profilePic}` ||
                 "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
             }}
             className="w-[150px] h-[150px] bg-zinc-50 dark:bg-zinc-600 rounded-full"

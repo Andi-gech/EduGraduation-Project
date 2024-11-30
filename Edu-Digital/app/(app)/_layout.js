@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import api from "../../utils/api";
+import * as SystemUI from "expo-system-ui";
 import { registerForPushNotificationsAsync } from "../../Components/registerForPushNotificationsAsync";
 
 export default function Layout() {
@@ -39,6 +40,7 @@ export default function Layout() {
     const registerPushNotifications = async () => {
       if (!isRegistered) {
         const token = await registerForPushNotificationsAsync(mutation.mutate);
+        console.log("registerd ", token);
         if (token) {
           setIsRegistered(true);
         }

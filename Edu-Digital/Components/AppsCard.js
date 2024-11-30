@@ -1,22 +1,48 @@
-import { Text, useColorScheme } from "react-native";
+import { Text, useColorScheme, useWindowDimensions } from "react-native";
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function AppsCard({ name, icon, onpress }) {
   const colorScheme = useColorScheme();
+  const { width } = useWindowDimensions();
+
+  // Adjust styles based on screen width
+  const cardWidth = width > 400 ? 150 : 130; // Larger width for bigger screens
+  const cardHeight = width > 400 ? 80 : 80;
+
   return (
     <TouchableOpacity
       onPress={onpress}
-      className="w-[130px] h-[70px] rounded-md shrink-0  flex flex-col items-center justify-center  bg-zinc-100 dark:bg-zinc-900 shadow-sm mx-2  mt-2"
+      style={{
+        width: cardWidth,
+        height: cardHeight,
+        marginTop: 20,
+        borderRadius: 8,
+        flexShrink: 0,
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: colorScheme === "dark" ? "#1c1c1c" : "#f4f4f4",
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        marginHorizontal: 8,
+      }}
     >
       <Ionicons
         name={icon}
         size={24}
         color={colorScheme === "dark" ? "white" : "black"}
-        className=" text-black dark:text-white "
       />
-      <Text className="  text-black dark:text-white mt-2">{name}</Text>
+      <Text
+        style={{
+          marginTop: 8,
+          color: colorScheme === "dark" ? "white" : "black",
+        }}
+      >
+        {name}
+      </Text>
     </TouchableOpacity>
   );
 }

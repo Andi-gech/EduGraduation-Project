@@ -1,4 +1,10 @@
-import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+  StyleSheet,
+} from "react-native";
 import React, { useState } from "react";
 import Logo from "../../Components/Logo";
 import { Feather } from "@expo/vector-icons";
@@ -21,22 +27,28 @@ export default function login() {
 
   const mutation = useMutation({
     mutationFn: async (newTodo) => {
-      return await axios.post(
-        "https://eduapi.senaycreatives.com/auth/login",
-        newTodo
-      );
+      return await axios.post("http://192.168.1.15:3000/auth/login", newTodo);
     },
     onSuccess: async (response) => {
       const isapproved = response.data.isapproved;
+      const isVerified = response.data.isVerified;
+      console.log(isapproved, isVerified);
 
-      if (isapproved) {
+      if (isapproved && isVerified) {
         const token = response.data.token;
 
         await AsyncStorage.setItem("token", token);
 
         router.replace("/(app)/Home");
       } else {
-        router.replace("/(Auth)/Signup/Verification");
+        router.replace({
+          pathname: "/(Auth)/Signup/Verification",
+          params: {
+            email: email,
+            isapproved: isapproved,
+            isVerified: isVerified,
+          },
+        });
       }
     },
     onError: (error) => {
@@ -52,7 +64,36 @@ export default function login() {
   return (
     <View className="relative flex-1 flex items-center bg-white dark:bg-black   flex-col">
       {mutation.isPending && <Loading />}
-      <StatusBar style={colorScheme} />
+      <View className="absolute top-0 -right-10  w-[200px]   h-full ">
+        {[...Array(16)].map((_, rowIndex) =>
+          [...Array(12)].map((_, colIndex) => (
+            <View
+              key={`${rowIndex}-${colIndex}`}
+              style={[
+                styles.box,
+                {
+                  top: rowIndex * 50,
+                  left: colIndex * 50,
+
+                  backgroundColor:
+                    (rowIndex + colIndex) % 2 === 0
+                      ? `${
+                          colorScheme === "dark"
+                            ? "rgba(93, 91, 90, 0.16)"
+                            : "rgba(224, 224, 224, 0.3)"
+                        }`
+                      : `${
+                          colorScheme === "dark"
+                            ? "rgba(0, 0, 0, 0.8)"
+                            : "rgba(240, 240, 240, 0.05)"
+                        }`,
+                },
+              ]}
+            />
+          ))
+        )}
+      </View>
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
       <View className="flex items-start self-end mr-[15px]  justify-between  w-[61%] flex-row    mt-[30px]   ">
         <Logo />
@@ -93,7 +134,10 @@ export default function login() {
           <Buttons
             name={"Login"}
             onPress={() =>
-              mutation.mutate({ email: email, password: Password })
+              mutation.mutate({
+                email: email,
+                password: Password,
+              })
             }
           />
         </View>
@@ -116,3 +160,18 @@ export default function login() {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  pattern: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    right: 0,
+  },
+  box: {
+    position: "absolute",
+    width: 50,
+    height: 50,
+    transform: [{ rotate: "45deg" }],
+  },
+});

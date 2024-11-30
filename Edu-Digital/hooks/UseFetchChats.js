@@ -2,14 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 
 import api from "../utils/api";
 
-export default function UseFetchChat() {
+export default function UseFetchChat(chatroom) {
   const FetchChat = async () => {
-    return await api.get(`/chatroom/ask/recentChats`);
+    return await api.get(`/chatroom/${chatroom}/recentChats`);
   };
 
   return useQuery({
-    queryKey: ["Chat"],
+    queryKey: ["Chat", chatroom],
     queryFn: FetchChat,
+    enabled: !!chatroom,
     refetchOnWindowFocus: false,
   });
 }

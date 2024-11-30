@@ -27,7 +27,7 @@ export default function Signup_step2() {
   const mutation = useMutation({
     mutationKey: ["signup"],
     mutationFn: (data) =>
-      axios.post("https://eduapi.senaycreatives.com/auth/register", data),
+      axios.post("http://192.168.1.15:3000/auth/register", data),
     onSuccess: async (response) => {
       router.push("/(Auth)/login");
     },

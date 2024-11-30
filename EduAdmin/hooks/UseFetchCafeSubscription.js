@@ -4,7 +4,7 @@ import axios from "axios";
 export default function UseFetchCafeSubscription() {
   const Fetchqr = async () => {
     return await axios.get(
-      `https://eduapi.senaycreatives.com/cafe/subscriptions/report`
+      `http://192.168.1.15:3000/cafe/subscriptions/report`
     );
   };
 

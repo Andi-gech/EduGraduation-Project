@@ -14,6 +14,7 @@ const AuthMiddleware = require("../MiddleWare/AuthMiddleware");
 const { IDCard } = require("../Model/IDCard");
 const fs = require("fs");
 const path = require("path");
+const sendMail = require("../utils/sendmail");
 
 Router.post("/", Authetication, async (req, res) => {
   try {
@@ -43,6 +44,11 @@ Router.post("/", Authetication, async (req, res) => {
     });
 
     const result = await user.save();
+    sendMail(
+      req.body.email,
+      "User Registration",
+      `Hello ${req.body.firstName}, \n You have been registered successfully`
+    );
     res.send(result);
   } catch (err) {
     res.send(err.message);

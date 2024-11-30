@@ -28,6 +28,13 @@ const authSchema = new mongoose.Schema({
       "WardControll",
     ],
   },
+  emailToken: {
+    type: String,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
   isapproved: {
     type: Boolean,
     default: false,
@@ -58,6 +65,7 @@ const validateAuth = (auth) => {
         )
       )
       .required(),
+    emailToken: Joi.string(),
   });
 
   return schema.validate(auth);

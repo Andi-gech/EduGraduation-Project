@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  StyleSheet,
 } from "react-native";
 import React, { useRef, useState } from "react";
 
@@ -24,10 +25,10 @@ export default function Signup() {
   const [LastName, setLastName] = useState("");
   const [year, setYear] = useState("");
   const [semister, setSemister] = useState("");
-  const [Gender, setGender] = useState();
+  const [Gender, setGender] = useState("Female");
 
   const [department, setDepartment] = useState("");
-  const [isMilitary, setIsMilitary] = useState();
+  const [isMilitary, setIsMilitary] = useState(false);
   const [student_id, setStudent_id] = useState();
 
   const pickerref = useRef();
@@ -49,13 +50,42 @@ export default function Signup() {
   const colorScheme = useColorScheme();
 
   return (
-    <View className="flex flex-1  bg-white dark:bg-black items-center">
+    <View className="flex flex-1  bg-white relative dark:bg-black items-center">
       <View className="w-full flex flex-col  items-start  px-2">
         <Header name="Create Your Account " />
 
         <Text className="text-[16.52px]  my-2 text-yellow-500 font-semibold">
           (Step 1/3) Student Information
         </Text>
+      </View>
+      <View className="absolute top-0 -right-10  w-[200px]   h-full ">
+        {[...Array(16)].map((_, rowIndex) =>
+          [...Array(12)].map((_, colIndex) => (
+            <View
+              key={`${rowIndex}-${colIndex}`}
+              style={[
+                styles.box,
+                {
+                  top: rowIndex * 50,
+                  left: colIndex * 50,
+
+                  backgroundColor:
+                    (rowIndex + colIndex) % 2 === 0
+                      ? `${
+                          colorScheme === "dark"
+                            ? "rgba(0, 0, 0, 0.8)"
+                            : "rgba(224, 224, 224, 0.3)"
+                        }`
+                      : `${
+                          colorScheme === "dark"
+                            ? "rgba(93, 91, 90, 0.16)"
+                            : "rgba(240, 240, 240, 0.05)"
+                        }`,
+                },
+              ]}
+            />
+          ))
+        )}
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -91,6 +121,7 @@ export default function Signup() {
             <Picker
               numberOfLines={1}
               mode="dropdown"
+              dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
               itemStyle={{
                 height: 50,
 
@@ -104,22 +135,58 @@ export default function Signup() {
                 color: colorScheme === "dark" ? "white" : "black",
                 marginVertical: 10,
                 marginTop: 10,
-                width: "80%",
+                width: "70%",
               }}
               onValueChange={(itemValue) => {
                 setYear(itemValue);
               }}
             >
-              <Picker.Item label="First Year" value="1" />
-              <Picker.Item label="Second Year" value="2" />
-              <Picker.Item label="Third Year" value="3" />
-              <Picker.Item label="Fourth Year" value="4" />
-              <Picker.Item label="Fifth Year" value="5" />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="First Year"
+                value="1"
+              />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="Second Year"
+                value="2"
+              />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="Third Year"
+                value="3"
+              />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="Fourth Year"
+                value="4"
+              />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="Fifth Year"
+                value="5"
+              />
             </Picker>
 
             <Picker
               numberOfLines={1}
               mode="dropdown"
+              dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
               itemStyle={{
                 height: 50,
 
@@ -133,14 +200,28 @@ export default function Signup() {
                 marginVertical: 10,
                 marginTop: 10,
                 color: colorScheme === "dark" ? "white" : "black",
-                width: "20%",
+                width: "30%",
               }}
               onValueChange={(itemValue) => {
                 setSemister(itemValue);
               }}
             >
-              <Picker.Item label="1" value="1" />
-              <Picker.Item label="2" value="2" />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="1"
+                value="1"
+              />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="2"
+                value="2"
+              />
             </Picker>
           </View>
         </View>
@@ -161,6 +242,7 @@ export default function Signup() {
             }}
             ref={pickerref}
             selectedValue={department}
+            dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
             style={{
               height: 50,
               marginVertical: 10,
@@ -170,13 +252,62 @@ export default function Signup() {
             }}
             onValueChange={(itemValue) => setDepartment(itemValue)}
           >
-            <Picker.Item label="Computer Science" value="Computer Science" />
-            <Picker.Item label="Electrical" value="Electrical" />
-            <Picker.Item label="Mechanical" value="Mechanical" />
-            <Picker.Item label="Civil" value="civil" />
-            <Picker.Item label="Chemical" value="Chemical" />
-            <Picker.Item label="AeroNautical" value="AeroNautical" />
-            <Picker.Item label="Production" value="Production" />
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Computer Science"
+              value="Computer Science"
+            />
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Electrical"
+              value="Electrical"
+            />
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Mechanical"
+              value="Mechanical"
+            />
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Civil"
+              value="civil"
+            />
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Chemical"
+              value="Chemical"
+            />
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="AeroNautical"
+              value="AeroNautical"
+            />
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Production"
+              value="Production"
+            />
           </Picker>
         </View>
         <View className="w-full flex flex-col items-start mt-4 px-2">
@@ -191,88 +322,92 @@ export default function Signup() {
         </View>
         <View className="w-full flex flex-row items-center mt-4 px-2">
           <Text className=" text-black dark:text-white">Gender:</Text>
-          <TouchableOpacity
-            style={{
-              backgroundColor:
-                Gender === "Male"
-                  ? `${colorScheme === "dark" ? "gray" : "yellow"}`
-                  : `${colorScheme === "dark" ? "black" : "white"}`,
+          <Picker
+            numberOfLines={1}
+            mode="dropdown"
+            itemStyle={{
+              height: 50,
+              width: "100%",
+
+              color: colorScheme === "dark" ? "white" : "black",
+              fontSize: 18,
             }}
-            className={`flex w-[50px] border-2  bg-zinc-50  dark:bg-zinc-800 ml-5 h-[30px] rounded-l-md border-gray-900 items-center justify-center flex-row`}
-            onPress={() => setGender("Male")}
-          >
-            <Text
-              className={`${
-                Gender === "Male"
-                  ? " text-black dark:text-white"
-                  : " text-black dark:text-white"
-              }`}
-            >
-              Male
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+            ref={pickerref}
+            selectedValue={Gender}
+            dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
+            selectionColor={colorScheme === "dark" ? "white" : "black"}
             style={{
-              backgroundColor:
-                Gender === "Female"
-                  ? `${colorScheme === "dark" ? "gray" : "yellow"}`
-                  : `${colorScheme === "dark" ? "black" : "white"}`,
+              height: 50,
+
+              color: colorScheme === "dark" ? "white" : "black",
+
+              marginLeft: 10,
+              width: "40%",
             }}
-            className={`flex w-[50px]  border-[1px]  border-gray-900  bg-zinc-900  h-[30px] rounded-r-md items-center justify-center flex-row`}
-            onPress={() => setGender("Female")}
+            onValueChange={(itemValue) => setGender(itemValue)}
           >
-            <Text
-              className={`${
-                Gender === "Female"
-                  ? " text-black dark:text-white"
-                  : " text-black dark:text-white"
-              }`}
-            >
-              Female
-            </Text>
-          </TouchableOpacity>
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Male"
+              value={"Male"}
+            />
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Female"
+              value={"Female"}
+            />
+          </Picker>
         </View>
         <View className="w-full mb-[20px] flex flex-row items-center mt-4 px-2">
           <Text className=" text-black dark:text-white">Is Military ?</Text>
-          <TouchableOpacity
-            style={{
-              backgroundColor: isMilitary
-                ? `${colorScheme === "dark" ? "gray" : "yellow"}`
-                : `${colorScheme === "dark" ? "black" : "white"}`,
+          <Picker
+            numberOfLines={1}
+            mode="dropdown"
+            itemStyle={{
+              height: 60,
+              width: 180,
+
+              color: colorScheme === "dark" ? "white" : "black",
+              fontSize: 18,
             }}
-            className={`flex w-[50px] border-2   bg-slate-900 ml-5 h-[30px] rounded-l-md border-gray-900 items-center justify-center flex-row`}
-            onPress={() => setIsMilitary(true)}
-          >
-            <Text
-              className={`${
-                isMilitary
-                  ? " text-black dark:text-white"
-                  : " text-black dark:text-white"
-              }`}
-            >
-              True
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+            ref={pickerref}
+            selectedValue={isMilitary}
+            dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
+            selectionColor={colorScheme === "dark" ? "white" : "black"}
             style={{
-              backgroundColor:
-                isMilitary === false
-                  ? `${colorScheme === "dark" ? "gray" : "yellow"}`
-                  : `${colorScheme === "dark" ? "black" : "white"}`,
+              height: 53,
+
+              color: colorScheme === "dark" ? "white" : "black",
+
+              marginLeft: 10,
+
+              width: 150,
             }}
-            className={`flex w-[50px]  border-[1px]  border-gray-900   h-[30px] rounded-r-md items-center justify-center flex-row`}
-            onPress={() => setIsMilitary(false)}
+            onValueChange={(itemValue) => setIsMilitary(itemValue)}
           >
-            <Text
-              className={`${
-                isMilitary === false
-                  ? " text-black dark:text-white"
-                  : " text-black dark:text-white"
-              }`}
-            >
-              False
-            </Text>
-          </TouchableOpacity>
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Civilian"
+              value={false}
+            />
+            <Picker.Item
+              style={{
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              label="Military"
+              value={true}
+            />
+          </Picker>
         </View>
       </ScrollView>
       <View className="w-[90%] h-[55px] flex flex-col items-start  ">
@@ -281,3 +416,18 @@ export default function Signup() {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  pattern: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    right: 0,
+  },
+  box: {
+    position: "absolute",
+    width: 50,
+    height: 50,
+    transform: [{ rotate: "45deg" }],
+  },
+});

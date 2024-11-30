@@ -22,7 +22,7 @@ export default function App() {
 
   return (
     <View className="bg-white  dark:bg-black flex-1 flex items-center  flex-col">
-      <StatusBar style={colorScheme} />
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
       <View className="mt-[70px]">
         <Logo />

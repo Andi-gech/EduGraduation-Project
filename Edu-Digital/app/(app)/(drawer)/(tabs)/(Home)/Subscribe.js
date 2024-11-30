@@ -35,7 +35,6 @@ export default function Subscribe() {
     refetch();
   }, [redirecturl]);
   useEffect(() => {
-    console.log(cafestatus?.data);
     if (cafestatus?.data?.status) {
       setsucess(true);
       setTimeout(() => {
@@ -54,12 +53,10 @@ export default function Subscribe() {
 
   const handlePayment = async () => {
     const url = data?.data?.response?.data?.checkout_url;
-    console.log(url);
 
-    console.log(redirecturl);
     if (url) {
       const result = await WebBrowser.openBrowserAsync(url);
-      console.log(result);
+
       if (result.type === "cancel") {
         checkstatus();
       }

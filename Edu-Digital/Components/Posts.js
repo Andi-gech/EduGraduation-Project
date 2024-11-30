@@ -76,7 +76,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
       <View className="w-full h-[50px] px-2 flex flex-row items-center">
         <Image
           source={{
-            uri: `https://eduapi.senaycreatives.com/${user?.profilePic}`,
+            uri: `http://192.168.1.15:3000/${user?.profilePic}`,
           }}
           className="w-[30px] h-[30px] bg-zinc-100 dark:bg-zinc-900 rounded-full"
         ></Image>
@@ -89,7 +89,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
         <View className="w-full ">
           <Image
             source={{
-              uri: `https://eduapi.senaycreatives.com/${image}`,
+              uri: `http://192.168.1.15:3000/${image}`,
             }}
             className="w-full bg-zinc-100 dark:bg-zinc-950 h-full object-cover"
             style={{
@@ -124,11 +124,14 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
           />
         </View>
       </View>
-      <View className="px-2 flex flex-row items-center">
-        <Text className="text-black dark:text-white text-[15px] font-semibold mr-2">
-          @{user.firstName}
-        </Text>
-        <Text className="text-black dark:text-white text-md leading-6">
+      <View className="px-2 flex flex-row ">
+        <Text
+          numberOfLines={2}
+          className="text-black dark:text-white text-md leading-6  marker:@{user.firstName}"
+        >
+          <Text numberOfLines={1} className=" font-bold text-[14px]">
+            @{user.firstName}
+          </Text>
           {content}
         </Text>
       </View>

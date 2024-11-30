@@ -19,16 +19,13 @@ export default function Event() {
     isLoading,
     isError,
   } = useQuery(["events"], async () => {
-    const response = await axios.get(
-      "https://eduapi.senaycreatives.com/events"
-    );
+    const response = await axios.get("http://192.168.1.15:3000/events");
     return response.data;
   });
 
   // Mutation to add a new event
   const addMutation = useMutation(
-    (newEvent) =>
-      axios.post("https://eduapi.senaycreatives.com/events", newEvent),
+    (newEvent) => axios.post("http://192.168.1.15:3000/events", newEvent),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["events"]); // Refresh events after a successful post
@@ -38,7 +35,7 @@ export default function Event() {
 
   // Mutation to delete an event
   const deleteMutation = useMutation(
-    (id) => axios.delete(`https://eduapi.senaycreatives.com/events/${id}`),
+    (id) => axios.delete(`http://192.168.1.15:3000/events/${id}`),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["events"]); // Refresh events after a successful deletion

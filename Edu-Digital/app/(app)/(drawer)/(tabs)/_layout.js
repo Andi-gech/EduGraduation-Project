@@ -19,7 +19,7 @@ export default function Layout() {
           left: 0,
 
           borderTopWidth: 0.3,
-          borderTopColor: "black",
+          borderTopColor: colorScheme === "dark" ? "#3C3C3C" : "#E0E0DF",
           height: 55,
           overflow: "hidden", // To ensure rounded corners work
         },

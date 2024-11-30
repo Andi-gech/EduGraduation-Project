@@ -30,7 +30,11 @@ export default function News() {
           DEC Gallery
         </Text>
         <TouchableOpacity onPress={() => router.push("/AddPost")}>
-          <Ionicons name="add" size={24} color="white" />
+          <Ionicons
+            name="add"
+            size={24}
+            className=" text-black dark:text-white "
+          />
         </TouchableOpacity>
       </View>
       {isLoading ? (

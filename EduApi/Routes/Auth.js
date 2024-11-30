@@ -8,6 +8,8 @@ const { User, validateUser } = require("../Model/User");
 const { Class, validateClass } = require("../Model/Class");
 const { Chatroom } = require("../Model/Chatrooms");
 const swagger = require("../utils/swagger");
+const GenerateEmailCode = require("../utils/GenerateEmailCode");
+const sendMail = require("../utils/sendmail");
 
 /**
  * @swagger
@@ -124,11 +126,12 @@ Router.post("/register", async (req, res) => {
     // Hash password
 
     const hashedPassword = securePassword(req.body.auth.password);
-
+    const emailToken = GenerateEmailCode();
     auth = new Auth({
       email: req.body.auth.email,
       password: hashedPassword,
       Role: req.body.auth.Role,
+      emailToken: emailToken,
     });
     await auth.save({ session });
 
@@ -164,6 +167,16 @@ Router.post("/register", async (req, res) => {
     // Commit transaction
     await session.commitTransaction();
     session.endSession();
+    console.log("emailToken", emailToken);
+
+    sendMail(
+      req.body.auth.email,
+      "Email Verification",
+      `<h1>Email Verification</h1>
+      <p>Copy and paste the code below to verify your email</p>
+      <strong>${emailToken}</strong>
+      `
+    );
 
     // Respond with created user (excluding sensitive information)
     res.send({
@@ -191,6 +204,45 @@ Router.post("/register", async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+Router.post("/verify", async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    const user = await Auth.findOne({ email: email });
+    if (!user) return res.status(404).send("User not found");
+    if (user.emailToken !== code)
+      return res.status(400).send("Invalid verification code");
+    user.isVerified = true;
+    await user.save();
+    console.log("user verified");
+    res.send("User verified successfully");
+  } catch (err) {
+    res.send(err.message);
+  }
+});
+Router.post("/resendCode", async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log("email", email);
+    const user = await Auth.findOne({ email: email });
+    if (!user) return res.status(404).send("User not found");
+    const emailToken = GenerateEmailCode();
+    user.emailToken = emailToken;
+    await user.save();
+    sendMail(
+      email,
+      "Email Verification",
+      `<h1>Email Verification</h1>
+      <p>Copy and paste the code below to verify your email</p>
+      <strong>${emailToken}</strong>
+      `
+    );
+    res.send("Verification code sent successfully");
+  } catch (err) {
+    console.log(err);
+    res.send(err.message);
+  }
+});
+
 /**
  * @swagger
  * /auth/login:
@@ -285,6 +337,7 @@ Router.post("/login", async (req, res) => {
     res.send({
       token: token,
       isapproved: user.isapproved,
+      isVerified: user.isVerified,
       user: {
         id: user._id,
         email: user.email,

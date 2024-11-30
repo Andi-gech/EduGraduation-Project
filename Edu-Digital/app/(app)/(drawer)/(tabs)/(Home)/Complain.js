@@ -67,9 +67,9 @@ export default function Complain() {
         <ErrorPopup message={errormessage} visible={error} />
 
         <Header name="Tell us the issue " />
-        <View className=" w-full pt-4 flex flex-col">
+        <View className=" w-full pt-4 px-[2px] flex flex-col">
           <View className="w-[99%] flex-col  flex ">
-            <Text className="mt-2 my-[10px] text-black dark:text-white font-semibold ">
+            <Text className=" my-[20px] text-black dark:text-white font-semibold ">
               What issue are you facing
             </Text>
 
@@ -78,24 +78,71 @@ export default function Complain() {
               mode="dropdown"
               itemStyle={{
                 height: 120,
+                width: 200,
+
                 color: colorScheme === "dark" ? "white" : "black",
               }}
+              style={{
+                backgroundColor: colorScheme === "dark" ? "orange" : "white",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              className=" bg-zinc-100 dark:bg-zinc-900"
+              dropdownIconRippleColor={
+                colorScheme === "dark" ? "white" : "black"
+              }
+              selectionColor={colorScheme === "dark" ? "white" : "black"}
               ref={pickerref}
+              dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
               selectedValue={selectedLanguage}
               onValueChange={(itemValue, itemIndex) =>
                 setSelectedLanguage(itemValue)
               }
             >
-              <Picker.Item label="Dormitary Problem" value="dormitary" />
-              <Picker.Item label="Class Room and Labratory " value="class" />
-              <Picker.Item label="Adminstration " value="admin" />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="Dormitary Problem"
+                value="dormitary"
+              />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="Class Room and Labratory "
+                value="class"
+              />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="Adminstration "
+                value="admin"
+              />
 
-              <Picker.Item label="Security Issue" value="security" />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="Security Issue"
+                value="security"
+              />
 
-              <Picker.Item label="Other" value="other" />
+              <Picker.Item
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "black" : "white",
+                  color: colorScheme === "dark" ? "white" : "black",
+                }}
+                label="Other"
+                value="other"
+              />
             </Picker>
           </View>
-          <View className="w-[99%] flex-col  flex ">
+          <View className="w-[99%] flex-col   mt-[25px] flex ">
             <Text className="my-[10px]  text-black dark:text-white font-semibold ">
               Tell us more
             </Text>
@@ -103,7 +150,8 @@ export default function Complain() {
               onChangeText={(text) => setComplain(text)}
               multiline
               placeholder="Tell us more"
-              className="w-[99%] h-[100px] bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white rounded-[12px] px-2 mt-2"
+              placeholderTextColor={colorScheme === "dark" ? "white" : "black"}
+              className="w-[99%] h-[100px]  bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white rounded-[12px] px-2 mt-2"
             />
           </View>
           <View className="w-[99%] flex-col items-center justify-center mt-7  flex ">

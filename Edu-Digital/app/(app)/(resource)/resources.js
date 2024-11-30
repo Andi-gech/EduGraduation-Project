@@ -1,26 +1,19 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableWithoutFeedback,
-  FlatList,
-} from "react-native";
+import { StyleSheet, Text, View, FlatList } from "react-native";
 import React from "react";
-import { StatusBar } from "expo-status-bar";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import DownloadCard from "../../../Components/DownloadCard";
 
-import { useNavigation } from "expo-router";
 import UseFetchResource from "../../../hooks/UseFetchResource";
-import { LinearGradient } from "expo-linear-gradient";
+
 import Header from "../../../Components/Header";
+import Loading from "../../../Components/Loading";
 export default function resources() {
-  const { data } = UseFetchResource();
-  const navigation = useNavigation();
+  const { data, isLoading } = UseFetchResource();
 
   return (
     <View className="flex-1 bg-white dark:bg-black flex items-center  flex-col ">
       <Header name="Resources" />
+      {isLoading && <Loading />}
       <View className="w-full flex-1 flex  flex-col mb-5">
         <View className="w-full flex items-center justify-center h-[50px] fontbold flex-col mb-5">
           <Text className="text-black dark:text-white">

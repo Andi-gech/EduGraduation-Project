@@ -2,8 +2,10 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  StyleSheet,
   useColorScheme,
   View,
+  useWindowDimensions,
 } from "react-native";
 import React, { useState, useEffect, useMemo } from "react";
 import { Image, ImageBackground } from "expo-image";
@@ -43,9 +45,14 @@ export default function Home() {
         department: data?.data?.Class?.department,
         yearLevel: data?.data?.Class?.yearLevel,
         semister: data?.data?.Class?.semister,
+        class: data?.data?.Class?._id,
       })
     );
   }, [data?.data]);
+  const { height } = useWindowDimensions();
+  console.log(height);
+  const heightS = height > 700 ? 300 : 250;
+
   const {
     data: cafestatus,
     isError: isCafeStatusError,
@@ -53,7 +60,7 @@ export default function Home() {
   } = UseFetchCafeStatus();
   const [timeRemaining, setTimeRemaining] = useState(0);
 
-  const isFirstFiveDaysOfMonth = new Date().getDate() <= 25;
+  const isFirstFiveDaysOfMonth = new Date().getDate() <= 45;
   const isAlreadySubscribed = cafestatus?.data?.status;
   const blurhash = "L8Glk-009GQ+MvxoVDD$*J+uxu9E";
   const isCafeSubscribeBtnActive = useMemo(() => {
@@ -84,7 +91,7 @@ export default function Home() {
   const memoizedData = useMemo(() => data?.data, [data]);
 
   const profileImageUri = useMemo(
-    () => `https://eduapi.senaycreatives.com/${memoizedData?.profilePic}`,
+    () => `http://192.168.1.15:3000/${memoizedData?.profilePic}`,
     [memoizedData?.profilePic]
   );
 
@@ -105,14 +112,38 @@ export default function Home() {
   return (
     <LinearGradient
       colors={
-        colorScheme === "dark" ? ["#010101", "#262626"] : ["#02618D", "#D4D4D4"]
+        colorScheme === "dark" ? ["#010101", "#262626"] : ["#795548", "#011B29"]
       }
       locations={[0.0, 0.4]}
       className=" flex-1 flex items-center     flex-col"
     >
-      <StatusBar style={colorScheme} />
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
-      <View className="flex relative justify-between py-4 flex-col z-0 w-[98%]    rounded-md h-[250px] mt-2  px-2">
+      <View
+        className={`flex relative justify-between py-4 flex-col z-0 w-[98%]    rounded-md  mt-2  px-2`}
+        style={{ height: heightS }}
+      >
+        <View className="absolute top-0 -right-10  w-[200px]   h-full ">
+          {[...Array(4)].map((_, rowIndex) =>
+            [...Array(3)].map((_, colIndex) => (
+              <View
+                key={`${rowIndex}-${colIndex}`}
+                style={[
+                  styles.box,
+                  {
+                    top: rowIndex * 50,
+                    left: colIndex * 50,
+
+                    backgroundColor:
+                      (rowIndex + colIndex) % 2 === 0
+                        ? "rgba(224, 224, 224, 0.3)"
+                        : "rgba(240, 240, 240, 0.05)",
+                  },
+                ]}
+              />
+            ))
+          )}
+        </View>
         <View className="w-full flex flex-row justify-between items-center z-50 px-1">
           <RoundButton
             onPress={() => navigation.openDrawer()}
@@ -124,7 +155,7 @@ export default function Home() {
           </TouchableOpacity>
         </View>
 
-        <View className="w-full z-50 h-[50px] flex flex-row  mt-[10px] items-center  px-2">
+        <View className="w-full z-50 h-[65px] flex flex-row  mt-[10px] items-center  px-2">
           {isLoading ? (
             <Skeleton
               colorMode={colorScheme}
@@ -137,7 +168,7 @@ export default function Home() {
               {!memoizedData?.profilePic ? (
                 <Ionicons
                   name="person-circle-outline"
-                  size={50}
+                  size={65}
                   className="bg-white rounded-full w-[60px] h-[60px]"
                   color="white"
                 />
@@ -212,7 +243,7 @@ export default function Home() {
         )}
       </View>
 
-      <View className="w-[98%] pb-[64px] flex-1  bg-white dark:bg-black rounded-t-[40px] ">
+      <View className="w-[98%] pb-[64px] flex-1  pt-5 bg-white dark:bg-black rounded-t-[40px] ">
         <View className=" w-full  h-[50px] items-center justify-center flex-col">
           {isLoading ? (
             <View className="my-2">
@@ -400,3 +431,18 @@ export default function Home() {
     </LinearGradient>
   );
 }
+const styles = StyleSheet.create({
+  pattern: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    right: 0,
+  },
+  box: {
+    position: "absolute",
+    width: 50,
+    height: 50,
+    transform: [{ rotate: "45deg" }],
+  },
+});

@@ -4,18 +4,18 @@ import { Animated, Text, View, StyleSheet, Dimensions } from "react-native";
 const { width } = Dimensions.get("window");
 
 export default function Marque() {
-  const animation = useRef(new Animated.Value(0)).current;
+  const animation = useRef(new Animated.Value(320)).current;
 
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(animation, {
-          toValue: -width, // Adjust this if needed
-          duration: 5000, // Duration for the scroll
+          toValue: -width * 1.49, // Adjust this if needed
+          duration: 13900, // Duration for the scroll
           useNativeDriver: true,
         }),
         Animated.timing(animation, {
-          toValue: 170,
+          toValue: 490,
           duration: 0,
           useNativeDriver: true,
         }),
@@ -30,14 +30,15 @@ export default function Marque() {
           transform: [{ translateX: animation }],
           flexDirection: "row",
           alignItems: "center",
-          width: width,
+          width: width * 3,
         }}
       >
         <Text
           numberOfLines={1}
-          className="text-black px-[30px] whitespace-nowrap overflow-ellipsis w-screen"
+          className="text-black ] px-[30px] whitespace-nowrap overflow-ellipsis w-[55%]"
         >
-          Well Come to the Dec Super App for all your needs
+          Welcome to the Dec Super App — your ultimate destination for
+          all-in-one solutions!
         </Text>
       </Animated.View>
     </View>
