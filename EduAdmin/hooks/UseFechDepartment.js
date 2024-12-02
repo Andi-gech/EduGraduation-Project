@@ -4,7 +4,7 @@ import axios from "axios";
 export default function UseFetchDepartment() {
   const Fetchqr = async () => {
     return await axios.get(
-      `https://eduapi.senaycreatives.com/report/department`
+      `http://eduapi.senaycreatives.com/report/department`
     );
   };
 

@@ -29,7 +29,7 @@ export default function StudentDetailPopup({ onclose, id }) {
 
         <div className="w-full flex mt-4 px-[20px] flex-row">
           <img
-            src={`https://eduapi.senaycreatives.com/${data?.data?.profilePic}`}
+            src={`http://eduapi.senaycreatives.com/${data?.data?.profilePic}`}
             alt="Avatar"
             className="w-[250px] h-[250px] rounded-md shadow-lg"
           />

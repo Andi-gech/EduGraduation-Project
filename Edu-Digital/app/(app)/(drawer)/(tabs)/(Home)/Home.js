@@ -22,12 +22,13 @@ import calculateRemainingTime from "../../../../../utils/calculateRemainingTime"
 import formatDuration from "../../../../../utils/formatDuration";
 import AppCard from "../../../../../Components/AppsCard";
 import Marque from "../../../../../Components/Marque";
-import pattern from "../../../../../assets/curvestyle.png";
+import TutorialModal from "../../../../../Components/TutorialModal";
 import { useDispatch } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import { setUserData } from "../../../../../Redux/actions";
 
 import * as Notifications from "expo-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -35,7 +36,34 @@ export default function Home() {
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const { data, isLoading, isError, error } = UseFetchMyData();
+  const [timeRemaining, setTimeRemaining] = useState(0);
+  const { height } = useWindowDimensions();
+  const heightS = height > 700 ? 300 : 250;
 
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const checkFirstTime = async () => {
+      try {
+        const firstTime = await AsyncStorage.getItem("firstTime");
+
+        if (!firstTime) {
+          setModalVisible(true);
+        }
+      } catch (error) {
+        console.error("Error checking first time:", error);
+      }
+    };
+    checkFirstTime();
+  }, []);
+  const handleCloseModal = async () => {
+    try {
+      await AsyncStorage.setItem("firstTime", "true"); // Save that the user has seen the modal
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Error setting first time:", error);
+    }
+  };
   useEffect(() => {
     dispatch(
       setUserData({
@@ -49,22 +77,18 @@ export default function Home() {
       })
     );
   }, [data?.data]);
-  const { height } = useWindowDimensions();
-  console.log(height);
-  const heightS = height > 700 ? 300 : 250;
 
   const {
     data: cafestatus,
     isError: isCafeStatusError,
     error: CafeStatusError,
   } = UseFetchCafeStatus();
-  const [timeRemaining, setTimeRemaining] = useState(0);
 
-  const isFirstFiveDaysOfMonth = new Date().getDate() <= 45;
+  const isFirstFiveDaysOfMonth = new Date().getDate() <= 5;
   const isAlreadySubscribed = cafestatus?.data?.status;
   const blurhash = "L8Glk-009GQ+MvxoVDD$*J+uxu9E";
   const isCafeSubscribeBtnActive = useMemo(() => {
-    return !cafestatus?.data?.status && isFirstFiveDaysOfMonth;
+    return !isAlreadySubscribed && isFirstFiveDaysOfMonth;
   }, [cafestatus, isFirstFiveDaysOfMonth]);
 
   useEffect(() => {
@@ -77,6 +101,10 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, []);
+  const { width } = useWindowDimensions();
+
+  const cardWidth = width > 400 ? 150 : 130;
+  const cardHeight = 80;
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -91,22 +119,18 @@ export default function Home() {
   const memoizedData = useMemo(() => data?.data, [data]);
 
   const profileImageUri = useMemo(
-    () => `https://eduapi.senaycreatives.com/${memoizedData?.profilePic}`,
+    () => `http://eduapi.senaycreatives.com/${memoizedData?.profilePic}`,
     [memoizedData?.profilePic]
   );
 
   if (isError || isCafeStatusError) {
     return (
-      <LinearGradient
-        colors={["#010101", "#262626"]}
-        locations={[0.0, 0.2]}
-        className="flex-1 flex flex-col items-center justify-center "
-      >
+      <View className="flex-1 flex bg-white dark:bg-zinc-900 flex-col items-center justify-center ">
         <Ionicons name="sad" size={64} color="gray" />
         <Text className=" text-red-300 ">
           {error?.message || CafeStatusError?.message}
         </Text>
-      </LinearGradient>
+      </View>
     );
   }
   return (
@@ -119,6 +143,9 @@ export default function Home() {
     >
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
+      {isModalVisible && (
+        <TutorialModal visible={true} onClose={handleCloseModal} />
+      )}
       <View
         className={`flex relative justify-between py-4 flex-col z-0 w-[98%]    rounded-md  mt-2  px-2`}
         style={{ height: heightS }}
@@ -263,7 +290,7 @@ export default function Home() {
           className="w-full  mb-[0px]  "
         >
           <View className="w-full  mb-[0px] flex flex-row flex-wrap items-center  justify-center">
-            {isCafeSubscribeBtnActive && (
+            {isCafeSubscribeBtnActive && !isLoading && (
               <TouchableOpacity
                 onPress={() => navigation.navigate("Subscribe")}
                 className="w-[130px] h-[70px] rounded-md shrink-0  flex flex-col items-center justify-center  bg-zinc-100 dark:bg-zinc-800 shadow-sm mx-2  mt-2"
@@ -285,8 +312,8 @@ export default function Home() {
               <View className="mt-3 mx-2">
                 <Skeleton
                   colorMode={colorScheme}
-                  width={130}
-                  height={70}
+                  width={cardWidth}
+                  height={cardHeight}
                   className="mt-2"
                 />
               </View>
@@ -301,8 +328,8 @@ export default function Home() {
               <View className="mt-3 mx-2">
                 <Skeleton
                   colorMode={colorScheme}
-                  width={130}
-                  height={70}
+                  width={cardWidth}
+                  height={cardHeight}
                   className="mt-2"
                 />
               </View>
@@ -333,8 +360,8 @@ export default function Home() {
               <View className="mt-3 mx-2">
                 <Skeleton
                   colorMode={colorScheme}
-                  width={130}
-                  height={70}
+                  width={cardWidth}
+                  height={cardHeight}
                   className="mt-2"
                 />
               </View>
@@ -350,8 +377,8 @@ export default function Home() {
               <View className="mt-3 mx-2">
                 <Skeleton
                   colorMode={colorScheme}
-                  width={130}
-                  height={70}
+                  width={cardWidth}
+                  height={cardHeight}
                   className="mt-2"
                 />
               </View>
@@ -367,8 +394,8 @@ export default function Home() {
               <View className="mt-3 mx-2">
                 <Skeleton
                   colorMode={colorScheme}
-                  width={130}
-                  height={70}
+                  width={cardWidth}
+                  height={cardHeight}
                   className="mt-2"
                 />
               </View>
@@ -380,29 +407,12 @@ export default function Home() {
               />
             )}
 
-            {/* {isLoading ? (
-              <View className="mt-3 mx-2">
-                <Skeleton
-                  colorMode={colorScheme}
-                  width={130}
-                  height={70}
-                  className="mt-2"
-                />
-              </View>
-            ) : (
-              <AppCard
-                name="library"
-                icon="book-outline"
-                onpress={() => navigation.navigate("(library)")}
-              />
-            )} */}
-
             {isLoading ? (
               <View className="mt-3 mx-2">
                 <Skeleton
                   colorMode={colorScheme}
-                  width={130}
-                  height={70}
+                  width={cardWidth}
+                  height={cardHeight}
                   className="mt-2"
                 />
               </View>

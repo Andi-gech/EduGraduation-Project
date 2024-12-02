@@ -56,7 +56,7 @@ export default function AddPost() {
     });
 
     try {
-      const response = await fetch(`https://eduapi.senaycreatives.com/post`, {
+      const response = await fetch(`http://eduapi.senaycreatives.com/post`, {
         method: "POST",
         body: multform,
         headers: {

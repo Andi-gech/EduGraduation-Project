@@ -4,7 +4,7 @@ import axios from "axios";
 export default function UseFetchIdCardRequests() {
   const Fetchqr = async () => {
     return await axios.get(
-      `https://eduapi.senaycreatives.com/user/getAll/Digitalid`
+      `http://eduapi.senaycreatives.com/user/getAll/Digitalid`
     );
   };
 

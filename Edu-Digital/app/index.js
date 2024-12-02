@@ -1,10 +1,9 @@
-import { useRootNavigationState, useRouter, useSegments } from "expo-router";
-
 import React from "react";
-import { Text, useColorScheme, View } from "react-native";
+import { useColorScheme, View } from "react-native";
 import { isAuthenticated } from "../utils/auth";
 import { StatusBar } from "expo-status-bar";
 import Loading from "../Components/Loading";
+import { useRootNavigationState, useRouter, useSegments } from "expo-router";
 
 const Index = () => {
   const segments = useSegments();
@@ -15,14 +14,12 @@ const Index = () => {
 
   React.useEffect(() => {
     if (!navigationState?.key) return;
-    console.log(navigationState?.key);
 
     const inAuthGroup = segments[0] === "(auth)";
 
     if (!isLoggedIn && !inAuthGroup) {
       router.push("/(Auth)/Startup");
     } else if (isLoggedIn) {
-      // go to tabs root.
       router.replace("/(app)/Home");
     }
   }, [isLoggedIn, segments, navigationState?.key]);

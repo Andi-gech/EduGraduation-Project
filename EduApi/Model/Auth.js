@@ -70,8 +70,23 @@ const validateAuth = (auth) => {
 
   return schema.validate(auth);
 };
+const validateAuthpassword = (auth) => {
+  const schema = Joi.object({
+    password: Joi.string()
+      .min(6)
+      .pattern(
+        new RegExp(
+          "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$"
+        )
+      )
+      .required(),
+  });
+
+  return schema.validate(auth);
+};
 
 module.exports = {
   Auth,
   validateAuth,
+  validateAuthpassword,
 };

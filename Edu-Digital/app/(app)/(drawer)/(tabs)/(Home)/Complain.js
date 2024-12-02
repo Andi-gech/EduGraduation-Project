@@ -78,12 +78,11 @@ export default function Complain() {
               mode="dropdown"
               itemStyle={{
                 height: 120,
-                width: 200,
 
                 color: colorScheme === "dark" ? "white" : "black",
               }}
               style={{
-                backgroundColor: colorScheme === "dark" ? "orange" : "white",
+                backgroundColor: colorScheme === "dark" ? "black" : "white",
                 color: colorScheme === "dark" ? "white" : "black",
               }}
               className=" bg-zinc-100 dark:bg-zinc-900"

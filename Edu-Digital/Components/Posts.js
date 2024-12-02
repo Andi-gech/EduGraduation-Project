@@ -76,7 +76,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
       <View className="w-full h-[50px] px-2 flex flex-row items-center">
         <Image
           source={{
-            uri: `https://eduapi.senaycreatives.com/${user?.profilePic}`,
+            uri: `http://eduapi.senaycreatives.com/${user?.profilePic}`,
           }}
           className="w-[30px] h-[30px] bg-zinc-100 dark:bg-zinc-900 rounded-full"
         ></Image>
@@ -89,7 +89,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
         <View className="w-full ">
           <Image
             source={{
-              uri: `https://eduapi.senaycreatives.com/${image}`,
+              uri: `http://eduapi.senaycreatives.com/${image}`,
             }}
             className="w-full bg-zinc-100 dark:bg-zinc-950 h-full object-cover"
             style={{

@@ -3,9 +3,6 @@ import api from "../utils/api";
 
 export default function UseFetchChapaInitialize(redirecturl) {
   const FetchChapaInitialize = async () => {
-    console.log("Fetching Chapa Initializes");
-    console.log("UseFetchChapaInitialize Hook Called", redirecturl);
-
     // Pass redirecturl as a query parameter
     return await api.get(`/cafe/initiateChapa`, {
       params: { redirecturl }, // Add query parameters here

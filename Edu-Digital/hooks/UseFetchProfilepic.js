@@ -1,30 +1,33 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSelector, useDispatch } from "react-redux";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import api from "../utils/api";
-import { SET_USER_PROFILE_LIST } from "../Redux/actions";
 
 export default function UseFetchProfilepic(id) {
   const dispatch = useDispatch();
   const profileList = useSelector((state) => state.profileList.profileList);
-  const profileExists = profileList.some((profile) => profile.id === id);
+
+  // Check if the profile already exists in the Redux state
+  const existingProfile = profileList.find((profile) => profile.id === id);
 
   const fetchProfilePic = async () => {
     const response = await api.get(`/user/getprofilepic/${id}`);
     return response.data; // Adjust according to your API response structure
   };
 
-  const { data, isLoading, isError, isSuccess } = useQuery({
+  // Fetch profile picture if not already in Redux
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["profilePic", id],
     queryFn: fetchProfilePic,
-    enabled: !!id && !profileExists, // Only run if the id exists and the profile is not already in profileList
+    enabled: !!id && !existingProfile, // Only fetch if id exists and profile is not in Redux
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000, // Set data to stale after 5 minutes
     cacheTime: 10 * 60 * 1000, // Keep cached data for 10 minutes
   });
-  if (isSuccess) {
-    if (!profileExists) {
-      // If the profile wasn't already in the list, add it
+
+  // Add profile to Redux state when data is successfully fetched
+  useEffect(() => {
+    if (data && !existingProfile) {
       dispatch({
         type: "SET_USER_PROFILE_LIST",
         payload: [
@@ -35,14 +38,12 @@ export default function UseFetchProfilepic(id) {
         ],
       });
     }
-  }
+  }, [data, dispatch, id, existingProfile]);
 
-  // Return either the existing profile from profileList or fetched data
-  const profile = useMemo(
-    () =>
-      profileExists ? profileList.find((profile) => profile.id === id) : data,
-    [profileList, profileExists, id, data]
-  );
+  // Memoize the profile to return
+  const profile = useMemo(() => {
+    return existingProfile || (data ? { id, image: data } : null);
+  }, [existingProfile, data, id]);
 
   return { profile, isLoading, isError };
 }

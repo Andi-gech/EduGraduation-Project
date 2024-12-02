@@ -10,7 +10,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function DownloadCard({ item }) {
   const download = () => {
-    Linking.openURL(`https://eduapi.senaycreatives.com/${item?.resource}`);
+    Linking.openURL(`http://eduapi.senaycreatives.com/${item?.resource}`);
   };
 
   return (

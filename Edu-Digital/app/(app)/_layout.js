@@ -7,11 +7,18 @@ import { useDispatch } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import api from "../../utils/api";
 import * as SystemUI from "expo-system-ui";
+import {
+  ThemeProvider,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
 import { registerForPushNotificationsAsync } from "../../Components/registerForPushNotificationsAsync";
+import { useColorScheme } from "react-native";
 
 export default function Layout() {
   const [isRegistered, setIsRegistered] = useState(false);
   const dispatch = useDispatch();
+  const colorScheme = useColorScheme();
 
   const mutation = useMutation({
     mutationFn: async (token) => {
@@ -40,7 +47,7 @@ export default function Layout() {
     const registerPushNotifications = async () => {
       if (!isRegistered) {
         const token = await registerForPushNotificationsAsync(mutation.mutate);
-        console.log("registerd ", token);
+
         if (token) {
           setIsRegistered(true);
         }
@@ -51,13 +58,18 @@ export default function Layout() {
 
   return (
     <ProtectedRoute>
-      <Stack initialRouteName="(drawer)" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-        <Stack.Screen name="(class)" options={{ headerShown: false }} />
-        <Stack.Screen name="(connectS)" options={{ headerShown: false }} />
-        <Stack.Screen name="(resource)" options={{ headerShown: false }} />
-        <Stack.Screen name="(library)" options={{ headerShown: false }} />
-      </Stack>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack
+          initialRouteName="(drawer)"
+          screenOptions={{ headerShown: false }}
+        >
+          <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+          <Stack.Screen name="(class)" options={{ headerShown: false }} />
+          <Stack.Screen name="(connectS)" options={{ headerShown: false }} />
+          <Stack.Screen name="(resource)" options={{ headerShown: false }} />
+          <Stack.Screen name="(library)" options={{ headerShown: false }} />
+        </Stack>
+      </ThemeProvider>
     </ProtectedRoute>
   );
 }

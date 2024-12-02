@@ -4,7 +4,7 @@ import axios from "axios";
 export default function UseFetchClasses() {
   const Fetchqr = async () => {
     return await axios.get(
-      `https://eduapi.senaycreatives.com/enrollment/GetAllClass`
+      `http://eduapi.senaycreatives.com/enrollment/GetAllClass`
     );
   };
 

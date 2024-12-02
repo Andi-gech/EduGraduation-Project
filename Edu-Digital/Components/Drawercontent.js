@@ -3,74 +3,70 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   useColorScheme,
+  Appearance,
 } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import Icon from "react-native-vector-icons/Ionicons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getSocket } from "../utils/socketService";
-import { LinearGradient } from "expo-linear-gradient"; // Import LinearGradient
 
 const CustomDrawerContent = (props) => {
   const router = useRouter();
+  const colorScheme = useColorScheme();
+
   const logout = async () => {
     await AsyncStorage.removeItem("token");
     getSocket().disconnect();
     router.replace("/(Auth)/login");
   };
-  const colorScheme = useColorScheme();
 
   return (
-    <View className="flex-1 flex justify-between relative bg-white dark:bg-black">
-      <DrawerContentScrollView {...props}>
-        <View style={styles.drawerContent}>
+    <View className="flex-1 bg-white dark:bg-black   overflow-hidden">
+      <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>
+        <TouchableOpacity
+          onPress={() => {
+            Appearance.setColorScheme(
+              colorScheme === "dark" ? "light" : "dark"
+            );
+          }}
+          className="flex-row items-center py-4 px-5 border-b border-gray-300 dark:border-gray-900"
+        >
+          {colorScheme === "dark" ? (
+            <Feather name="sun" size={24} color="white" />
+          ) : (
+            <Feather name="moon" size={24} color="black" />
+          )}
+          <Text className="ml-3 text-base text-black dark:text-white">
+            {colorScheme === "dark" ? "Light" : "Dark"} Mode
+          </Text>
+        </TouchableOpacity>
+
+        <View className="mt-5">
           <DrawerItemList {...props} />
         </View>
 
-        <View className="w-full flex-row items-center justify-center h-[50px]">
-          <Icon
+        {/* <View className="flex-row items-center py-4 px-5 border-b border-gray-200 dark:border-gray-900">
+          <Ionicons
             name="globe"
             size={25}
-            className="text-black dark:text-white"
             color={colorScheme === "dark" ? "white" : "black"}
           />
-          <Text className="ml-4 text-black dark:text-white">Eng</Text>
-        </View>
+          <Text className="ml-3 text-base text-black dark:text-white">
+            English
+          </Text>
+        </View> */}
 
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={() => {
-            logout();
-          }}
-        >
-          <Text className="text-black dark:text-white">Logout</Text>
+        <TouchableOpacity className="py-4 px-5 " onPress={logout}>
+          <Text className="text-base text-black dark:text-white">Logout</Text>
         </TouchableOpacity>
       </DrawerContentScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    display: "flex",
-    justifyContent: "space-between",
-    position: "relative",
-  },
-  drawerContent: {
-    marginTop: 30,
-  },
-  logoutButton: {
-    marginBottom: 5,
-    paddingVertical: 15,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
 export default CustomDrawerContent;

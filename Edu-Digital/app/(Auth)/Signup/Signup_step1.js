@@ -1,22 +1,18 @@
 import {
   ScrollView,
   Text,
-  TouchableOpacity,
   useColorScheme,
   View,
   StyleSheet,
 } from "react-native";
 import React, { useRef, useState } from "react";
 
-import { Feather } from "@expo/vector-icons";
 import Input from "../../../Components/Input";
 import Buttons from "../../../Components/Buttons";
 import { useRouter } from "expo-router";
 
 import { Picker } from "@react-native-picker/picker";
 import Header from "../../../Components/Header";
-import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar } from "expo-status-bar";
 
 export default function Signup() {
   const router = useRouter();

@@ -1,19 +1,18 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 
 import Input from "../../../Components/Input";
 import Buttons from "../../../Components/Buttons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 
-import { FontAwesome6, Entypo, Feather } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
 import { useMutation } from "@tanstack/react-query";
 
 import Loading from "../../../Components/Loading";
 import axios from "axios";
-import { LinearGradient } from "expo-linear-gradient";
+
 import Header from "../../../Components/Header";
-import { StatusBar } from "expo-status-bar";
 
 export default function Signup_step2() {
   const router = useRouter();
@@ -27,7 +26,7 @@ export default function Signup_step2() {
   const mutation = useMutation({
     mutationKey: ["signup"],
     mutationFn: (data) =>
-      axios.post("https://eduapi.senaycreatives.com/auth/register", data),
+      axios.post("http://eduapi.senaycreatives.com/auth/register", data),
     onSuccess: async (response) => {
       router.push("/(Auth)/login");
     },

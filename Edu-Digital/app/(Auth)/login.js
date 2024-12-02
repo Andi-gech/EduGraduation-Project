@@ -15,8 +15,9 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "../../Components/Loading";
-import { LinearGradient } from "expo-linear-gradient";
+
 import { StatusBar } from "expo-status-bar";
+import { Appearance } from "react-native";
 
 export default function login() {
   const router = useRouter();
@@ -28,14 +29,13 @@ export default function login() {
   const mutation = useMutation({
     mutationFn: async (newTodo) => {
       return await axios.post(
-        "https://eduapi.senaycreatives.com/auth/login",
+        "http://eduapi.senaycreatives.com/auth/login",
         newTodo
       );
     },
     onSuccess: async (response) => {
       const isapproved = response.data.isapproved;
       const isVerified = response.data.isVerified;
-      console.log(isapproved, isVerified);
 
       if (isapproved && isVerified) {
         const token = response.data.token;
@@ -98,10 +98,22 @@ export default function login() {
       </View>
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
-      <View className="flex items-start self-end mr-[15px]  justify-between  w-[61%] flex-row    mt-[30px]   ">
-        <Logo />
-        <TouchableOpacity>
-          <Feather name="sun" size={24} />
+      <View className="flex items-start    justify-between  w-[61%] flex-row    mt-[30px]   ">
+        <View className="flex w-full items-center justify-center">
+          <Logo />
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            Appearance.setColorScheme(
+              colorScheme === "dark" ? "light" : "dark"
+            );
+          }}
+        >
+          {colorScheme === "dark" ? (
+            <Feather name="sun" size={24} color="white" />
+          ) : (
+            <Feather name="moon" size={24} color="black" />
+          )}
         </TouchableOpacity>
       </View>
       <View className="mt-[29px] flex items-center  w-[90%] pt-[30px] h-[374px]   ">
@@ -151,13 +163,24 @@ export default function login() {
             </Text>
 
             <TouchableOpacity onPress={() => router.push("/(Auth)/Signup")}>
-              <Text className="text-[14px]  text-orange-500">Sign Up</Text>
+              <Text className="text-[14px] mx-[14px]  text-orange-500">
+                Sign Up
+              </Text>
             </TouchableOpacity>
           </View>
-
-          <Text className="text-[14px] mt-2  text-black dark:text-white">
-            Forget Password?
-          </Text>
+          <View className="flex items-center mt-[10px] h-[40px] justify-center flex-row">
+            <Text className="text-[14px]  text-black dark:text-white">
+              Forget Password?
+            </Text>
+            <TouchableOpacity
+              onPress={() => router.push("/(Auth)/ResetPassword")}
+              className="flex items-center justify-center mx-[14px] "
+            >
+              <Text className="text-[14px]  text-orange-500">
+                Reset Password
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>

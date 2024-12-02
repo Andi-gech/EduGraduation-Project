@@ -3,7 +3,7 @@ import React from "react";
 import Ellipse from "../assets/logo.png";
 export default function Logo() {
   return (
-    <View className="flex items-center justify-center  w-[135px]  h-[135px]">
+    <View className="flex items-center justify-center  w-[175px]  h-[175px]">
       <Image source={Ellipse} className="   w-full h-full" />
     </View>
   );

@@ -1,6 +1,6 @@
 const express = require("express");
 const Router = express.Router();
-const { Auth, validateAuth } = require("../Model/Auth");
+const { Auth, validateAuth, validateAuthpassword } = require("../Model/Auth");
 const { securePassword, comparePassword } = require("../utils/Secure");
 const { generateAuthToken } = require("../utils/jwt");
 const mongoose = require("mongoose");
@@ -10,6 +10,7 @@ const { Chatroom } = require("../Model/Chatrooms");
 const swagger = require("../utils/swagger");
 const GenerateEmailCode = require("../utils/GenerateEmailCode");
 const sendMail = require("../utils/sendmail");
+const AuthMiddleware = require("../MiddleWare/AuthMiddleware");
 
 /**
  * @swagger
@@ -239,6 +240,43 @@ Router.post("/resendCode", async (req, res) => {
     res.send("Verification code sent successfully");
   } catch (err) {
     console.log(err);
+    res.send(err.message);
+  }
+});
+Router.post("/VerifyEmailforPassword", async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    console.log("email", email);
+    const user = await Auth.findOne({ email: email });
+    if (!user) return res.status(404).send("User not found");
+    if (user.emailToken !== code)
+      return res.status(400).send("Invalid verification code");
+    const token = generateAuthToken({
+      _id: user._id,
+      email: user.email,
+      Role: user.Role,
+      Profile: user?.Profile,
+    });
+    res.send({
+      token: token,
+    });
+  } catch (err) {
+    console.log(err);
+    res.send(err.message);
+  }
+});
+Router.post("/changepassword", AuthMiddleware, async (req, res) => {
+  try {
+    const { password } = req.body;
+    const { error } = validateAuthpassword(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+    console.log("req.user", req.user);
+    const user = await Auth.findById(req.user._id);
+    if (!user) return res.status(404).send("User not found");
+    user.password = securePassword(password);
+    await user.save();
+    res.send("Password changed successfully");
+  } catch (err) {
     res.send(err.message);
   }
 });

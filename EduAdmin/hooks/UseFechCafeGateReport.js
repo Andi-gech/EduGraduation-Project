@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function UseFetchCafeGateReport() {
   const Fetchqr = async () => {
-    return await axios.get(`https://eduapi.senaycreatives.com/cafe/report`);
+    return await axios.get(`http://eduapi.senaycreatives.com/cafe/report`);
   };
 
   return useQuery({

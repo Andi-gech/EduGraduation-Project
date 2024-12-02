@@ -10,9 +10,7 @@ const ChatMessage = ({ message, sender }) => {
   const data = useSelector((state) => state.userData);
   const blurhash = "L8Glk-009GQ+MvxoVDD$*J+uxu9E";
 
-  // Memoize the profile picture data to avoid unnecessary refetching
   const { profile } = UseFetchProfilepic(sender);
-  console.log(profile);
 
   const isSender = sender === data?.userdata?._id;
 
@@ -30,7 +28,7 @@ const ChatMessage = ({ message, sender }) => {
             ) : (
               <Image
                 source={{
-                  uri: `https://eduapi.senaycreatives.com/${profile?.image}`,
+                  uri: `http://eduapi.senaycreatives.com/${profile?.image}`,
                 }}
                 placeholder={blurhash}
                 className="w-[50px] h-[50px] mx-2 rounded-full"

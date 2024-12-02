@@ -18,38 +18,33 @@ import logo from "../../../../../assets/logo.png";
 import ethiopia from "../../../../../assets/th (2).jpeg";
 import UseFetchQrCode from "../../../../../hooks/UseFetchQrcode";
 import UseFetchMyData from "../../../../../hooks/UseFetchMyData";
-import { LinearGradient } from "expo-linear-gradient";
+import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Header from "../../../../../Components/Header";
+import { useColorScheme } from "react-native";
 import ErrorMessage from "../../../../../Components/ErrorMessage";
 import Loading from "../../../../../Components/Loading";
 
 export default function Id() {
   const { data, isError, error, isLoading } = UseFetchQrCode();
-  const { data: userdata } = UseFetchMyData();
 
-  const navigation = useNavigation();
   const frontShotRef = useRef(null);
   const backShotRef = useRef(null);
 
   const handleCapture = async () => {
     try {
-      // Define the file paths where images will be saved
       const frontPath = `${FileSystem.documentDirectory}front-page.png`;
       const backPath = `${FileSystem.documentDirectory}back-page.png`;
 
-      // Capture front page
       const frontUri = await frontShotRef.current.capture({
-        result: "file", // Save directly to file
+        result: "file",
         path: frontPath,
       });
 
-      // Capture back page
       const backUri = await backShotRef.current.capture({
         result: "file",
         path: backPath,
       });
 
-      // Share the images
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(frontUri);
         await Sharing.shareAsync(backUri);
@@ -61,12 +56,19 @@ export default function Id() {
       Alert.alert("Error", "Something went wrong while capturing the ID pages");
     }
   };
+  const colorScheme = useColorScheme();
 
   return (
     <View className="flex  bg-white dark:bg-black flex-1   ">
       <Header name={"ID CARD"} className="self-start item" />
       {isError && (
-        <View className="mt-[250px]">
+        <View className="h-[80%] w-screen px-[20px] flex items-center justify-center">
+          <FontAwesome5
+            name="id-card"
+            size={64}
+            color={colorScheme === "dark" ? "orange" : "orange"}
+            className={`mb-[40px]`}
+          />
           <ErrorMessage type={"notice"} content={error.response.data} />
         </View>
       )}
@@ -80,7 +82,6 @@ export default function Id() {
               </Text>
             </View>
 
-            {/* Front Page Capture */}
             <ViewShot
               ref={frontShotRef}
               options={{ format: "png", quality: 1 }}
@@ -108,7 +109,7 @@ export default function Id() {
                 <View className="flex flex-row w-full">
                   <Image
                     source={{
-                      uri: `https://eduapi.senaycreatives.com/${data?.data?.Photo}`,
+                      uri: `http://eduapi.senaycreatives.com/${data?.data?.Photo}`,
                     }}
                     className="w-[110px] ml-2 h-[130px] z-0 mt-3 "
                   />
@@ -165,7 +166,6 @@ export default function Id() {
               </Text>
             </View>
 
-            {/* Back Page Capture */}
             <ViewShot
               ref={backShotRef}
               className="w-full flex items-center"

@@ -19,7 +19,7 @@ export default function ApprovalPopup({ onClose, id, authid }) {
   const mutation = useMutation({
     mutationFn: async () => {
       return await axios.put(
-        `https://eduapi.senaycreatives.com/auth/approve/${authid}`
+        `http://eduapi.senaycreatives.com/auth/approve/${authid}`
       );
     },
     mutationKey: ["approve"],
@@ -57,7 +57,7 @@ export default function ApprovalPopup({ onClose, id, authid }) {
           <img
             src={
               data?.data?.profilePic
-                ? `https://eduapi.senaycreatives.com/${data?.data?.profilePic}`
+                ? `http://eduapi.senaycreatives.com/${data?.data?.profilePic}`
                 : "https://via.placeholder.com/250"
             }
             alt="Avatar"

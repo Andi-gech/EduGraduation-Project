@@ -4,7 +4,7 @@ import axios from "axios";
 export default function UseFetchCourses() {
   const Fetchqr = async () => {
     return await axios.get(
-      `https://eduapi.senaycreatives.com/enrollment/GetAllCourses`
+      `http://eduapi.senaycreatives.com/enrollment/GetAllCourses`
     );
   };
 

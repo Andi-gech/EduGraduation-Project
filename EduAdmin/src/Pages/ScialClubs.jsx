@@ -22,7 +22,7 @@ export default function ScialClubs() {
   const mutation = useMutation({
     mutationFn: async (newSocial) => {
       return await axios.post(
-        "https://eduapi.senaycreatives.com/Social",
+        "http://eduapi.senaycreatives.com/Social",
         newSocial
       );
     },

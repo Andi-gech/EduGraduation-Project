@@ -18,6 +18,7 @@ import UseFetchCafeStatus from "../../../../../hooks/UseFetchCafeStatus";
 import * as Linking from "expo-linking";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRouter } from "expo-router";
+import { useColorScheme } from "react-native";
 export default function Subscribe() {
   const redirecturl = Linking.createURL("app/drawer/tabs/Home/Subscribe", {
     sucess: true,
@@ -64,7 +65,7 @@ export default function Subscribe() {
       console.log("Payment URL not found");
     }
   };
-
+  const colorScheme = useColorScheme();
   return (
     <View className="flex-1  bg-white dark:bg-black flex items-center flex-col">
       <Header name="Subscription" />
@@ -72,7 +73,11 @@ export default function Subscribe() {
         <View className=" absolute w-full h-full z-50    flex items-center justify-center">
           <View className=" absolute top-0 w-full h-full bg-white dark:bg-black  rounded-md flex items-center justify-center"></View>
           <View className="w-[300px] h-[300px] bg-white dark:bg-zinc-900 rounded-md flex items-center justify-center">
-            <Ionicons name="checkmark-circle" size={150} color="white" />
+            <Ionicons
+              name="checkmark-circle"
+              size={150}
+              color={colorScheme === "dark" ? "white" : "black"}
+            />
             <Text className=" text-black dark:text-white text-center text-[20px] font-bold">
               Sucess
             </Text>
@@ -80,7 +85,10 @@ export default function Subscribe() {
               <Text className=" text-black dark:text-white  text-center text-[12px] font-bold">
                 redirecting to home page
               </Text>
-              <ActivityIndicator size="small" color="white" />
+              <ActivityIndicator
+                size="small"
+                color={colorScheme === "dark" ? "white" : "black"}
+              />
             </View>
           </View>
         </View>
@@ -89,12 +97,12 @@ export default function Subscribe() {
         <View className="flex-1 w-full flex items-center justify-start">
           <LinearGradient
             colors={["#010101", "green"]}
-            locations={[0.0, 0.6]}
+            locations={[0.0, 0.8]}
             className="w-[90%] mt-[50px] rounded-md bg-slate-400 flex items-center justify-center"
           >
             <Image
               source={chapa}
-              className="w-[200px] h-[50px] object-scale-down"
+              className="w-[200px]  mt-[20px] h-[50px] object-scale-down"
             />
             <Text className=" text-white mt-2">
               Pay Your Cafe Bill With Chapa
@@ -124,11 +132,9 @@ export default function Subscribe() {
 
           <TouchableOpacity
             onPress={handlePayment}
-            className="w-[200px] mt-[100px] bg-lime-600 rounded-md py-3 flex items-center justify-center"
+            className="w-[200px] mt-[100px] bg-lime-500 rounded-md py-3 flex items-center justify-center"
           >
-            <Text className=" text-black dark:text-white text-lg font-bold">
-              Pay Now
-            </Text>
+            <Text className=" text-white text-lg font-bold">Pay Now</Text>
           </TouchableOpacity>
         </View>
       )}
