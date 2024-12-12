@@ -5,7 +5,7 @@ require("../Model/User");
 require("../Model/Notifications");
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI("AIzaSyA_B9zhXqa_ZYARkiBEdnP5n1SqtCZo7-U");
+const genAI = new GoogleGenerativeAI("");
 
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
