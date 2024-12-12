@@ -29,7 +29,7 @@ export default function login() {
   const mutation = useMutation({
     mutationFn: async (newTodo) => {
       return await axios.post(
-        "http://eduapi.senaycreatives.com/auth/login",
+        "https://eduapi.senaycreatives.com/auth/login",
         newTodo
       );
     },
@@ -150,7 +150,7 @@ export default function login() {
             name={"Login"}
             onPress={() =>
               mutation.mutate({
-                email: email,
+                email: email.replace(/\s+/g, ""),
                 password: Password,
               })
             }

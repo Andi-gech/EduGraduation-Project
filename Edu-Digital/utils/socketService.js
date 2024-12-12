@@ -4,8 +4,7 @@ import socketIOClient from "socket.io-client";
 import { store } from "../Redux/store"; // Import your Redux store
 import { setSocket } from "../Redux/actions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const SOCKET_SERVER_URL = "ws://eduapi.senaycreatives.com"; // Replace with your server URL
-
+const SOCKET_SERVER_URL = "wss://eduapi.senaycreatives.com";
 let socket;
 
 export const initializeSocket = async () => {
@@ -14,19 +13,20 @@ export const initializeSocket = async () => {
     return;
   }
   socket = socketIOClient(SOCKET_SERVER_URL, {
-    transports: ["websocket"], // Use WebSocket transport
-    reconnection: true, // Enable reconnection
-    reconnectionAttempts: Infinity, // Number of reconnection attempts (-1 for infinite)
-    reconnectionDelay: 1000, // Initial delay before attempting a new reconnection (ms)
-    reconnectionDelayMax: 5000, // Maximum delay between reconnection attempts (ms)
+    transports: ["websocket"],
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
     randomizationFactor: 0.5,
     extraHeaders: {
       authorization: token,
-    }, // Randomization factor applied to the reconnection delay (0 to 1)
+    },
   });
 
   socket.on("connect", () => {
     store.dispatch(setSocket(socket));
+    console.log("Connected to Socket.io server");
   });
 
   socket.on("disconnect", (reason) => {

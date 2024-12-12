@@ -8,9 +8,33 @@ export default function Layout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Connect" index options={{ headerShown: false }} />
-      <Stack.Screen name="AskChat" index options={{ headerShown: false }} />
-      <Stack.Screen name="ClassChat" index options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Connect"
+        index
+        options={{
+          headerShown: false,
+          animation: "slide_from_right",
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="AskChat"
+        index
+        options={{
+          headerShown: false,
+          animation: "slide_from_right",
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ClassChat"
+        index
+        options={{
+          headerShown: false,
+          animation: "slide_from_right",
+          animationDuration: 300,
+        }}
+      />
     </Stack>
   );
 }

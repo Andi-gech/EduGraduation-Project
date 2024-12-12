@@ -27,7 +27,7 @@ const Index = () => {
   return (
     <View>
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-      {!navigationState?.key ? <Loading /> : <></>}
+      <Loading />
     </View>
   );
 };

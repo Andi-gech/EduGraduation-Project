@@ -522,9 +522,7 @@ Router.get("/get/Digitalid", AuthMiddleware, async (req, res) => {
 });
 Router.get("/getAll/Digitalid", async (req, res) => {
   try {
-    const idCards = await IDCard.find({
-      isComplete: false,
-    });
+    const idCards = await IDCard.find({});
     res.send(idCards);
   } catch (error) {
     res.status(500).send("Error retrieving digital ID card");

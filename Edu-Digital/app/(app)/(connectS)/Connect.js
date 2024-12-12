@@ -11,10 +11,12 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import Header from "../../../Components/Header";
+import { useSelector } from "react-redux";
 
 export default function Connect() {
   const navigation = useNavigation();
-  const router = useRouter();
+  const data = useSelector((state) => state.userData);
+
   const colorScheme = useColorScheme();
   return (
     <View className="  flex-1  bg-white dark:bg-black">
@@ -34,7 +36,7 @@ export default function Connect() {
             </View>
 
             <Text className="ml-3 font-semibold text-black dark:text-white">
-              Dec (Ask){" "}
+              Dec (Ask) Chat
             </Text>
           </>
         </TouchableOpacity>
@@ -53,7 +55,7 @@ export default function Connect() {
             </View>
 
             <Text className="ml-3 font-semibold text-black dark:text-white">
-              Dec (4th) Year Student
+              Year {data.userdata.yearLevel} ({data.userdata.department}) Chat
             </Text>
           </>
         </TouchableOpacity>

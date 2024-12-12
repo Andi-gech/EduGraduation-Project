@@ -3,9 +3,7 @@ import axios from "axios";
 
 export default function UseFetchCourses() {
   const Fetchqr = async () => {
-    return await axios.get(
-      `http://eduapi.senaycreatives.com/enrollment/GetAllCourses`
-    );
+    return await axios.get(`http://localhost:3000/enrollment/GetAllCourses`);
   };
 
   return useQuery({

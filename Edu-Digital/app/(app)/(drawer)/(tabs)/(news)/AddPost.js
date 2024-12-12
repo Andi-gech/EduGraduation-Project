@@ -56,7 +56,7 @@ export default function AddPost() {
     });
 
     try {
-      const response = await fetch(`http://eduapi.senaycreatives.com/post`, {
+      const response = await fetch(`https://eduapi.senaycreatives.com/post`, {
         method: "POST",
         body: multform,
         headers: {
@@ -91,6 +91,8 @@ export default function AddPost() {
     <View className="flex-1 flex bg-white dark:bg-black  items-center flex-col">
       <Header name={"Create Posts "} />
       {sucess && <SucessPopup message="Post Created" />}
+      {sucess && <Text className="text-green-500">Post Created</Text>}
+      {error && <Text className="text-red-500">Failed to create post</Text>}
       {error && <ErrorPopup message="Failed to create post" />}
       {Loadings && <Loading />}
       {image && (

@@ -16,7 +16,7 @@ export default function CafeSub() {
   const mutation = useMutation({
     mutationFn: (data) => {
       return axios.delete(
-        "http://eduapi.senaycreatives.com/cafe/unsubscribe/" + data.id,
+        "http://localhost:3000/cafe/unsubscribe/" + data.id,
         data
       );
     },

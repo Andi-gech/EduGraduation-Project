@@ -1,5 +1,13 @@
 import { useMemo } from "react";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Typography,
+  Grid,
+  Tooltip,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { FiAlignLeft } from "react-icons/fi";
 
@@ -25,12 +33,31 @@ export default function Acadamics() {
   }, [data]);
 
   return (
-    <div className="w-[80%] bg-white flex flex-col px-[20px] py-[20px]">
-      <div className="text-[20px] w-full h-[50px] flex flex-row font-bold text-black p-3">
-        <div className="flex flex-row w-full items-center">
-          <FiAlignLeft size={30} className="text-[26px] font-bold text-black" />
-          <p className="font-bold text-black mx-3">Current ACTIVE ACADAMICS</p>
-        </div>
+    <div
+      style={{
+        width: "80%",
+        backgroundColor: "#f4f4f4",
+        padding: "20px",
+        height: "100vh", // Set a fixed height
+        overflowY: "auto", // Enable vertical scrolling
+        borderRadius: "10px", // Add rounded corners for better UI
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Add a subtle shadow
+      }}
+    >
+      {/* Page Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <FiAlignLeft
+          size={30}
+          style={{ color: "black", marginRight: "10px" }}
+        />
+        <Typography variant="h4" fontWeight="bold">
+          Current Active Academics
+        </Typography>
       </div>
 
       {/* Show loading spinner if data is loading */}
@@ -38,41 +65,72 @@ export default function Acadamics() {
 
       {/* Render each department section */}
       {Object.keys(groupedData).map((department) => (
-        <div key={department} className="mt-6">
+        <div key={department} style={{ marginTop: "30px" }}>
           {/* Department Header */}
-          <h2 className="text-[18px] font-semibold text-black mb-4">
+          <Typography
+            variant="h5"
+            style={{
+              fontWeight: "bold",
+              marginBottom: "15px",
+              color: "#333",
+            }}
+          >
             {department}
-          </h2>
+          </Typography>
 
           {/* Render class cards for the department */}
-          <div className="flex flex-row flex-wrap">
+          <Grid container spacing={3}>
             {groupedData[department].map((item) => (
-              <Button
-                key={item.id}
-                sx={{
-                  marginInline: 3,
-                  backgroundColor: "black",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#333",
-                  },
-                }}
-                className="w-[200px] h-[200px] mx-3 rounded-md"
-                variant="contained"
-                onClick={() =>
-                  navigate(
-                    `/Courseoffering/${department}/${item.yearLevel}/${item.semister}`
-                  )
-                }
-              >
-                {item.yearLevel === "Graduated"
-                  ? "Graduated"
-                  : ` year ${item.yearLevel}`}
-
-                {item.semister && `  semister ${item.semister}`}
-              </Button>
+              <Grid item xs={12} sm={6} md={4} key={item.id}>
+                <Card
+                  style={{
+                    backgroundColor: "#ffffff",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="h6"
+                      style={{ fontWeight: "bold", color: "#000" }}
+                    >
+                      {item.yearLevel === "Graduated"
+                        ? "Graduated"
+                        : `Year ${item.yearLevel}`}
+                    </Typography>
+                    {item.semister && (
+                      <Typography
+                        variant="body2"
+                        style={{ marginTop: "5px", color: "#555" }}
+                      >
+                        Semester {item.semister}
+                      </Typography>
+                    )}
+                  </CardContent>
+                  <CardActions style={{ justifyContent: "center" }}>
+                    {/* Navigate to Course Offering */}
+                    <Tooltip title="View detailed course information">
+                      <Button
+                        variant="contained"
+                        style={{
+                          marginRight: "10px",
+                          backgroundColor: "#1a73e8",
+                          color: "#fff",
+                        }}
+                        onClick={() =>
+                          navigate(
+                            `/Courseoffering/${department}/${item.yearLevel}/${item.semister}`
+                          )
+                        }
+                      >
+                        View Details
+                      </Button>
+                    </Tooltip>
+                  </CardActions>
+                </Card>
+              </Grid>
             ))}
-          </div>
+          </Grid>
         </div>
       ))}
     </div>

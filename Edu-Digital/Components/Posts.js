@@ -76,8 +76,9 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
       <View className="w-full h-[50px] px-2 flex flex-row items-center">
         <Image
           source={{
-            uri: `http://eduapi.senaycreatives.com/${user?.profilePic}`,
+            uri: `https://eduapi.senaycreatives.com/${user?.profilePic}`,
           }}
+          cachePolicy={"memory-disk"}
           className="w-[30px] h-[30px] bg-zinc-100 dark:bg-zinc-900 rounded-full"
         ></Image>
         <Text className="text-black dark:text-white font-semibold ml-3">
@@ -89,8 +90,9 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
         <View className="w-full ">
           <Image
             source={{
-              uri: `http://eduapi.senaycreatives.com/${image}`,
+              uri: `https://eduapi.senaycreatives.com/${image}`,
             }}
+            cachePolicy={"memory-disk"}
             className="w-full bg-zinc-100 dark:bg-zinc-950 h-full object-cover"
             style={{
               aspectRatio: 1,
@@ -115,14 +117,6 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
             {likeCount}
           </Text>
         </TouchableOpacity>
-
-        <View className="mx-3">
-          <Ionicons
-            name="share-outline"
-            size={30}
-            color={colorScheme === "light" ? "black" : "white"}
-          />
-        </View>
       </View>
       <View className="px-2 flex flex-row ">
         <Text

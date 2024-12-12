@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "817381520536",
+    "project_id": "push-notifications-56217",
+    "storage_bucket": "push-notifications-56217.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817381520536:android:1840de3c974c390aec0ced",
+        "android_client_info": {
+          "package_name": "com.andutii.EduDigital"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTazEiJU0YMUkfE7FxLBPrmmebV0iwfqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -55,7 +55,7 @@ export default function ResetPassword1() {
     mutationKey: ["verification"],
     mutationFn: (data) =>
       axios.post(
-        "http://eduapi.senaycreatives.com/auth/VerifyEmailforPassword",
+        "https://eduapi.senaycreatives.com/auth/VerifyEmailforPassword",
         data
       ),
     onSuccess: async (response) => {
@@ -76,7 +76,7 @@ export default function ResetPassword1() {
   const resendCode = useMutation({
     mutationKey: ["resendCode"],
     mutationFn: (data) =>
-      axios.post("http://eduapi.senaycreatives.com/auth/resendCode", data),
+      axios.post("https://eduapi.senaycreatives.com/auth/resendCode", data),
     onSuccess: async (response) => {
       setResendCooldown(60);
       setOnsend(true);

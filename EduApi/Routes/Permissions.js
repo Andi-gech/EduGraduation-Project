@@ -7,6 +7,7 @@ const Authetication = require("../MiddleWare/AuthMiddleware");
 const { roleAuth } = require("../MiddleWare/RoleAuth");
 const mongoose = require("mongoose");
 const { getIo } = require("./Chat");
+const { sendPushNotification } = require("../utils/sendPushNotification");
 const { Notifications } = require("../Model/Notifications");
 
 /**
@@ -85,7 +86,7 @@ Router.post("/", AuthMiddleware, async (req, res) => {
 
     if (error) return res.status(400).send(error.details[0].message);
     const prevPermission = await Permission.findOne({
-      user: req.user._id,
+      user: req.user.userid,
       permissionDate: req.body.permissionDate,
     });
     if (prevPermission)
@@ -94,7 +95,7 @@ Router.post("/", AuthMiddleware, async (req, res) => {
         .send("Permission already created check For Approval in History");
     const permission = new Permission({
       Reason: req.body.Reason,
-      user: req.user._id,
+      user: req.user.userid,
       permissionDate: req.body.permissionDate,
     });
 
@@ -154,11 +155,11 @@ Router.post("/", AuthMiddleware, async (req, res) => {
 Router.get(
   "/History",
   AuthMiddleware,
-  roleAuth("student"),
+
   async (req, res) => {
     try {
       const permissions = await Permission.find({
-        user: req.user._id,
+        user: req.user.userid,
       });
       return res.send(permissions);
     } catch (err) {
@@ -216,20 +217,20 @@ Router.get(
  *                   type: string
  *                   example: "Something went wrong."
  */
-Router.get("/new", AuthMiddleware, async (req, res) => {
+Router.get("/new", async (req, res) => {
   try {
+    const currentDate = new Date().toISOString(); // Get the current UTC date
+    console.log(currentDate);
     const permissions = await Permission.find({
-      permissionDate: {
-        $gte: new Date(),
-        $lte: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      },
-      status: "pending",
+      status: "pending", // Ensure that the status is "pending"
     });
+
     return res.send(permissions);
   } catch (err) {
     res.status(500).send(err.message || "Something went wrong");
   }
 });
+
 /**
  * @swagger
  * /all:
@@ -357,29 +358,33 @@ Router.get("/all", AuthMiddleware, async (req, res) => {
  *                   example: "Something went wrong."
  */
 
-Router.put("/approve/:id", AuthMiddleware, async (req, res) => {
+Router.put("/update/:id", async (req, res) => {
   try {
-    const { io, userSocketMap } = getIo();
     const isvalidMongooseId = mongoose.Types.ObjectId.isValid(req.params.id);
     if (!isvalidMongooseId) return res.status(400).send("Invalid id");
 
     const permission = await Permission.findById(req.params.id);
     if (!permission) return res.status(400).send("Permission not found");
-    permission.status = "approved";
+    permission.status = req.body.status;
     await permission.save();
-    const notification = new Notifications({
+
+    const notificationData = {
+      notification:
+        permission.status === "approved"
+          ? `Your Gate permission is approved  for ${permission.permissionDate}`
+          : "sorry your permission is denied B/c of some reason",
       user: permission.user,
-      notification: permission.status
-        ? `${permission.permissionDate} permission approved`
-        : `${permission.permissionDate} permission denied`,
-    });
-    await notification.save();
+      type: "Notice",
+    };
+    console.log("Notification data:", notificationData);
 
-    const socketId = userSocketMap.get(permission.user.toString());
-
-    io.to(socketId).emit("notification", notification);
+    const { notification, ticket } = await sendPushNotification(
+      permission.user,
+      notificationData
+    );
     return res.send(permission);
   } catch (err) {
+    console.log(err);
     return res.status(500).send(err.message || "Something went wrong");
   }
 });
@@ -472,5 +477,19 @@ Router.put(
     }
   }
 );
+
+Router.delete("/:id", async (req, res) => {
+  try {
+    const isvalidMongooseId = mongoose.Types.ObjectId.isValid(req.params.id);
+    if (!isvalidMongooseId) return res.status(400).send("Invalid id");
+
+    const permissions = await Permission.findByIdAndDelete(req.params.id);
+    if (!permissions) return res.status(400).send("Permission not found");
+
+    return res.send(permissions);
+  } catch (err) {
+    res.status(500).send(err.message || "Something went wrong");
+  }
+});
 
 module.exports = Router;

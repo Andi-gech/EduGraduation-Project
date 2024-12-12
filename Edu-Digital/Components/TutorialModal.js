@@ -9,6 +9,7 @@ import {
   useColorScheme,
   useWindowDimensions,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Buttons from "./Buttons";
@@ -17,7 +18,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Asset } from "expo-asset";
 
-const TutorialModal = ({ isVisible, onClose }) => {
+const TutorialModal = ({ onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [ispostImageLoaded, setispostImageLoaded] = useState(false);
   const flatListRef = useRef(null);
@@ -96,22 +97,15 @@ const TutorialModal = ({ isVisible, onClose }) => {
   };
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
-      onRequestClose={onClose}
-    >
-      {}
-      <View className="flex-1 relative justify-center  items-center  bg-opacity-50">
-        <View className="absolute top-0 left-0 w-screen h-screen bg-zinc-900 dark:bg-black opacity-50"></View>
+    <Modal transparent={true} onRequestClose={onClose}>
+      <View className="w-screen h-screen relative justify-center  items-center  bg-opacity-50">
         <LinearGradient
           colors={
             colorScheme === "dark"
               ? ["#010101", "#262626"]
               : ["#5b3f35", "#011B29"]
           }
-          className=" dark:bg-black py-6  rounded-t-[30px] absolute bottom-0 z-50 h-[90%] w-full flex  flex-col justify-between"
+          className=" dark:bg-black py-6 z-[1000]  rounded-t-[30px] absolute bottom-0  h-[90%] w-full flex  flex-col justify-between"
         >
           {!ispostImageLoaded ? (
             <View className=" ">
@@ -142,7 +136,7 @@ const TutorialModal = ({ isVisible, onClose }) => {
               Step {currentIndex + 1} of {tutorialSteps.length}
             </Text>
             <View className="flex-row items-center mb-6">
-              <TouchableOpacity
+              <TouchableWithoutFeedback
                 onPress={prevStep}
                 disabled={currentIndex === 0}
                 className="mr-4"
@@ -152,8 +146,8 @@ const TutorialModal = ({ isVisible, onClose }) => {
                   size={30}
                   color={currentIndex === 0 ? "gray" : "white"}
                 />
-              </TouchableOpacity>
-              <TouchableOpacity
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
                 onPress={nextStep}
                 disabled={currentIndex === tutorialSteps.length - 1}
                 className="ml-4"
@@ -165,7 +159,7 @@ const TutorialModal = ({ isVisible, onClose }) => {
                     currentIndex === tutorialSteps.length - 1 ? "gray" : "white"
                   }
                 />
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             </View>
             <View className="w-[90%] h-[50px]">
               <Buttons

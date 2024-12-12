@@ -571,14 +571,15 @@ Router.post("/subscribe/manual", async (req, res) => {
 });
 
 const mealTimes = {
-  breakfast: { start: 6, end: 10 }, // Breakfast time range (6:00 AM - 10:00 AM)
-  lunch: { start: 12, end: 14 }, // Lunch time range (12:00 PM - 2:00 PM)
-  dinner: { start: 18, end: 20 }, // Dinner time range (6:00 PM - 8:00 PM)
+  breakfast: { start: 6, end: 10 },
+  lunch: { start: 12, end: 15 },
+  dinner: { start: 18, end: 21 },
 };
 
 // Function to get current meal based on time
 const getCurrentMeal = () => {
   const currentHour = new Date().getHours();
+  console.log("Current Hour:", currentHour);
 
   if (
     currentHour >= mealTimes.breakfast.start &&

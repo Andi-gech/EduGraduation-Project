@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function UseFetchComplains() {
   const Fetchqr = async () => {
-    return await axios.get(`http://eduapi.senaycreatives.com/complain/`);
+    return await axios.get(`http://localhost:3000/complain`);
   };
 
   return useQuery({

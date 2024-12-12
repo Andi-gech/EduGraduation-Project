@@ -1,6 +1,6 @@
 const { Notifications } = require("../Model/Notifications");
 const { User } = require("../Model/User");
-const { Expo } = require("expo-server-sdk"); // Destructure Expo directly
+const { Expo } = require("expo-server-sdk");
 
 const expo = new Expo({
   accessToken: process.env.EXPO_ACCESS_TOKEN,
@@ -8,10 +8,11 @@ const expo = new Expo({
 
 async function sendPushNotification(userId, notificationData) {
   try {
+    console.log("Sending push notification to user:", userId);
     const user = await User.findById(userId);
     if (!user) throw new Error("User not found");
+    console.log("Sending push notification to user:", user);
 
-    // Create and save the notification
     const notification = new Notifications(notificationData);
     await notification.save();
 
@@ -23,17 +24,72 @@ async function sendPushNotification(userId, notificationData) {
     const message = {
       to: pushToken,
       sound: "default",
-      body: notificationData.notification, // Message content
+      body: notificationData.notification,
       data: { withSome: "data" },
     };
 
-    // Send the notification
     const ticket = await expo.sendPushNotificationsAsync([message]);
     return { notification, ticket };
   } catch (error) {
     console.error("Error sending push notification:", error);
-    throw error; // Re-throw the error for handling in the route
+    throw error;
   }
 }
 
-module.exports = sendPushNotification;
+async function sendPushNotificationToAll(notificationData) {
+  try {
+    const users = await User.find({ PushToken: { $exists: true } }); // Get all users with push tokens
+    if (!users.length) throw new Error("No users found with push tokens");
+
+    const groupedMessages = {}; // Group messages by experienceId
+    const invalidTokens = [];
+
+    for (const user of users) {
+      const pushToken = user.PushToken;
+      if (Expo.isExpoPushToken(pushToken)) {
+        const experienceId = pushToken.split("[")[1].split("]")[0]; // Extract experienceId from token
+        if (!groupedMessages[experienceId]) {
+          groupedMessages[experienceId] = [];
+        }
+        groupedMessages[experienceId].push({
+          to: pushToken,
+          sound: "default",
+
+          body: notificationData,
+          data: { withSome: "data" },
+        });
+      } else {
+        invalidTokens.push(pushToken);
+      }
+    }
+
+    const tickets = [];
+
+    for (const [experienceId, messages] of Object.entries(groupedMessages)) {
+      console.log(`Sending notifications for project: ${experienceId}`);
+      const chunks = expo.chunkPushNotifications(messages);
+
+      for (const chunk of chunks) {
+        try {
+          const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error(
+            `Error sending push notification chunk for ${experienceId}:`,
+            error
+          );
+        }
+      }
+    }
+
+    return { notificationData, tickets, invalidTokens };
+  } catch (error) {
+    console.error("Error sending push notification to all:", error);
+    throw error;
+  }
+}
+
+module.exports = {
+  sendPushNotification,
+  sendPushNotificationToAll,
+};

@@ -9,6 +9,7 @@
   "author": "Senay Creatives",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "bcrypt": "^5.1.1",
     "chapa": "^1.0.5",
     "cors": "^2.8.5",

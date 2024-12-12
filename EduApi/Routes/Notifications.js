@@ -5,7 +5,11 @@ const Authetication = require("../MiddleWare/AuthMiddleware");
 const { roleAuth } = require("../MiddleWare/RoleAuth");
 const { User } = require("../Model/User");
 const { Expo } = require("expo-server-sdk");
-const sendPushNotification = require("../utils/sendPushNotification");
+const {
+  sendPushNotification,
+  sendPushNotificationToAll,
+} = require("../utils/sendPushNotification");
+
 /**
  * @swagger
  * /notification/:
@@ -57,6 +61,14 @@ const sendPushNotification = require("../utils/sendPushNotification");
  *                   example: "Something went wrong."
  */
 
+Router.get("/all", async (req, res) => {
+  try {
+    const notifications = await Notifications.find();
+    res.send(notifications);
+  } catch (err) {
+    res.status(500).send(err.message || "Something went wrong");
+  }
+});
 Router.get("/", Authetication, async (req, res) => {
   try {
     const notifications = await Notifications.find({
@@ -172,4 +184,18 @@ Router.post("/", async (req, res) => {
   }
 });
 
+Router.post("/all", async (req, res) => {
+  try {
+    console.log(req.body);
+    if (req.body.notification === undefined) {
+      return res.status(400).send("Notification field is required");
+    }
+    const notificationData = req.body.notification;
+    const tickets = await sendPushNotificationToAll(notificationData);
+    res.status(201).send(tickets);
+  } catch (err) {
+    console.error("Internal server error:", err);
+    res.status(500).send(err.message || "Something went wrong");
+  }
+});
 module.exports = Router;

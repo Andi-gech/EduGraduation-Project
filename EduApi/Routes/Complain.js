@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Router = express.Router();
 const Authetication = require("../MiddleWare/AuthMiddleware");
 const { roleAuth } = require("../MiddleWare/RoleAuth");
-const sendPushNotification = require("../utils/sendPushNotification");
+const { sendPushNotification } = require("../utils/sendPushNotification");
 /**
  * @swagger
  * /complain:

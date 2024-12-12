@@ -1,9 +1,14 @@
 import { useState } from "react";
+import {
+  Box,
+  Button,
+  Typography,
+  Grid,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button } from "@mui/material"; // Hook to fetch course data
 import { FaPlus, FaEye } from "react-icons/fa";
-
-import IsLoading from "../Components/IsLoading";
 import { FiAlignLeft } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import UseFetchCourseOffering from "../../hooks/UseFetchCourseOffering";
@@ -17,15 +22,16 @@ export default function CourseOfferingPage() {
     year,
     semester
   );
+
   const [addCourse, setAddCourse] = useState(false);
   const [viewDetail, setViewDetail] = useState(false);
   const [course, setCourse] = useState(null);
-  const calculateTotalCreditHours = (courses) => {
-    return courses?.reduce(
+
+  const calculateTotalCreditHours = (courses) =>
+    courses?.reduce(
       (acc, course) => acc + (course?.course?.creaditHrs || 0),
       0
     );
-  };
 
   const rows = data?.data?.courses.map((course) => ({
     id: course?._id,
@@ -48,6 +54,8 @@ export default function CourseOfferingPage() {
       width: 150,
       renderCell: (params) => (
         <Button
+          variant="contained"
+          color="primary"
           onClick={() => {
             setCourse({
               id: params.row.id,
@@ -59,10 +67,8 @@ export default function CourseOfferingPage() {
             });
             setViewDetail(true);
           }}
-          variant="contained"
-          color="primary"
+          startIcon={<FaEye />}
         >
-          <FaEye className="mr-1" />
           View
         </Button>
       ),
@@ -76,39 +82,75 @@ export default function CourseOfferingPage() {
   };
 
   return (
-    <div className="w-[80%] overflow-hidden relative mx-auto my-6 bg-white rounded-lg shadow-md p-4">
-      <div className="flex items-center justify-between mb-1">
-        <div className="flex items-center">
-          <FiAlignLeft size={30} className="text-black" />
-          <h1 className="text-2xl font-bold ml-3">
-            Year {year} {department} Course Offerings
-          </h1>
-        </div>
+    <Box
+      sx={{
+        width: "80%",
 
-        <div className="flex space-x-2">
-          <button
+        mx: "auto",
+
+        p: 3,
+        bgcolor: "#f9f9f9",
+        borderRadius: 2,
+        boxShadow: 3,
+      }}
+    >
+      {/* Header */}
+      <Grid container alignItems="center" justifyContent="space-between" mb={2}>
+        <Grid item display="flex" alignItems="center">
+          <FiAlignLeft size={30} style={{ marginRight: "10px" }} />
+          <Typography variant="h5" fontWeight="bold">
+            Year {year} {department} Course Offerings
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<FaPlus />}
             onClick={() => setAddCourse(true)}
-            className="flex items-center px-4 py-2 bg-zinc-900 hover:bg-zinc-600 text-white rounded-full"
           >
-            <FaPlus size={20} className="mr-2" />
             Add New Course
-          </button>
-        </div>
-      </div>
-      <div className="mb-2 text-sm text-gray-700">
-        <p className="font-bold">Semester: {semester}</p>
-        <p className="font-bold text-red-500">
-          Total Credit Hours: {calculateTotalCreditHours(data?.data?.courses)}
-          {calculateTotalCreditHours(data?.data?.courses) > 18
-            ? " (Overloaded)"
-            : ""}
-        </p>
-      </div>
-      {isLoading && <IsLoading />}
-      {addCourse && (
-        <AddCoursePopup onClose={handleClose} offeringid={data?.data._id} />
+          </Button>
+        </Grid>
+      </Grid>
+
+      {/* Semester & Credit Hours Info */}
+      <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
+        <Typography variant="body1" fontWeight="bold">
+          Semester: {semester}
+        </Typography>
+        <Typography variant="body1" fontWeight="bold" color="error">
+          Total Credit Hours: {calculateTotalCreditHours(data?.data?.courses)}{" "}
+          {calculateTotalCreditHours(data?.data?.courses) > 18 &&
+            "(Overloaded)"}
+        </Typography>
+      </Paper>
+
+      {/* Loading Indicator */}
+      {isLoading && (
+        <Box display="flex" justifyContent="center" my={3}>
+          <CircularProgress />
+        </Box>
       )}
 
+      {/* Data Grid */}
+      {!isLoading && (
+        <Box sx={{ height: 400, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            disableSelectionOnClick
+          />
+        </Box>
+      )}
+
+      {/* Add Course Popup */}
+      {addCourse && (
+        <AddCoursePopup onClose={handleClose} offeringid={data?.data?._id} />
+      )}
+
+      {/* Course Detail Popup */}
       {viewDetail && (
         <CourseDetailPopup
           onClose={handleClose}
@@ -116,9 +158,6 @@ export default function CourseOfferingPage() {
           course={course}
         />
       )}
-      <div style={{ height: 380, width: "100%" }}>
-        <DataGrid rows={rows} columns={columns} pageSize={5} />
-      </div>
-    </div>
+    </Box>
   );
 }

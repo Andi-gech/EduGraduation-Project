@@ -1,7 +1,22 @@
-/* eslint-disable react/prop-types */
+import {
+  Box,
+  Typography,
+  TextField,
+  IconButton,
+  Card,
+  CardContent,
+  Grid,
+  Tooltip,
+} from "@mui/material";
 import { FiAlignLeft } from "react-icons/fi";
 import { FaBell } from "react-icons/fa";
-import { AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip as RechartTooltip,
+} from "recharts";
 import { PieChart } from "@mui/x-charts/PieChart";
 import UseFetchDepartment from "../../hooks/UseFechDepartment";
 import UseFetchCafeSubscription from "../../hooks/UseFetchCafeSubscription";
@@ -12,50 +27,66 @@ export default function Dashboard() {
   const { data: users } = UseFetchUser();
   const { data } = UseFetchDepartment();
 
-  const pichartdata =
+  const pieChartData =
     data?.data?.map((item) => ({
       name: item?.department,
       value: item?.count || 0,
     })) || [];
 
   return (
-    <div className="w-[80%] bg-white flex flex-col  my-[15px]">
-      <div className="text-[20px] w-full h-[50px] flex flex-row font-bold text-black p-3">
-        <div className="flex flex-row w-full items-center">
-          <FiAlignLeft size={30} className="text-[26px] font-bold text-black" />
-          <p className="font-bold text-black mx-3">Dashboard</p>
-        </div>
-        <div className="flex flex-row items-center justify-center">
-          <input
-            className="p-2 border-0 outline-none text-sm w-[300px] h-[40px] rounded-full bg-zinc-50 text-black shadow-sm focus:ring-0 focus:outline-none transition duration-300"
+    <Box sx={{ padding: "16px", width: "100%", backgroundColor: "#fff" }}>
+      {/* Header Section */}
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Box display="flex" alignItems="center">
+          <FiAlignLeft size={30} />
+          <Typography variant="h6" fontWeight="bold" ml={2}>
+            Dashboard
+          </Typography>
+        </Box>
+        <Box display="flex" alignItems="center">
+          <TextField
+            variant="outlined"
+            size="small"
             placeholder="Search..."
+            sx={{
+              backgroundColor: "#f5f5f5",
+              borderRadius: "25px",
+              "& .MuiOutlinedInput-root": { pl: 2 },
+            }}
           />
-          <div className="mx-4">
-            <FaBell size={20} className="text-[20px] font-bold text-black" />
-          </div>
-        </div>
-      </div>
+          <Tooltip title="Notifications">
+            <IconButton sx={{ ml: 2 }}>
+              <FaBell size={20} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
 
-      <div className="flex h-[230px] w-full flex-col">
-        <div className="flex flex-row my-2">
-          <p className="text-gray-900 text-[18px]">Number Statics</p>
-        </div>
-        <div className="flex flex-row items-center">
-          <StatCard title="Total Students" count={users?.data?.length} />
-          <StatCard title="Total Subscriptions" count={subs?.data?.length} />
-          <StatCard title="Total Departments" count={data?.data?.length} />
-          <StatCard
-            title="Total Incomponund Students"
-            count={users?.data?.filter((user) => user?.incomponund)?.length}
-          />
-        </div>
-      </div>
+      {/* Statistics Section */}
+      <Typography variant="subtitle1" mb={1}>
+        Number Statistics
+      </Typography>
+      <Grid container spacing={2} mb={3}>
+        <StatCard title="Total Students" count={users?.data?.length} />
+        <StatCard title="Total Subscriptions" count={subs?.data?.length} />
+        <StatCard title="Total Departments" count={data?.data?.length} />
+        <StatCard
+          title="Total In Compound Students"
+          count={users?.data?.filter((user) => user?.incomponund)?.length}
+        />
+      </Grid>
 
-      <div className="flex flex-row my-2">
-        <p className="text-[18px] text-gray-900">Graph Representation</p>
-      </div>
-      <div className="flex flex-row items-center justify-between">
-        <div className="flex w-fit flex-row px-[10px] rounded-md bg-white items-center border-zinc-200 border-[1px]">
+      {/* Graphs Section */}
+      <Typography variant="subtitle1" mb={1}>
+        Graph Representation
+      </Typography>
+      <Box display="flex" justifyContent="space-between" flexWrap="wrap">
+        <Box sx={{ flexGrow: 1, marginRight: 2, maxWidth: "750px" }}>
           <AreaChart
             width={750}
             height={200}
@@ -67,14 +98,10 @@ export default function Dashboard() {
                 <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
                 <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
               </linearGradient>
-              <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-              </linearGradient>
             </defs>
             <XAxis dataKey="department" />
             <YAxis />
-            <Tooltip />
+            <RechartTooltip />
             <Area
               type="monotone"
               dataKey="count"
@@ -83,12 +110,22 @@ export default function Dashboard() {
               fill="url(#colorUv)"
             />
           </AreaChart>
-        </div>
-        <div className="flex w-[200px] h-[200px] flex-row px-[10px] rounded-none items-center border-zinc-200 border-[1px] mx-2">
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: 200,
+            height: 200,
+            border: "1px solid #e0e0e0",
+            borderRadius: "8px",
+          }}
+        >
           <PieChart
             series={[
               {
-                data: pichartdata,
+                data: pieChartData,
                 innerRadius: 30,
                 outerRadius: 70,
                 paddingAngle: 5,
@@ -100,19 +137,38 @@ export default function Dashboard() {
               },
             ]}
           />
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
 const StatCard = ({ title, count }) => {
   return (
-    <div className="w-[250px] h-[180px] mx-4 text-center flex flex-col items-center justify-center rounded-md shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
-      <div className="w-full h-full bg-gradient-to-r from-zinc-100 to-zinc-100 rounded-md flex flex-col items-center justify-center">
-        <p className="font-bold text-black text-[40px]">{count || 0}</p>
-        <p className="text-[20px] font-bold text-black">{title}</p>
-      </div>
-    </div>
+    <Grid item xs={12} sm={6} md={3}>
+      <Card
+        sx={{
+          height: 150,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          transition: "transform 0.3s",
+          "&:hover": {
+            transform: "scale(1.05)",
+            boxShadow: 6,
+          },
+        }}
+      >
+        <CardContent>
+          <Typography variant="h4" fontWeight="bold" color="primary">
+            {count || 0}
+          </Typography>
+          <Typography variant="subtitle1" color="textSecondary">
+            {title}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Grid>
   );
 };

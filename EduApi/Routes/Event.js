@@ -41,6 +41,7 @@
 const express = require("express");
 const { Event, validateEvent } = require("../Model/Event");
 const router = express.Router();
+const { sendPushNotificationToAll } = require("../utils/sendPushNotification");
 
 /**
  * @swagger
@@ -94,6 +95,10 @@ router.post("/", async (req, res) => {
     StartDate: req.body.eventStartDate,
     EndDate: req.body.eventEndDate,
   });
+  sendPushNotificationToAll(
+    `🎉 New Event Alert: ${event.name} 🎉\n${event.eventdescription}\n📅 Starts: ${event.StartDate}\n📅 Ends: ${event.EndDate}\n📍 Location: Hall`
+  );
+
   event = await event.save();
   res.status(201).send(event);
 });

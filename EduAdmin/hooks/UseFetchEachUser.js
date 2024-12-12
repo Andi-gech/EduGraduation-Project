@@ -4,9 +4,7 @@ import axios from "axios";
 export default function UseFetchEachUser(id) {
   const FetchUserById = async () => {
     // Fetch the user by their specific ID
-    const response = await axios.get(
-      `http://eduapi.senaycreatives.com/user/${id}`
-    );
+    const response = await axios.get(`http://localhost:3000/user/${id}`);
     return response;
   };
 

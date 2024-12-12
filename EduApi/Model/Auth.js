@@ -64,6 +64,10 @@ const validateAuth = (auth) => {
           "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$"
         )
       )
+      .messages({
+        "string.pattern.base":
+          "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
+      })
       .required(),
     emailToken: Joi.string(),
   });

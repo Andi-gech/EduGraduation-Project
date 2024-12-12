@@ -1,26 +1,26 @@
-import { Text, useColorScheme, View } from "react-native";
+import { useColorScheme, View, Text } from "react-native";
 import { Image } from "expo-image";
 import React, { useState } from "react";
-import RoundButton from "../../../Components/RoundButton";
 
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as ImagePicker from "expo-image-picker";
 import ImagePickerModal from "../../../Components/ImagePickerModal";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UseFetchMyData from "../../../hooks/UseFetchMyData";
 import * as FileSystem from "expo-file-system";
 import Loading from "../../../Components/Loading";
-import { useRouter } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
+
 import Header from "../../../Components/Header";
 
 export default function Profile() {
   const [image, setImage] = useState(null);
   const [visible, setVisible] = useState(false);
-  const [Loadings, setLoading] = useState(false);
-  const { data } = UseFetchMyData();
+  const [sucess, setSucess] = useState(null);
+  const [error, setError] = useState(null);
+
+  const { data, isLoading } = UseFetchMyData();
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -36,13 +36,11 @@ export default function Profile() {
     }
   };
   const queryclient = useQueryClient();
-  const onSubmit = async () => {
-    try {
-      setLoading(true);
-
+  const mutation = useMutation({
+    mutationFn: async (data) => {
       const response = await FileSystem.uploadAsync(
-        `http://eduapi.senaycreatives.com/user/updateProfilePic`,
-        image,
+        `https://eduapi.senaycreatives.com/user/updateProfilePic`,
+        data,
         {
           fieldName: "profilePic",
           httpMethod: "PUT",
@@ -53,32 +51,52 @@ export default function Profile() {
           },
         }
       );
-      setLoading(false);
+      return response.data;
+    },
+    onSuccess: () => {
       queryclient.invalidateQueries("me");
+      setSucess("Profile Picture Updated");
+      setTimeout(() => {
+        setSucess(false);
+      }, 3000);
+      setImage(null);
+    },
+    onError: () => {
+      setImage(null);
+      setError("An error occured");
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    },
+    mutationKey: "updateProfilePic",
+  });
 
-      setImage(null);
-    } catch (error) {
-      setImage(null);
-    }
+  const onSubmit = async () => {
+    setVisible(false);
+    mutation.mutate(image);
   };
 
-  const router = useRouter();
   const colorScheme = useColorScheme();
 
   return (
     <View className="flex-1 items-center bg-white  dark:bg-black ">
-      {Loadings && <Loading />}
+      {(mutation.isPending || isLoading) && <Loading />}
+
       <Header name="Profile Settings" />
+      {sucess && <Text className="text-green-500">{sucess}</Text>}
+      {error && <Text className="text-red-500">{error}</Text>}
+
       <View className="w-[99%]  flex-1  px-2    flex-row  justify-center  items-start   mt-2 flex ">
         <View className="w-[150px] h-[150px] flex items-center justify-center bg-gray-200 border-2 border-emerald-400 rounded-full">
           <Image
             source={{
               uri:
-                `http://eduapi.senaycreatives.com/${data?.data?.profilePic}` ||
+                `https://eduapi.senaycreatives.com/${data?.data?.profilePic}` ||
                 "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
             }}
             className="w-[150px] h-[150px] bg-zinc-50 dark:bg-zinc-600 rounded-full"
           />
+
           <View className="w-[40px] h-[40px] bg-zinc-100 dark:bg-zinc-800 rounded-full absolute top-0 right-0">
             <TouchableOpacity
               onPress={() => pickImage()}

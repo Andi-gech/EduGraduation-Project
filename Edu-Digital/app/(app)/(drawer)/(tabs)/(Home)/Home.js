@@ -41,6 +41,16 @@ export default function Home() {
   const heightS = height > 700 ? 300 : 250;
 
   const [isModalVisible, setModalVisible] = useState(false);
+  useEffect(() => {
+    console.log("Home.js: 1");
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+  }, []);
 
   useEffect(() => {
     const checkFirstTime = async () => {
@@ -59,6 +69,7 @@ export default function Home() {
   const handleCloseModal = async () => {
     try {
       await AsyncStorage.setItem("firstTime", "true"); // Save that the user has seen the modal
+      console.log("shut down modal");
       setModalVisible(false);
     } catch (error) {
       console.error("Error setting first time:", error);
@@ -105,13 +116,7 @@ export default function Home() {
 
   const cardWidth = width > 400 ? 150 : 130;
   const cardHeight = 80;
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-    }),
-  });
+
   const formattedTime = useMemo(
     () => formatDuration(timeRemaining),
     [timeRemaining]
@@ -119,7 +124,7 @@ export default function Home() {
   const memoizedData = useMemo(() => data?.data, [data]);
 
   const profileImageUri = useMemo(
-    () => `http://eduapi.senaycreatives.com/${memoizedData?.profilePic}`,
+    () => `https://eduapi.senaycreatives.com/${memoizedData?.profilePic}`,
     [memoizedData?.profilePic]
   );
 
@@ -139,13 +144,10 @@ export default function Home() {
         colorScheme === "dark" ? ["#010101", "#262626"] : ["#795548", "#011B29"]
       }
       locations={[0.0, 0.4]}
-      className=" flex-1 flex items-center     flex-col"
+      className=" flex-1 flex items-center   z-10   flex-col"
     >
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
-      {isModalVisible && (
-        <TutorialModal visible={true} onClose={handleCloseModal} />
-      )}
       <View
         className={`flex relative justify-between py-4 flex-col z-0 w-[98%]    rounded-md  mt-2  px-2`}
         style={{ height: heightS }}

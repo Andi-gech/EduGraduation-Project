@@ -65,7 +65,7 @@ export default function IdcardPopup({ onClose, id }) {
         formDataToSend.append(key, updatedData[key]);
       });
       return await axios.put(
-        `http://eduapi.senaycreatives.com/user/update/Digitalid/${id}`,
+        `https://eduapi.senaycreatives.com/user/update/Digitalid/${id}`,
         formDataToSend,
         {
           headers: {
@@ -200,7 +200,7 @@ export default function IdcardPopup({ onClose, id }) {
             <img
               src={
                 previewImage
-                  ? `http://eduapi.senaycreatives.com/${data?.data?.Photo}`
+                  ? `http://localhost:3000/${data?.data?.Photo}`
                   : previewImage
               }
               alt="Preview"

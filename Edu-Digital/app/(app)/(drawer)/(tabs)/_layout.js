@@ -1,4 +1,4 @@
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, Foundation } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { useColorScheme, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -51,7 +51,7 @@ export default function Layout() {
               }
             >
               <Ionicons
-                size={20}
+                size={23}
                 name="home-outline"
                 color={
                   focused
@@ -76,7 +76,7 @@ export default function Layout() {
               }
             >
               <Ionicons
-                size={20}
+                size={23}
                 name="calendar-outline"
                 color={
                   focused
@@ -100,9 +100,9 @@ export default function Layout() {
                   : "h-[60px] w-[60px] flex pt-5 items-center justify-center   "
               }
             >
-              <FontAwesome
-                size={20}
-                name="share-alt"
+              <Foundation
+                size={23}
+                name="social-skillshare"
                 color={
                   focused
                     ? `${colorScheme === "light" ? "#0B71A8" : "white"}`
@@ -126,7 +126,7 @@ export default function Layout() {
               }
             >
               <Ionicons
-                size={20}
+                size={23}
                 name={"map-outline"}
                 color={
                   focused

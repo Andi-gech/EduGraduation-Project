@@ -109,7 +109,7 @@ export default function Id() {
                 <View className="flex flex-row w-full">
                   <Image
                     source={{
-                      uri: `http://eduapi.senaycreatives.com/${data?.data?.Photo}`,
+                      uri: `https://eduapi.senaycreatives.com/${data?.data?.Photo}`,
                     }}
                     className="w-[110px] ml-2 h-[130px] z-0 mt-3 "
                   />

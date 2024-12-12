@@ -10,65 +10,63 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import UseFetchComplains from "../../hooks/UseFetchComplains";
+
 import { FiArrowLeftCircle } from "react-icons/fi";
 import IsLoading from "../Components/IsLoading";
+import UseFetchpermissions from "../../hooks/UseFechPermission";
 
-export default function Complain() {
-  const { data, isLoading } = UseFetchComplains();
+export default function Permission() {
+  const { data, isLoading } = UseFetchpermissions(); // Hook to fetch complaints or permissions data
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
   const queryClient = useQueryClient();
 
-  // Mutation for deleting a complaint
+  // Mutation for deleting a permission
   const deleteMutation = useMutation({
     mutationFn: (data) => {
-      return axios.delete(`http://localhost:3000/complain/${data.id}`, data);
+      return axios.delete(`http://localhost:3000/permissions/${data.id}`, data);
     },
     onSuccess: () => {
-      setSuccess("Complain deleted successfully");
-      queryClient.invalidateQueries(["fechcomplain"]);
+      setSuccess("Permission deleted successfully");
+      queryClient.invalidateQueries(["fetchPermissions"]);
     },
     onError: (error) => {
       setError(error.response?.data || "An error occurred");
     },
   });
 
-  // Mutation for updating the status
+  // Mutation for updating the permission status
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }) => {
-      return axios.put(`http://localhost:3000/complain/${id}`, {
+      return axios.put(`http://localhost:3000/permissions/update/${id}`, {
         status,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["fechcomplain"]);
+      queryClient.invalidateQueries(["fetchPermissions"]);
     },
     onError: (error) => {
       setError(error.message || "Failed to update status");
     },
   });
 
+  // Mapping the data to rows for the DataGrid
   const rows = data?.data?.map((item) => ({
     id: item._id,
-    location: item.location,
-    complain: item.complain,
-    user: item.user?.firstName,
-    paymentMethod: item.paymentMethod,
-    type: item.type,
+    reason: item.Reason,
+    user: item.user, // Assuming user is an ID or can be resolved later
+    permissionDate: new Date(item.permissionDate).toLocaleDateString(),
     status: item.status,
-    AvailableDate: item.date,
   }));
 
+  // Defining columns for the DataGrid
   const columns = [
-    { field: "complain", headerName: "Complain", width: 280 },
-    { field: "user", headerName: "Complaint Name", width: 150 },
-    { field: "type", headerName: "Type", width: 120 },
+    { field: "reason", headerName: "Reason", width: 280 },
+    { field: "user", headerName: "User", width: 150 },
     {
-      field: "AvailableDate",
-      headerName: "Available Date",
+      field: "permissionDate",
+      headerName: "Permission Date",
       width: 200,
-      valueFormatter: (params) => new Date(params).toLocaleString(),
     },
     {
       field: "status",
@@ -100,9 +98,9 @@ export default function Complain() {
             },
           }}
         >
-          <MenuItem value="pending">Pending</MenuItem>
-          <MenuItem value="completed">Completed</MenuItem>
-          <MenuItem value="rejected">Rejected</MenuItem>
+          <MenuItem value="pending">pending</MenuItem>
+          <MenuItem value="approved">approved</MenuItem>
+          <MenuItem value="denied">denied</MenuItem>
         </Select>
       ),
     },
@@ -137,7 +135,7 @@ export default function Complain() {
         <div style={{ display: "flex", alignItems: "center" }}>
           <FiArrowLeftCircle size={30} style={{ marginRight: 10 }} />
           <Typography variant="h6" fontWeight="bold">
-            Complaints
+            Permissions
           </Typography>
         </div>
       </div>

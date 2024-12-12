@@ -6,7 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import api from "../../utils/api";
-import * as SystemUI from "expo-system-ui";
 import {
   ThemeProvider,
   DefaultTheme,
@@ -63,11 +62,38 @@ export default function Layout() {
           initialRouteName="(drawer)"
           screenOptions={{ headerShown: false }}
         >
-          <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-          <Stack.Screen name="(class)" options={{ headerShown: false }} />
-          <Stack.Screen name="(connectS)" options={{ headerShown: false }} />
-          <Stack.Screen name="(resource)" options={{ headerShown: false }} />
-          <Stack.Screen name="(library)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(drawer)"
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+              animationDuration: 300,
+            }}
+          />
+          <Stack.Screen
+            name="(class)"
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+              animationDuration: 300,
+            }}
+          />
+          <Stack.Screen
+            name="(connectS)"
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+              animationDuration: 300,
+            }}
+          />
+          <Stack.Screen
+            name="(resource)"
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+              animationDuration: 300,
+            }}
+          />
         </Stack>
       </ThemeProvider>
     </ProtectedRoute>

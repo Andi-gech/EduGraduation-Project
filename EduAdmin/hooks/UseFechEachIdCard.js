@@ -5,7 +5,7 @@ export default function UseFetchEachIdCard(id) {
   const FetchUserById = async () => {
     // Fetch the user by their specific ID
     const response = await axios.get(
-      `http://eduapi.senaycreatives.com/user/Digitalid/${id}`
+      `http://localhost:3000/user/Digitalid/${id}`
     );
     return response;
   };

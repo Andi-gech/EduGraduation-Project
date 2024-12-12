@@ -6,7 +6,7 @@ import {
   RefreshControl,
   ScrollView,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import UseFetchPosts from "../../../../../hooks/UseFetchPosts";

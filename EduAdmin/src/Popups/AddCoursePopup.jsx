@@ -1,6 +1,20 @@
 /* eslint-disable react/prop-types */
-import { Button, TextField, Select, MenuItem } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+} from "@mui/material";
 import { useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import UseFetchUser from "../../hooks/UseFetchUser";
 import UseFetchCourses from "../../hooks/UseFechCourses";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -24,7 +38,7 @@ const AddCoursePopup = ({ onClose, offeringid }) => {
   const mutation = useMutation({
     mutationFn: (data) =>
       axios.put(
-        `http://eduapi.senaycreatives.com/enrollment/add/course/${offeringid}`,
+        `http://localhost:3000/enrollment/add/course/${offeringid}`,
         data
       ),
     mutationKey: "addCourse",
@@ -52,7 +66,6 @@ const AddCoursePopup = ({ onClose, offeringid }) => {
           { day: selectedDay, Start: selectedStartTime, End: selectedEndTime },
         ],
       }));
-      // Clear selections after adding
       setSelectedDay("");
       setSelectedStartTime("");
       setSelectedEndTime("");
@@ -60,63 +73,99 @@ const AddCoursePopup = ({ onClose, offeringid }) => {
   };
 
   const handleSave = () => {
-    console.log("New Course Details:", newCourse);
-    mutation.mutate(newCourse); // Send the new course data
+    mutation.mutate(newCourse);
+  };
+
+  const handleRemoveSchedule = (index) => {
+    setNewCourse((prev) => ({
+      ...prev,
+      Schedule: prev.Schedule.filter((_, i) => i !== index),
+    }));
   };
 
   return (
-    <div className="absolute z-20 top-0 flex h-full w-full backdrop-blur-sm items-center justify-center">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-80 md:w-96 transition-transform transform duration-300 overflow-scroll">
-        <h2 className="text-xl font-bold mb-4 text-center">
-          ADD Course Details
-        </h2>
+    <Box
+      sx={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        backdropFilter: "blur(4px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1300,
+      }}
+    >
+      <Box
+        sx={{
+          backgroundColor: "white",
+          borderRadius: 2,
+          boxShadow: 3,
+          p: 4,
+          width: { xs: "90%", sm: "400px" },
+          maxHeight: "80%",
+          overflowY: "auto",
+        }}
+      >
+        <Typography variant="h6" textAlign="center" mb={2}>
+          Add Course Details
+        </Typography>
         {(isLoadingTeachers || isLoadingCourses || mutation.isLoading) && (
           <IsLoading />
         )}
 
-        <p className="text-sm text-gray-500">Course</p>
-        <Select
-          name="courseId"
-          value={newCourse.courseId || ""}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        >
-          <MenuItem value="" disabled>
-            Select a Course
-          </MenuItem>
-          {coursesData?.data?.map((course) => (
-            <MenuItem key={course._id} value={course._id}>
-              {course.Coursename} ({course.Coursecode})
-            </MenuItem>
-          ))}
-        </Select>
-
-        <p className="text-sm text-gray-500">Instructor</p>
-        <Select
-          name="teacherId"
-          value={newCourse.teacherId || "Not Assigned"}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        >
-          <MenuItem value="Not Assigned" disabled>
-            Not Assigned
-          </MenuItem>
-          {teachersData?.data?.map((teacher) => (
-            <MenuItem key={teacher._id} value={teacher._id}>
-              {teacher.firstName} {teacher.lastName}
-            </MenuItem>
-          ))}
-        </Select>
-
-        <p className="text-sm text-gray-500">Schedule</p>
-        <div className="flex flex-col">
+        {/* Course Selection */}
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="course-select-label">Course</InputLabel>
           <Select
+            labelId="course-select-label"
+            name="courseId"
+            value={newCourse.courseId || ""}
+            onChange={handleInputChange}
+          >
+            <MenuItem value="" disabled>
+              Select a Course
+            </MenuItem>
+            {coursesData?.data?.map((course) => (
+              <MenuItem key={course._id} value={course._id}>
+                {course.Coursename} ({course.Coursecode})
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Instructor Selection */}
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="teacher-select-label">Instructor</InputLabel>
+          <Select
+            labelId="teacher-select-label"
+            name="teacherId"
+            value={newCourse.teacherId || ""}
+            onChange={handleInputChange}
+          >
+            <MenuItem value="" disabled>
+              Select an Instructor
+            </MenuItem>
+            {teachersData?.data?.map((teacher) => (
+              <MenuItem key={teacher._id} value={teacher._id}>
+                {teacher.firstName} {teacher.lastName}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Schedule Section */}
+        <Typography variant="subtitle1" mt={2}>
+          Schedule
+        </Typography>
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="day-select-label">Day</InputLabel>
+          <Select
+            labelId="day-select-label"
             value={selectedDay}
             onChange={(e) => setSelectedDay(e.target.value)}
-            fullWidth
-            margin="normal"
           >
             <MenuItem value="" disabled>
               Select Day
@@ -134,62 +183,67 @@ const AddCoursePopup = ({ onClose, offeringid }) => {
               </MenuItem>
             ))}
           </Select>
-          <TextField
-            value={selectedStartTime}
-            onChange={(e) => setSelectedStartTime(e.target.value)}
-            label="Start Time"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            value={selectedEndTime}
-            onChange={(e) => setSelectedEndTime(e.target.value)}
-            label="End Time"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-          />
-          <Button
-            onClick={handleAddSchedule}
-            variant="contained"
-            color="primary"
-            className="mt-2"
-          >
-            Add Schedule
-          </Button>
-        </div>
+        </FormControl>
+        <TextField
+          label="Start Time"
+          value={selectedStartTime}
+          onChange={(e) => setSelectedStartTime(e.target.value)}
+          fullWidth
+          margin="normal"
+          type="time"
+        />
+        <TextField
+          label="End Time"
+          value={selectedEndTime}
+          onChange={(e) => setSelectedEndTime(e.target.value)}
+          fullWidth
+          margin="normal"
+          type="time"
+        />
+        <Button
+          onClick={handleAddSchedule}
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 1 }}
+        >
+          Add Schedule
+        </Button>
 
-        {/* Display Schedule Items */}
+        {/* Display Added Schedule */}
         {newCourse.Schedule.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold">Added Schedule:</h3>
-            <ul className="list-disc pl-5">
-              {newCourse.Schedule.map((scheduleItem, index) => (
-                <li key={index}>
-                  {scheduleItem.day} from {scheduleItem.Start} to{" "}
-                  {scheduleItem.End}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <List>
+            {newCourse.Schedule.map((item, index) => (
+              <ListItem
+                key={index}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    onClick={() => handleRemoveSchedule(index)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <ListItemText
+                  primary={`${item.day} from ${item.Start} to ${item.End}`}
+                />
+              </ListItem>
+            ))}
+          </List>
         )}
 
-        <div className="flex justify-end mt-4">
+        {/* Action Buttons */}
+        <Box mt={3} display="flex" justifyContent="space-between">
           <Button variant="contained" color="primary" onClick={handleSave}>
             Add Course
           </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={onClose}
-            className="ml-2"
-          >
+          <Button variant="outlined" color="secondary" onClick={onClose}>
             Cancel
           </Button>
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

@@ -16,6 +16,8 @@ import DigitalIdCards from "./Pages/DigitalIdCards";
 
 import ScialClubs from "./Pages/ScialClubs";
 import Event from "./Pages/Event";
+import Notifications from "./Pages/Notifications";
+import Permission from "./Pages/Permission";
 
 function App() {
   return (
@@ -39,6 +41,9 @@ function App() {
         <Route path="/student/verifications" element={<Verification />} />
         <Route path="/SocialClubs" element={<ScialClubs />} />
         <Route path="/Event" element={<Event />} />
+        <Route path="/Notification" element={<Notifications />} />
+        <Route path="/Permission" element={<Permission />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </div>
   );

@@ -39,7 +39,11 @@ export default function AskChat() {
     if (socket) {
       socket.emit("joinRoom", "ask");
       socket.on("message", (data) => {
-        setChats((prevChats) => [...prevChats, data]);
+        console.log("new message", data);
+        setChats((prevChats) => [
+          ...prevChats,
+          { sender: data.sender, message: data.message, date: data.date },
+        ]);
       });
     }
 
@@ -53,10 +57,9 @@ export default function AskChat() {
       socket.emit("chatMessage", { message });
       setChats((prevChats) => [
         ...prevChats,
-        { sender: data?.userdata?._id, message },
+        { sender: data?.userdata?._id, message, date: new Date() },
       ]);
       setMessage("");
-      Keyboard.dismiss();
     }
   };
 
@@ -64,26 +67,26 @@ export default function AskChat() {
     <KeyboardAvoidingView behavior="padding" className="flex-1">
       <View className="flex-1 bg-white dark:bg-black">
         {isLoading && <Loading />}
-        {showUsers && <User onclose={() => setShowUsers(false)} />}
+        {/* {showUsers && <User onclose={() => setShowUsers(false)} />} */}
         <View className="relative">
           <Header name="Ask Chat" />
           <TouchableOpacity
             onPress={() => setShowUsers(true)}
             className="absolute top-[40px] right-[10px]"
           >
-            <FontAwesome5
+            {/* <FontAwesome5
               name="users"
               size={24}
               color={colorScheme === "light" ? "black" : "white"}
-            />
+            /> */}
           </TouchableOpacity>
         </View>
 
-        <View className="flex-1 mb-5">
+        <View className="flex-1  ">
           <ChatBox chats={chats} />
         </View>
 
-        <View className="w-full mb-3 h-[60px] flex-row justify-between items-center px-[5px]">
+        <View className="w-full mb-3 h-[50px] flex-row justify-between items-center px-[5px]">
           <TextInput
             value={message}
             onChangeText={setMessage}

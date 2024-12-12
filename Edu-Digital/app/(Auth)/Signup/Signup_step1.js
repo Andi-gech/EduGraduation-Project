@@ -16,32 +16,43 @@ import Header from "../../../Components/Header";
 
 export default function Signup() {
   const router = useRouter();
+  const [errors, setErrors] = useState({});
 
-  const [FirstName, setFirstName] = useState("");
-  const [LastName, setLastName] = useState("");
-  const [year, setYear] = useState("");
-  const [semister, setSemister] = useState("");
-  const [Gender, setGender] = useState("Female");
+  const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
+    year: "1",
+    semister: "1",
+    gender: "Female",
+    department: "Computer Science",
+    student_id: "",
+    is_military: false,
+  });
+  const validateForm = () => {
+    const newErrors = {};
+    if (!form.first_name) newErrors.first_name = "First Name is required.";
+    if (!form.last_name) newErrors.last_name = "Last Name is required.";
+    if (!form.student_id) newErrors.student_id = "Student ID is required.";
+    setErrors(newErrors);
 
-  const [department, setDepartment] = useState("");
-  const [isMilitary, setIsMilitary] = useState(false);
-  const [student_id, setStudent_id] = useState();
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
 
   const pickerref = useRef();
   const handleSendRequest = () => {
-    router.push({
-      pathname: "/(Auth)/Signup/Signup_step2",
-      params: {
-        first_name: FirstName,
-        last_name: LastName,
-        gender: Gender,
-        department: department,
-        year: year,
-        semister: semister,
-        is_military: isMilitary,
-        student_id: student_id,
-      },
-    });
+    if (validateForm()) {
+      router.push({
+        pathname: "/(Auth)/Signup/Signup_step2",
+        params: form,
+      });
+    }
+    setTimeout(() => {
+      setErrors({});
+    }, 5000);
   };
   const colorScheme = useColorScheme();
 
@@ -93,10 +104,13 @@ export default function Signup() {
             <Input
               placeholder={"Enter First Name"}
               onchange={(e) => {
-                setFirstName(e);
+                handleInputChange("first_name", e);
               }}
-              value={FirstName}
+              value={form.first_name}
             />
+            {errors.first_name && (
+              <Text className="text-red-500 text-sm">{errors.first_name}</Text>
+            )}
           </View>
         </View>
         <View className="w-full flex flex-col items-start mt-4 px-2">
@@ -104,9 +118,14 @@ export default function Signup() {
           <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
             <Input
               placeholder={"Enter Last Name"}
-              onchange={(e) => setLastName(e)}
-              value={LastName}
+              onchange={(e) => {
+                handleInputChange("last_name", e);
+              }}
+              value={form.last_name}
             />
+            {errors.last_name && (
+              <Text className="text-red-500 text-sm">{errors.last_name}</Text>
+            )}
           </View>
         </View>
         <View className="w-full flex-col mt-4  flex ">
@@ -125,7 +144,7 @@ export default function Signup() {
                 fontSize: 18,
               }}
               ref={pickerref}
-              selectedValue={year}
+              selectedValue={form.year}
               style={{
                 height: 50,
                 color: colorScheme === "dark" ? "white" : "black",
@@ -134,7 +153,7 @@ export default function Signup() {
                 width: "70%",
               }}
               onValueChange={(itemValue) => {
-                setYear(itemValue);
+                handleInputChange("year", itemValue);
               }}
             >
               <Picker.Item
@@ -190,7 +209,7 @@ export default function Signup() {
                 fontSize: 18,
               }}
               ref={pickerref}
-              selectedValue={semister}
+              selectedValue={form.semister}
               style={{
                 height: 50,
                 marginVertical: 10,
@@ -199,7 +218,7 @@ export default function Signup() {
                 width: "30%",
               }}
               onValueChange={(itemValue) => {
-                setSemister(itemValue);
+                handleInputChange("semister", itemValue);
               }}
             >
               <Picker.Item
@@ -237,7 +256,7 @@ export default function Signup() {
               fontSize: 18,
             }}
             ref={pickerref}
-            selectedValue={department}
+            selectedValue={form.department}
             dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
             style={{
               height: 50,
@@ -246,7 +265,9 @@ export default function Signup() {
               width: "100%",
               color: colorScheme === "dark" ? "white" : "black",
             }}
-            onValueChange={(itemValue) => setDepartment(itemValue)}
+            onValueChange={(itemValue) => {
+              handleInputChange("department", itemValue);
+            }}
           >
             <Picker.Item
               style={{
@@ -311,9 +332,14 @@ export default function Signup() {
           <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
             <Input
               placeholder={"Enter Student ID"}
-              onchange={(e) => setStudent_id(e)}
-              value={student_id}
+              onchange={(e) => {
+                handleInputChange("student_id", e);
+              }}
+              value={form.student_id}
             />
+            {errors.student_id && (
+              <Text className="text-red-500 text-sm">{errors.student_id}</Text>
+            )}
           </View>
         </View>
         <View className="w-full flex flex-row items-center mt-4 px-2">
@@ -329,7 +355,7 @@ export default function Signup() {
               fontSize: 18,
             }}
             ref={pickerref}
-            selectedValue={Gender}
+            selectedValue={form.gender}
             dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
             selectionColor={colorScheme === "dark" ? "white" : "black"}
             style={{
@@ -340,7 +366,9 @@ export default function Signup() {
               marginLeft: 10,
               width: "40%",
             }}
-            onValueChange={(itemValue) => setGender(itemValue)}
+            onValueChange={(itemValue) => {
+              handleInputChange("gender", itemValue);
+            }}
           >
             <Picker.Item
               style={{
@@ -373,7 +401,7 @@ export default function Signup() {
               fontSize: 18,
             }}
             ref={pickerref}
-            selectedValue={isMilitary}
+            selectedValue={form.is_military}
             dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
             selectionColor={colorScheme === "dark" ? "white" : "black"}
             style={{
@@ -385,7 +413,9 @@ export default function Signup() {
 
               width: 150,
             }}
-            onValueChange={(itemValue) => setIsMilitary(itemValue)}
+            onValueChange={(itemValue) => {
+              handleInputChange("is_military", itemValue);
+            }}
           >
             <Picker.Item
               style={{
