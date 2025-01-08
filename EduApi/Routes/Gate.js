@@ -1,121 +1,132 @@
 const express = require("express");
 const Router = express.Router();
-const mongoose = require("mongoose");
 const { User } = require("../Model/User");
-const AuthMiddleware = require("../MiddleWare/AuthMiddleware");
 
-const { roleAuth } = require("../MiddleWare/RoleAuth");
-/**
- * @swagger
- * /scanIn/{id}:
- *   put:
- *     summary: Mark a user as scanned in
- *     description: This endpoint allows a ward controller to mark a user as scanned in using their unique ID.
- *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The unique identifier of the user to be marked as scanned in.
- *         schema:
- *           type: string
- *           example: "60d21b4667d0d8992e610c85"  # Example of a valid MongoDB ObjectID
- *     responses:
- *       200:
- *         description: Successfully marked the user as scanned in.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                   description: The unique identifier of the user.
- *                 incomponund:
- *                   type: boolean
- *                   description: Indicates whether the user is scanned in.
- *                 auth:
- *                   type: string
- *                   description: The authentication ID of the user.
- *       400:
- *         description: Invalid user ID or user not found.
- *       500:
- *         description: Internal server error.
- */
+const {Permission}=require("../Model/Permission")
+const { Gate }=require("../Model/GateController")
+const { verifyDigitalId }=require("../utils/VerifyDigitalId")
 Router.put(
-  "/scanIn/:id",
-  AuthMiddleware,
-  roleAuth("WardControll"),
+  "/scanIn",
+
   async (req, res) => {
     try {
-      const isvalidMongooseId = mongoose.Types.ObjectId.isValid(req.params.id);
-      if (!isvalidMongooseId) return res.status(400).send("Invalid id");
-      const user = await User.findOne({ auth: req.params.id });
+      const { qrurl } = req.body;
+    if (!qrurl) return res.status(400).send("QR URL is required.");
 
-      if (!user) return res.status(400).send("User not found");
-      user.incomponund = true;
-      await user.save();
-      return res.send(user);
+     let studentid;
+    try {
+      studentid = verifyDigitalId(qrurl);
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+
+    const student = await User.findOne({ auth: studentid });
+    if (!student) return res.status(400).send("Student not found.");
+
+    
+    
+    await Gate.findOneAndUpdate({
+      user: student._id
+    }, { $set: { Entry: true } },{new:true,upsert:true});
+    
+
+      return res.send("Checked in successfully");
     } catch (error) {
       return res.status(500).send(error.message || "Something went wrong");
     }
   }
 );
-/**
- * @swagger
- * /scanOut/{id}:
- *   put:
- *     summary: Mark a user as scanned out
- *     description: This endpoint allows a ward controller to mark a user as scanned out using their unique ID.
- *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The unique identifier of the user to be marked as scanned out.
- *         schema:
- *           type: string
- *           example: "60d21b4667d0d8992e610c85"  # Example of a valid MongoDB ObjectID
- *     responses:
- *       200:
- *         description: Successfully marked the user as scanned out.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                   description: The unique identifier of the user.
- *                 incomponund:
- *                   type: boolean
- *                   description: Indicates whether the user is scanned out.
- *                 auth:
- *                   type: string
- *                   description: The authentication ID of the user.
- *       400:
- *         description: Invalid user ID or user not found.
- *       500:
- *         description: Internal server error.
- */
+const haspermision=async(studentid)=>{
+  const permission = await Permission.findOne({
+    user: studentid,
+    permissionDate: new Date().toISOString().split("T")[0],
+  });
+  console.log(permission,"permission")
+  if (!permission) return false;
+  return true;
+}
 Router.put(
-  "/scanOut/:id",
-  AuthMiddleware,
-  roleAuth("WardControll"),
+  "/scanOut",
+ 
   async (req, res) => {
     try {
-      const isvalidMongooseId = mongoose.Types.ObjectId.isValid(req.params.id);
-      if (!isvalidMongooseId) return res.status(400).send("Invalid id");
-      const user = await User.findOne({ auth: req.params.id });
+      const { qrurl } = req.body;
+    if (!qrurl) return res.status(400).send("QR URL is required.");
 
-      if (!user) return res.status(400).send("User not found");
-      user.incomponund = false;
-      await user.save();
-      return res.send(user);
+     let studentid;
+    try {
+      studentid = verifyDigitalId(qrurl);
     } catch (error) {
+      return res.status(400).send(error.message);
+    }
+
+    const student = await User.findOne({ auth: studentid });
+    if (!student) return res.status(400).send("Student not found.");
+    const today = new Date().getDay(); 
+    const isWeekend = today === 0 || today === 5 || today === 6; 
+
+    if (
+      !haspermision(student._id) && 
+      !(isWeekend && !student.isMilitary) 
+    ) {
+      return res.status(400).send("You don't have permission to leave the campus");
+    }
+      await Gate.findOneAndUpdate({
+        user: student._id,
+       }, { $set: { Entry: false } },{ new: true, upsert: true });
+      
+
+      return res.send("Checked out successfully");
+    } catch (error) {
+      console.log(error)
       return res.status(500).send(error.message || "Something went wrong");
     }
   }
 );
+Router.get("/report", async (req, res) => {
+  try {
+    const report = await Gate.aggregate([
+      {
+        $match: { Entry: true } 
+      },
+      {
+        $lookup: {
+          from: "users", 
+          localField: "user",
+          foreignField: "_id",
+          as: "userDetails"
+        }
+      },
+      {
+        $unwind: "$userDetails" 
+      },
+      {
+        $group: {
+          _id: "$userDetails.isMilitary", 
+          count: { $sum: 1 } 
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          type: {
+            $cond: { if: { $eq: ["$_id", true] }, then: "military", else: "civilian" }
+          },
+          count: 1
+        }
+      }
+    ]);
+
+    const result = report.reduce((acc, { type, count }) => {
+      acc[type] = count;
+      return acc;
+    }, {});
+
+    return res.send(result);
+  } catch (error) {
+    return res.status(500).send(error.message || "Something went wrong");
+  }
+});
+
 
 module.exports = Router;

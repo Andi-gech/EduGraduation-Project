@@ -19,9 +19,12 @@ export default function HomeScreen() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const [scanning, setScanning] = useState(true); // Add a state to control scanning
+
+//cafe/check/meal/
   const mutation = useMutation({
     mutationFn: async (qrdata) => {
-      return await axios.put("http://192.168.1.15:3000/cafe/check/meal/", {
+      return await axios.put("http://192.168.1.7:3000/cafe/check/meal/", {
         qrurl: qrdata,
       });
     },
@@ -56,21 +59,20 @@ export default function HomeScreen() {
   }
 
   const handleBarcodeScanned = ({ bounds, data }) => {
-    if (bounds && bounds.origin && bounds.size) {
+    if (bounds && bounds.origin && bounds.size && scanning) {
+      setScanning(false); // Disable scanning temporarily
       setBarcodeBounds(bounds);
       mutation.mutate(data);
       setTimeout(() => {
+        setScanning(true); // Re-enable scanning after 2 seconds
         setBarcodeBounds(null);
-      }, 1000);
+      }, 2000); // Adjust timeout as needed
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     } else {
       setBarcodeBounds(null);
     }
   };
-
-  function toggleCameraFacing() {
-    setFacing((current) => (current === "back" ? "front" : "back"));
-  }
+  
 
   return (
     <View style={styles.container}>
@@ -79,6 +81,10 @@ export default function HomeScreen() {
         {mutation.isLoading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
+          <>
+          {
+            scanning &&
+          
           <CameraView
             barcodeScannerSettings={{ barcodeTypes: "qr" }}
             style={styles.camera}
@@ -99,13 +105,11 @@ export default function HomeScreen() {
               />
             )}
           </CameraView>
+          }
+          </>
         )}
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.buttonText}>Flip Camera</Text>
-          </TouchableOpacity>
-        </View>
+        
       </View>
 
       {/* Status Messages */}
@@ -115,7 +119,7 @@ export default function HomeScreen() {
         ) : success ? (
           <Text style={[styles.statusText, styles.successText]}>{success}</Text>
         ) : (
-          <Text style={styles.statusText}>Scan a QR Code</Text>
+          <Text style={styles.statusText}>Scan a QR Code  To Use Cafe</Text>
         )}
       </View>
     </View>

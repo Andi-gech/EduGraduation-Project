@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function UseFetchClasses() {
   const Fetchqr = async () => {
-    return await axios.get(`http://localhost:3000/enrollment/GetAllClass`);
+    return await axios.get(`http://eduapi.senaycreatives.com/enrollment/GetAllClass`);
   };
 
   return useQuery({

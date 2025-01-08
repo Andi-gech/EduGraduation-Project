@@ -1,15 +1,10 @@
-import {
-  Box,
-  Typography,
-  TextField,
-  IconButton,
-  Card,
-  CardContent,
-  Grid,
-  Tooltip,
-} from "@mui/material";
-import { FiAlignLeft } from "react-icons/fi";
-import { FaBell } from "react-icons/fa";
+import React from 'react';
+import { FiAlignLeft } from 'react-icons/fi';
+import { FaBell } from 'react-icons/fa';
+import UseFetchDepartment from '../../hooks/UseFechDepartment';
+import UseFetchCafeSubscription from '../../hooks/UseFetchCafeSubscription';
+import UseFetchUser from '../../hooks/UseFetchUser';
+import UseFetchGateReport from '../../hooks/UseFechGateReport';
 import {
   AreaChart,
   Area,
@@ -17,158 +12,122 @@ import {
   YAxis,
   Tooltip as RechartTooltip,
 } from "recharts";
-import { PieChart } from "@mui/x-charts/PieChart";
-import UseFetchDepartment from "../../hooks/UseFechDepartment";
-import UseFetchCafeSubscription from "../../hooks/UseFetchCafeSubscription";
-import UseFetchUser from "../../hooks/UseFetchUser";
+import { Gauge , gaugeClasses} from '@mui/x-charts/Gauge';
 
 export default function Dashboard() {
   const { data: subs } = UseFetchCafeSubscription();
   const { data: users } = UseFetchUser();
   const { data } = UseFetchDepartment();
+  const { data: gatereport, isLoading, isError } = UseFetchGateReport();
 
-  const pieChartData =
-    data?.data?.map((item) => ({
-      name: item?.department,
-      value: item?.count || 0,
-    })) || [];
+  const pieChartData = [
+    { name: 'Segment A', value: 60 },
+    { name: 'Segment B', value: 40 },
+  ];
 
   return (
-    <Box sx={{ padding: "16px", width: "100%", backgroundColor: "#fff" }}>
-      {/* Header Section */}
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
-        <Box display="flex" alignItems="center">
-          <FiAlignLeft size={30} />
-          <Typography variant="h6" fontWeight="bold" ml={2}>
-            Dashboard
-          </Typography>
-        </Box>
-        <Box display="flex" alignItems="center">
-          <TextField
-            variant="outlined"
-            size="small"
+    <div className="min-h-screen  bg-white w-full m-6 ">
+   
+      <div className="flex justify-between items-center h-[70px] mb-8 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
+        <div className="flex items-center">
+          <FiAlignLeft size={30} color="orange" />
+          <h2 className="ml-4 text-2xl text-black font-bold">Dashboard</h2>
+        </div>
+        <div className="flex items-center">
+          <input
+            type="text"
             placeholder="Search..."
-            sx={{
-              backgroundColor: "#f5f5f5",
-              borderRadius: "25px",
-              "& .MuiOutlinedInput-root": { pl: 2 },
-            }}
+            className="p-2 w-[400px] rounded-full bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 ring-2 ring-zinc-300"
           />
-          <Tooltip title="Notifications">
-            <IconButton sx={{ ml: 2 }}>
-              <FaBell size={20} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Box>
+          <button className="ml-4 p-2 rounded-full bg-blue-400 hover:bg-blue-600 transition">
+            <FaBell size={20} />
+          </button>
+        </div>
+      </div>
 
-      {/* Statistics Section */}
-      <Typography variant="subtitle1" mb={1}>
-        Number Statistics
-      </Typography>
-      <Grid container spacing={2} mb={3}>
-        <StatCard title="Total Students" count={users?.data?.length} />
-        <StatCard title="Total Subscriptions" count={subs?.data?.length} />
-        <StatCard title="Total Departments" count={data?.data?.length} />
+      <h3 className="text-xl font-semibold mb-4 text-gray-700">Number Statistics</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
         <StatCard
-          title="Total In Compound Students"
-          count={users?.data?.filter((user) => user?.incomponund)?.length}
+          title="Total Students"
+          count={users?.data?.length}
+          gradient="from-green-400 to-green-600"
         />
-      </Grid>
+        <StatCard
+          title="Total Subscriptions"
+          count={subs?.data?.length}
+          gradient="from-purple-400 to-purple-600"
+        />
+        <StatCard
+          title="Total Departments"
+          count={data?.data?.length}
+          gradient="from-yellow-400 to-yellow-600"
+        />
+        <StatCard
+          title="Total In Compound"
+          count={gatereport?.data?.civilian}
+          gradient="from-blue-400 to-blue-600"
+        />
+      </div>
 
-      {/* Graphs Section */}
-      <Typography variant="subtitle1" mb={1}>
-        Graph Representation
-      </Typography>
-      <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-        <Box sx={{ flexGrow: 1, marginRight: 2, maxWidth: "750px" }}>
+    
+      <h3 className="text-xl font-semibold mb-4 text-gray-700">Total Student Number</h3>
+      <div className="flex flex-wrap h-[200px] justify-between">
+      
+          <div className="p-4 bg-white rounded-xl shadow-lg">
           <AreaChart
-            width={750}
-            height={200}
-            data={data?.data}
-            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-          >
-            <defs>
-              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis dataKey="department" />
-            <YAxis />
-            <RechartTooltip />
-            <Area
-              type="monotone"
-              dataKey="count"
-              stroke="#8884d8"
-              fillOpacity={1}
-              fill="url(#colorUv)"
-            />
-          </AreaChart>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: 200,
-            height: 200,
-            border: "1px solid #e0e0e0",
-            borderRadius: "8px",
-          }}
-        >
-          <PieChart
-            series={[
-              {
-                data: pieChartData,
-                innerRadius: 30,
-                outerRadius: 70,
-                paddingAngle: 5,
-                cornerRadius: 5,
-                startAngle: -45,
-                endAngle: 225,
-                cx: 90,
-                cy: 90,
-              },
-            ]}
-          />
-        </Box>
-      </Box>
-    </Box>
+              width={700}
+              height={200}
+              data={data?.data}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="orange" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="orange" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="department" />
+              <YAxis />
+              <RechartTooltip />
+              <Area
+                type="monotone"
+                dataKey="count"
+                stroke="orange"
+                strokeWidth={2}
+                fill="url(#colorUv)"
+              />
+            </AreaChart>
+          </div>
+          <div className=" bg-white w-[200px] h-[250px] rounded-xl shadow-lg flex items-center justify-center">
+          <Gauge width={150} height={150}  sx={(theme) => ({
+    [`& .${gaugeClasses.valueText}`]: {
+      fontSize: 40,
+      fontWeight: 'bold',
+      fill: "white"
+    },
+    [`& .${gaugeClasses.valueArc}`]: {
+      fill: 'orange',
+    },
+    [`& .${gaugeClasses.referenceArc}`]: {
+      fill: theme.palette.text.disabled,
+    },
+  })} value={60} text={"60%"}  />
+
+          </div>
+        
+        
+      </div>
+    </div>
   );
 }
 
-const StatCard = ({ title, count }) => {
+const StatCard = ({ title, count, gradient }) => {
   return (
-    <Grid item xs={12} sm={6} md={3}>
-      <Card
-        sx={{
-          height: 150,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          transition: "transform 0.3s",
-          "&:hover": {
-            transform: "scale(1.05)",
-            boxShadow: 6,
-          },
-        }}
-      >
-        <CardContent>
-          <Typography variant="h4" fontWeight="bold" color="primary">
-            {count || 0}
-          </Typography>
-          <Typography variant="subtitle1" color="textSecondary">
-            {title}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Grid>
+    <div
+      className={`p-6 bg-gradient-to-r ${gradient} text-white rounded-xl shadow-lg hover:scale-105 transform transition`}
+    >
+      <h4 className="text-3xl font-semibold mb-2">{count || 0}</h4>
+      <p className="text-sm font-medium">{title}</p>
+    </div>
   );
 };

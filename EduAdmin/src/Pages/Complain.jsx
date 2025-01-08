@@ -11,8 +11,9 @@ import { useState } from "react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import UseFetchComplains from "../../hooks/UseFetchComplains";
-import { FiArrowLeftCircle } from "react-icons/fi";
+import { FiAlignLeft, FiArrowLeftCircle } from "react-icons/fi";
 import IsLoading from "../Components/IsLoading";
+import { FaBars } from "react-icons/fa";
 
 export default function Complain() {
   const { data, isLoading } = UseFetchComplains();
@@ -23,7 +24,7 @@ export default function Complain() {
   // Mutation for deleting a complaint
   const deleteMutation = useMutation({
     mutationFn: (data) => {
-      return axios.delete(`http://localhost:3000/complain/${data.id}`, data);
+      return axios.delete(`http://eduapi.senaycreatives.com/complain/${data.id}`, data);
     },
     onSuccess: () => {
       setSuccess("Complain deleted successfully");
@@ -37,7 +38,7 @@ export default function Complain() {
   // Mutation for updating the status
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }) => {
-      return axios.put(`http://localhost:3000/complain/${id}`, {
+      return axios.put(`http://eduapi.senaycreatives.com/complain/${id}`, {
         status,
       });
     },
@@ -53,7 +54,7 @@ export default function Complain() {
     id: item._id,
     location: item.location,
     complain: item.complain,
-    user: item.user?.firstName,
+    user: item.user?.firstName + " " + item.user?.lastName,
     paymentMethod: item.paymentMethod,
     type: item.type,
     status: item.status,
@@ -61,9 +62,15 @@ export default function Complain() {
   }));
 
   const columns = [
-    { field: "complain", headerName: "Complain", width: 280 },
-    { field: "user", headerName: "Complaint Name", width: 150 },
-    { field: "type", headerName: "Type", width: 120 },
+    { field: "complain", headerName: "Complain", width: 250 , renderCell:(params)=>(
+      <div className="flex items-center w-[250px] text-wrap">
+        <p className="text-black">{params.row.complain}</p>
+      </div>
+    )},
+
+  
+    { field: "user", headerName: "Complaint Name", width: 170 },
+    { field: "type", headerName: "Type", width: 95 },
     {
       field: "AvailableDate",
       headerName: "Available Date",
@@ -73,7 +80,7 @@ export default function Complain() {
     {
       field: "status",
       headerName: "Status",
-      width: 150,
+      width: 120,
       renderCell: (params) => (
         <Select
           value={params.row.status}
@@ -124,25 +131,19 @@ export default function Complain() {
   ];
 
   return (
-    <div style={{ padding: 20 }}>
-      {/* Header Section */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 20,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <FiArrowLeftCircle size={30} style={{ marginRight: 10 }} />
-          <Typography variant="h6" fontWeight="bold">
-            Complaints
-          </Typography>
-        </div>
-      </div>
-
-      {/* Success and Error Messages */}
+    <div className="min-h-screen  bg-white w-full m-6 ">
+   
+<div className="flex justify-between items-center h-[70px] mb-5 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
+              <div className="flex items-center">
+                <FiAlignLeft size={30} color="orange" />
+                
+                <h2 className="ml-4 text-2xl text-black font-bold">{"Complains "}</h2>
+              </div>
+               
+            
+            
+            </div>
+    
       <Snackbar
         open={!!success}
         autoHideDuration={3000}
@@ -164,9 +165,9 @@ export default function Complain() {
         </Alert>
       </Snackbar>
 
-      {/* DataGrid Section */}
+   
       {(isLoading || updateStatusMutation.isLoading) && <IsLoading />}
-      <div style={{ height: 500, width: "100%" }}>
+      <div style={{ height: 530, width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={columns}

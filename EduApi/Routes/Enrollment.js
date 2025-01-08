@@ -1002,7 +1002,49 @@ Router.put("/add/course/:offeringId", async (req, res) => {
     res.status(500).send("Server error: " + err.message);
   }
 });
+Router.put("/remove/course/:offeringId", async (req, res) => {
 
+  const { offeringId } = req.params;
+  const { courseId } = req.body;
+  
+
+  if (!courseId) {
+    return res
+      .status(400)
+      .send("Course ID is required.");
+  }
+
+  try {
+
+    const courseOffering = await CourseOffering.findById(offeringId);
+
+    if (!courseOffering)
+      return res.status(404).send("Course offering not found.");
+
+    // Check if the course already exists in the offering
+
+    const existingCourse = courseOffering.courses.find(
+      (c) => c._id.toString() === courseId
+    );
+    console.log(existingCourse);
+    console.log(courseId)
+    if (!existingCourse) {
+   
+      return res.status(400).send("Course does not exists in this offering.");
+    }
+
+   
+    courseOffering.courses.pull(existingCourse);
+    console.log(courseOffering,"updated");
+
+    await courseOffering.save();
+    res.send(courseOffering);
+  } catch (err) {
+    console.log(err)
+    res.status(500).send("Server error: " + err.message);
+  }
+}
+);
 Router.get("/GetAllOffering", async (req, res) => {
   const offering = await CourseOffering.find();
   res.send(offering);

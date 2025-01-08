@@ -24,7 +24,7 @@ export default function Permission() {
   // Mutation for deleting a permission
   const deleteMutation = useMutation({
     mutationFn: (data) => {
-      return axios.delete(`http://localhost:3000/permissions/${data.id}`, data);
+      return axios.delete(`http://eduapi.senaycreatives.com/permissions/${data.id}`, data);
     },
     onSuccess: () => {
       setSuccess("Permission deleted successfully");
@@ -38,7 +38,7 @@ export default function Permission() {
   // Mutation for updating the permission status
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }) => {
-      return axios.put(`http://localhost:3000/permissions/update/${id}`, {
+      return axios.put(`http://eduapi.senaycreatives.com/permissions/update/${id}`, {
         status,
       });
     },

@@ -18,7 +18,7 @@ export default function Verification() {
 
   const rows = data?.data?.map((student, index) => ({
     id: student._id,
-    _id: index,
+    _id: index+1,
 
     firstName: student.firstName,
     lastName: student.lastName,
@@ -27,15 +27,19 @@ export default function Verification() {
     authid: student.auth._id,
 
     enrollmentDate: student.date,
-    profilePic: student.profilePic, // Assuming profilePic field exists
+    profilePic: student.profilePic, 
   }));
 
   const columns = [
     { field: "_id", headerName: "ID", width: 50 },
-    { field: "firstName", headerName: "First Name", width: 200 },
-    { field: "lastName", headerName: "Last Name", width: 200 },
-    { field: "email", headerName: "Email", width: 250 },
+    { field: "firstName", headerName: "First Name", width: 150 },
+    { field: "lastName", headerName: "Last Name", width: 150 },
+    { field: "email", headerName: "Email", width: 150 },
     { field: "Role", headerName: "Role", width: 150 },
+    { field: "enrollmentDate", headerName: "Registation Date", width: 150,renderCell: (params) => {
+      return new Date(params.value).toLocaleDateString();
+    }
+    },
     {
       field: "actions",
       headerName: "View",
@@ -46,7 +50,7 @@ export default function Verification() {
           variant="contained"
           color="primary"
         >
-          View
+        Update
         </Button>
       ),
     },
@@ -64,30 +68,20 @@ export default function Verification() {
   };
 
   const handleApprove = () => {
-    // Implement the approval logic here
+    
     console.log("Approved student:", selectedStudent);
     handleCloseModal();
   };
 
   return (
-    <div className="w-[80%] relative bg-white flex flex-col mx-[10px] my-[15px]">
-      <div className="text-[20px] w-full h-[50px] flex flex-row font-bold text-black p-3">
-        <div className="flex flex-row w-full items-center">
-          <FaArrowCircleLeft
-            size={30}
-            onClick={() => navigate(-1)}
-            className="text-[26px] font-bold text-black cursor-pointer"
-          />
-          <p className="font-bold text-black mx-3">STUDENT VERIFICATIONS</p>
-        </div>
-      </div>
+    <div className="w-full  flex flex-col  ">
+      
       {isLoading && <IsLoading />}
 
-      <div style={{ height: 700, width: "100%", marginTop: 20 }}>
+      <div style={{ height: 500, width: "100%", marginTop: 20 }}>
         <DataGrid rows={rows} columns={columns} pageSize={5} />
       </div>
 
-      {/* Modal for Viewing and Approving Student Verification */}
       {openModal && (
         <ApprovalPopup
           id={selectedStudent.id}

@@ -6,120 +6,111 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
+import { FiAlignLeft } from 'react-icons/fi';
+import { FaBars, FaBell } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+
 import { FiCoffee, FiFileText, FiLock } from "react-icons/fi";
+import Cafe from "../Components/Cafe";
+import { useState } from "react";
+import AddCafeSubscription from "../Components/AddCafeSubscription";
+import CafeDashboard from "../Components/CafeDashboard";
+import CafeSub from "../Components/CafeSub";
+import CafeController from "../Components/CafeController";
+import Transactions from "./Transactions";
 
 export default function CafeCataloge() {
   const navigate = useNavigate();
+  const [Selected, setSelected] = useState("Dashboard");
+  const [open, setOpen] = useState(false);
+  const selectedOutput = () => {
+    switch (Selected) {
+      case "CafeGate":
+        return <Cafe />;
+      case "CafeSubscription":
+        return <CafeSub/>;
+      case "Add Students":
+        return <AddCafeSubscription/>;
+      case "CafeRule":
+        return <CafeController />;
+      case "Dashboard":
+        return <CafeDashboard />
+      case "Transactions":
+        return <Transactions />;
+
+
+     
+      default:
+        return <Cafe />;
+    }
+  }
 
   return (
-    <Box
-      sx={{
-        width: "80%",
-        bgcolor: "background.paper",
-        display: "flex",
-        flexDirection: "column",
-        padding: 3,
-      }}
-    >
-      {/* Header Section */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          padding: 2,
-          borderBottom: "1px solid #e0e0e0",
-        }}
-      >
-        <FiCoffee size={30} style={{ color: "black" }} />
-        <Typography
-          variant="h5"
-          sx={{ marginLeft: 2, fontWeight: "bold", color: "primary.main" }}
-        >
-          Cafe Dashboard
-        </Typography>
-      </Box>
+    <div className="min-h-screen  bg-white w-screen m-6  overflow-hidden">
+     <div className="flex justify-between items-center h-[70px] mb-5 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
+              <div className="flex items-center">
+                <FiAlignLeft size={30} color="orange" />
+                <h2 className="ml-4 text-2xl text-black font-bold">{Selected==="Dashboard"?"Cafe Dashboard":Selected +" Dashboard"}</h2>
+              </div>
+               
+                <button onClick={
+                  () => setOpen(!open)
+                } className="ml-4 p-2 rounded-full shadow-sm shadow-zinc-100 hover:shadow-zinc-200 transition">
+                  <FaBars size={20} color="black" />
+                </button>
+                {
+                  open && (
+                    <div className="absolute flex w-[300px] py-[10px]  flex-col z-40 top-[90px] right-[20px] bg-white shadow-md  rounded-md ">
+                   <div
+                   onClick={
+                    ()=> setSelected("Dashboard")
+                   }
+                   className="flex w-full h-[50px]  shadow-sm mt-2 shadow-zinc-100 cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">Dashboard</p>
+                    </div>
+                  
+                    <div
+                    onClick={
+                      () => setSelected("CafeSubscription")
+                    }
+                    className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">CafeSubscription</p>
+                    </div>
+                    <div
+                    onClick={
+                      () => setSelected("Transactions")
+                    }
+                    className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">Transactions</p>
+                    </div>
+                    <div
+                    onClick={
+                      ()=>setSelected("CafeGate")
+                    } className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">CafeGate</p>
+                    </div>
+                    <div onClick={
+                      ()=>setSelected("Add Students")
+                    } className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">Add Students</p>
+                    </div>
+                    <div onClick={
+                      ()=>setSelected("CafeRule")
+                    } className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">CafeRule</p>
 
-      {/* Button Grid Section */}
-      <Grid container spacing={3} sx={{ marginTop: 4 }}>
-        {/* Add Subscription Card */}
-        <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ height: "100%" }}>
-            <CardContent
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <FiLock size={40} color="black" />
-              <Typography variant="h6" sx={{ marginTop: 2 }}>
-                Add Subscription
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ marginTop: 2 }}
-                onClick={() => navigate("/cafe/addsubscription")}
-              >
-                Go
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
+                    </div>
+                    </div>
+                  )
+                }
+                
+            
+            </div>
 
-        {/* Get Subscription Report Card */}
-        <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ height: "100%" }}>
-            <CardContent
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <FiFileText size={40} color="black" />
-              <Typography variant="h6" sx={{ marginTop: 2 }}>
-                Subscription Report
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ marginTop: 2 }}
-                onClick={() => navigate("/cafe/subscription")}
-              >
-                View Report
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
+     {selectedOutput()}
+      
 
-        {/* Get Cafe Gate Report Card */}
-        <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ height: "100%" }}>
-            <CardContent
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <FiCoffee size={40} color="black" />
-              <Typography variant="h6" sx={{ marginTop: 2 }}>
-                Cafe Gate Report
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ marginTop: 2 }}
-                onClick={() => navigate("/cafe/gate")}
-              >
-                View Gate Report
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+     
+    </div>
   );
 }

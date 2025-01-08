@@ -1,138 +1,87 @@
 import { useMemo } from "react";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Typography,
-  Grid,
-  Tooltip,
-} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { FiAlignLeft } from "react-icons/fi";
 
 import UseFetchClasses from "../../hooks/UseFetchClasses";
-import IsLoading from "../Components/IsLoading";
+import { FaBars } from "react-icons/fa";
+import { useState } from "react";
+import AcadamicClass from "../Components/AcadamicClass";
 
-export default function Acadamics() {
-  const navigate = useNavigate();
-  const { data, isLoading } = UseFetchClasses();
 
-  // Group classes by department
-  const groupedData = useMemo(() => {
-    if (!data?.data) return {};
+export default function Academics() {
 
-    return data.data.reduce((acc, item) => {
-      const department = item.department || "Unknown Department";
-      if (!acc[department]) {
-        acc[department] = [];
-      }
-      acc[department].push(item);
-      return acc;
-    }, {});
-  }, [data]);
+
+  const [Selected, setSelected] = useState("Dashboard");
+  const [open, setOpen] = useState(false);
 
   return (
-    <div
-      style={{
-        width: "80%",
-        backgroundColor: "#f4f4f4",
-        padding: "20px",
-        height: "100vh", // Set a fixed height
-        overflowY: "auto", // Enable vertical scrolling
-        borderRadius: "10px", // Add rounded corners for better UI
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Add a subtle shadow
-      }}
-    >
-      {/* Page Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <FiAlignLeft
-          size={30}
-          style={{ color: "black", marginRight: "10px" }}
-        />
-        <Typography variant="h4" fontWeight="bold">
-          Current Active Academics
-        </Typography>
-      </div>
+<div className="min-h-screen  bg-white w-screen m-6  ">
+    
+ <div className="flex justify-between items-center h-[70px] mb-5 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
+              <div className="flex items-center">
+                <FiAlignLeft size={30} color="orange" />
+                <h2 className="ml-4 text-2xl text-black font-bold">{Selected==="Dashboard"?"Cafe Dashboard":Selected +" Dashboard"}</h2>
+              </div>
+               
+                <button onClick={
+                  () => setOpen(!open)
+                } className="ml-4 p-2 rounded-full shadow-sm shadow-zinc-100 hover:shadow-zinc-200 transition">
+                  <FaBars size={20} color="black" />
+                </button>
+                {
+                  open && (
+                    <div className="absolute flex w-[300px] py-[10px]  flex-col z-40 top-[90px] right-[20px] bg-white shadow-md  rounded-md ">
+                   <div
+                   onClick={
+                    ()=> setSelected("AcadamicClass")
+                   }
+                   className="flex w-full h-[50px]  shadow-sm mt-2 shadow-zinc-100 cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">Acadamics Class</p>
+                    </div>
+                  
+                    <div
+                    onClick={
+                      () => setSelected("CafeSubscription")
+                    }
+                    className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">CafeSubscription</p>
+                    </div>
+                    <div
+                    onClick={
+                      () => setSelected("Transactions")
+                    }
+                    className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">Transactions</p>
+                    </div>
+                    <div
+                    onClick={
+                      ()=>setSelected("CafeGate")
+                    } className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">CafeGate</p>
+                    </div>
+                    <div onClick={
+                      ()=>setSelected("Add Students")
+                    } className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">Add Students</p>
+                    </div>
+                    <div onClick={
+                      ()=>setSelected("CafeRule")
+                    } className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">CafeRule</p>
 
-      {/* Show loading spinner if data is loading */}
-      {isLoading && <IsLoading />}
+                    </div>
+                    </div>
+                  )
+                }
+                
+            
+            </div>
+            <AcadamicClass/>
 
-      {/* Render each department section */}
-      {Object.keys(groupedData).map((department) => (
-        <div key={department} style={{ marginTop: "30px" }}>
-          {/* Department Header */}
-          <Typography
-            variant="h5"
-            style={{
-              fontWeight: "bold",
-              marginBottom: "15px",
-              color: "#333",
-            }}
-          >
-            {department}
-          </Typography>
 
-          {/* Render class cards for the department */}
-          <Grid container spacing={3}>
-            {groupedData[department].map((item) => (
-              <Grid item xs={12} sm={6} md={4} key={item.id}>
-                <Card
-                  style={{
-                    backgroundColor: "#ffffff",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <CardContent>
-                    <Typography
-                      variant="h6"
-                      style={{ fontWeight: "bold", color: "#000" }}
-                    >
-                      {item.yearLevel === "Graduated"
-                        ? "Graduated"
-                        : `Year ${item.yearLevel}`}
-                    </Typography>
-                    {item.semister && (
-                      <Typography
-                        variant="body2"
-                        style={{ marginTop: "5px", color: "#555" }}
-                      >
-                        Semester {item.semister}
-                      </Typography>
-                    )}
-                  </CardContent>
-                  <CardActions style={{ justifyContent: "center" }}>
-                    {/* Navigate to Course Offering */}
-                    <Tooltip title="View detailed course information">
-                      <Button
-                        variant="contained"
-                        style={{
-                          marginRight: "10px",
-                          backgroundColor: "#1a73e8",
-                          color: "#fff",
-                        }}
-                        onClick={() =>
-                          navigate(
-                            `/Courseoffering/${department}/${item.yearLevel}/${item.semister}`
-                          )
-                        }
-                      >
-                        View Details
-                      </Button>
-                    </Tooltip>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </div>
-      ))}
+  
+
+     
     </div>
   );
 }

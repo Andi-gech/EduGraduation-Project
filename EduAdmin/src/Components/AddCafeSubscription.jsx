@@ -1,8 +1,6 @@
 import {
   Button,
-  Card,
-  CardContent,
-  Typography,
+
   Select,
   MenuItem,
   FormControl,
@@ -15,7 +13,7 @@ import UseFetchUser from "../../hooks/UseFetchUser";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { FiArrowLeftCircle } from "react-icons/fi";
-import IsLoading from "../Components/IsLoading";
+import IsLoading from "./IsLoading";
 
 export default function AddCafeSubscription() {
   const [selectedStudents, setSelectedStudent] = useState([]);
@@ -25,10 +23,20 @@ export default function AddCafeSubscription() {
   const { data, isLoading } = UseFetchUser();
 
   const columns = [
-    { field: "id", headerName: "ID", width: 150 },
+    { field: "no", headerName: "No", width: 50 },
     { field: "firstName", headerName: "First Name", width: 200 },
     { field: "lastName", headerName: "Last Name", width: 200 },
-    { field: "isMilitary", headerName: "Military", width: 120 },
+    { field: "isMilitary", headerName: "Status", width: 120 ,
+      renderCell:(params)=>(
+        <div className="flex items-center">
+          {params.row.isMilitary ? (
+          <p className="text-black">Military</p>
+          ) : (
+          <p className="text-black">Civilian</p>
+          )}
+        </div>
+      )
+    },
     {
       field: "selected",
       headerName: "Select",
@@ -53,6 +61,7 @@ export default function AddCafeSubscription() {
 
   const rows = data?.data?.map((item) => ({
     id: item._id,
+    no: data?.data?.indexOf(item) + 1,
     firstName: item.firstName,
     lastName: item.lastName,
     isMilitary: item.isMilitary,
@@ -60,7 +69,7 @@ export default function AddCafeSubscription() {
 
   const mutation = useMutation({
     mutationFn: (data) =>
-      axios.post("http://localhost:3000/cafe/subscribe/manual", data),
+      axios.post("http://eduapi.senaycreatives.com/cafe/subscribe/manual", data),
     onSuccess: () => {
       setsucess("Subscription Added Successfully");
       setTimeout(() => setsucess(null), 3000);
@@ -72,32 +81,26 @@ export default function AddCafeSubscription() {
   });
 
   return (
-    <div className="w-full bg-gray-100 flex flex-col items-center px-5 ">
-      {(isLoading || mutation.isLoading) && <IsLoading />}
-
-      <Card sx={{ width: "100%", maxWidth: 1200 }}>
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            <FiArrowLeftCircle size={30} className="inline-block mr-2" />
-            Add Subscription
-          </Typography>
-
+    <div className="w-full  flex flex-col px-[20px] ">
+      
+      <div className="flex items-center mb-5 ">
+        <div className="flex flex-col">
+         
           {selectedStudents.length > 0 && (
-            <Typography
-              variant="body1"
-              color="primary"
-              sx={{ marginBottom: 2 }}
-            >
-              Selected Students: {selectedStudents.join(", ")}
-            </Typography>
+           <div className="flex items-center">
+         
+            <h2 className="ml-4 text-sm py-3 text-orange-400 font-bold">
+              {selectedStudents.length} Students Selected
+            </h2>
+          </div>
           )}
 
-          <div style={{ height: 390, width: "100%" }}>
+          <div style={{ height: 370, width: "100%" }}>
             <DataGrid
               rows={rows}
               columns={columns}
               pageSize={5}
-              checkboxSelection
+              
             />
           </div>
 
@@ -132,8 +135,8 @@ export default function AddCafeSubscription() {
               Add Subscription
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <Snackbar
         open={sucess !== null}

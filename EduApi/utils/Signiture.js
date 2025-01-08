@@ -23,13 +23,13 @@ function signData(data) {
 }
 
 function verifyData(data, signature) {
-  console.log(data, signature);
+  
   try {
     const verify = crypto.createVerify("SHA256");
     verify.update(data);
     verify.end();
     const isVerified = verify.verify(publicKey, signature, "hex");
-    console.log("Verification result:", isVerified);
+   
     return isVerified;
   } catch (error) {
     console.log("Error in verify:", error);

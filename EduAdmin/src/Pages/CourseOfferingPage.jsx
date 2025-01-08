@@ -11,12 +11,19 @@ import { DataGrid } from "@mui/x-data-grid";
 import { FaPlus, FaEye } from "react-icons/fa";
 import { FiAlignLeft } from "react-icons/fi";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useMutation,useQueryClient } from "@tanstack/react-query";
 import UseFetchCourseOffering from "../../hooks/UseFetchCourseOffering";
 import CourseDetailPopup from "../Popups/CourseDetailPopup";
 import AddCoursePopup from "../Popups/AddCoursePopup";
 
+
 export default function CourseOfferingPage() {
   const { department, year, semester } = useParams();
+  const [sucess, setsucess] = useState(null);
+  const [error, seterror] = useState(null);
+  const queryClient = useQueryClient();
+
   const { data, isLoading } = UseFetchCourseOffering(
     department,
     year,
@@ -73,6 +80,23 @@ export default function CourseOfferingPage() {
         </Button>
       ),
     },
+    {
+      field: "action",
+      headerName: "Delete",
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => {mutation.mutate({
+            courseId: params.row.id,
+          })
+        console.log(params.row.id)}}
+        >
+          Delete
+        </Button>
+      ),
+    }
   ];
 
   const handleClose = () => {
@@ -80,77 +104,78 @@ export default function CourseOfferingPage() {
     setCourse(null);
     setAddCourse(false);
   };
-
+  const getsuffixtext = (semester) => {
+   switch (semester) {
+      case "1":
+        return "st";
+      case "2":
+        return "nd";
+      case "3":
+        return "rd";
+      default:
+        return "th";
+    }
+  };
+  const mutation = useMutation({
+    mutationFn: (datas) =>
+      axios.put(
+        `http://192.168.1.7:3000/enrollment/remove/course/${data?.data?._id}`,
+        datas
+      ),
+    mutationKey: "addCourse",
+    onSuccess: (data) => {
+      console.log("Course added successfully!", data);
+      queryClient.invalidateQueries("addCourse");
+      onClose();
+    },
+    onError: (error) => {
+      console.error("Failed to add course", error);
+    },
+  });
+  
   return (
-    <Box
-      sx={{
-        width: "80%",
+    <div className="w-4/5 mx-auto p-6 bg-white rounded-lg shadow-lg">
+     
+      <div className="flex justify-between items-center h-[70px] mb-5 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
+              <div className="flex items-center">
+                <FiAlignLeft size={30} color="orange" />
+                
+                <h2 className="ml-4 text-2xl text-black font-bold">{data?.data?.yearLevel + getsuffixtext(data?.data?.yearLevel) + " Year " + data?.data?.semister + getsuffixtext(data?.data?.semister)+" Semister Course Curriculum " }</h2>
+              </div>
+               
+            
+            
+            </div>
 
-        mx: "auto",
-
-        p: 3,
-        bgcolor: "#f9f9f9",
-        borderRadius: 2,
-        boxShadow: 3,
-      }}
-    >
-      {/* Header */}
-      <Grid container alignItems="center" justifyContent="space-between" mb={2}>
-        <Grid item display="flex" alignItems="center">
-          <FiAlignLeft size={30} style={{ marginRight: "10px" }} />
-          <Typography variant="h5" fontWeight="bold">
-            Year {year} {department} Course Offerings
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<FaPlus />}
-            onClick={() => setAddCourse(true)}
-          >
-            Add New Course
-          </Button>
-        </Grid>
-      </Grid>
-
-      {/* Semester & Credit Hours Info */}
-      <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-        <Typography variant="body1" fontWeight="bold">
-          Semester: {semester}
-        </Typography>
-        <Typography variant="body1" fontWeight="bold" color="error">
+     
+      <div className="p-4 bg-white rounded shadow mb-4">
+       <p
+          className={`font-semibold ${
+            calculateTotalCreditHours(data?.data?.courses) > 18
+              ? "text-red-600"
+              : ""
+          }`}
+        >
           Total Credit Hours: {calculateTotalCreditHours(data?.data?.courses)}{" "}
           {calculateTotalCreditHours(data?.data?.courses) > 18 &&
             "(Overloaded)"}
-        </Typography>
-      </Paper>
+        </p>
+      </div>
 
-      {/* Loading Indicator */}
-      {isLoading && (
-        <Box display="flex" justifyContent="center" my={3}>
-          <CircularProgress />
-        </Box>
-      )}
+    
+      
+    
+        <div className="overflow-x-auto h-[430px] bg-white rounded shadow">
+        <DataGrid rows={rows} columns={columns} pageSize={10} />
+        </div>
+      
 
-      {/* Data Grid */}
-      {!isLoading && (
-        <Box sx={{ height: 400, width: "100%" }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={5}
-            disableSelectionOnClick
-          />
-        </Box>
-      )}
-
-      {/* Add Course Popup */}
+    
       {addCourse && (
         <AddCoursePopup onClose={handleClose} offeringid={data?.data?._id} />
       )}
 
-      {/* Course Detail Popup */}
+     
       {viewDetail && (
         <CourseDetailPopup
           onClose={handleClose}
@@ -158,6 +183,6 @@ export default function CourseOfferingPage() {
           course={course}
         />
       )}
-    </Box>
+    </div>
   );
 }

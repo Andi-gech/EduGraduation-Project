@@ -39,7 +39,7 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const { height } = useWindowDimensions();
   const heightS = height > 700 ? 300 : 250;
-
+console.log(data?.data)
   const [isModalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     console.log("Home.js: 1");

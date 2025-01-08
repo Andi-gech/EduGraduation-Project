@@ -52,7 +52,7 @@ const server = http.createServer(app);
 // Initialize Socket.io
 initializeSocket(server);
 
-const url = "192.168.1.15";
+const url = "192.168.1.7";
 
 connect().then(() => {
   server.listen(port, () => {

@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function UseFetchclub() {
   const Fetchqr = async () => {
-    return await axios.get(`http://localhost:3000/Social`);
+    return await axios.get(`http://eduapi.senaycreatives.com/Social`);
   };
 
   return useQuery({

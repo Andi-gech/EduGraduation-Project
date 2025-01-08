@@ -9,26 +9,23 @@ export default function UserMealsTable({ data }) {
     return date.toLocaleDateString(); // format like "MM/DD/YYYY"
   };
 
-  // Function to handle date input changes
+  
   const handleDateChange = (e) => {
     setFilterDate(e.target.value);
   };
 
-  // Function to filter data by the selected date
   const filterDataByDate = (data) => {
-    if (!filterDate) return data; // if no filter date is selected, return all data
-
-    // Filter the data based on the selected date (ignores time)
+    if (!filterDate) return data; 
     return data.filter((item) => {
       const itemDate = new Date(item.Date).toLocaleDateString();
       return itemDate === new Date(filterDate).toLocaleDateString();
     });
   };
 
-  // Filtered data based on the selected date
+  
   const filteredData = filterDataByDate(data);
 
-  // Inline style objects
+ 
   const styles = {
     container: {
       width: "80%",

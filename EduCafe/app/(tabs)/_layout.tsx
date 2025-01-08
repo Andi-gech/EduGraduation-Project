@@ -16,22 +16,44 @@ export default function TabLayout() {
     <QueryClientProvider client={queryClient}>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+          tabBarActiveTintColor: "red",
           headerShown: false,
         }}
       >
         <Tabs.Screen
           name="index"
           options={{
-            title: "Home",
+            title: "Cafe",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                name={focused ? "home" : "home-outline"}
+                name={focused ? "qr-code" : "qr-code"}
                 color={color}
               />
             ),
           }}
         />
+        <Tabs.Screen
+          name="Gate"
+          options={{
+            title: "Gate-Out",
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                name={focused ? "qr-code-sharp" : "qr-code-sharp"}
+                color={color}
+              />
+            ),
+          }} />
+          <Tabs.Screen
+          name="GateIn"
+          options={{
+            title: "Gate-In",
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                name={focused ? "qr-code-sharp" : "qr-code-sharp"}
+                color={color}
+              />
+            ),
+          }} />
       </Tabs>
     </QueryClientProvider>
   );

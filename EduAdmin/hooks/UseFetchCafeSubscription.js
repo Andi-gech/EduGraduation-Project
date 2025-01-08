@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function UseFetchCafeSubscription() {
   const Fetchqr = async () => {
-    return await axios.get(`http://localhost:3000/cafe/subscriptions/report`);
+    return await axios.get(`http://eduapi.senaycreatives.com/cafe/subscriptions/report`);
   };
 
   return useQuery({

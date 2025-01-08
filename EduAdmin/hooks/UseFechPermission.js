@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function UseFetchpermissions() {
   const Fetchqr = async () => {
-    return await axios.get(`http://localhost:3000/permissions/new`);
+    return await axios.get(`http://eduapi.senaycreatives.com/permissions/new`);
   };
 
   return useQuery({

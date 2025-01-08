@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function UseFetchIdCardRequests() {
   const Fetchqr = async () => {
-    return await axios.get(`http://localhost:3000/user/getAll/Digitalid`);
+    return await axios.get(`http://192.168.1.7:3000/user/getAll/Digitalid`);
   };
 
   return useQuery({

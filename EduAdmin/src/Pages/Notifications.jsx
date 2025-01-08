@@ -35,14 +35,14 @@ export default function Notifications() {
     isLoading,
     isError,
   } = useQuery(["notifications"], async () => {
-    const response = await axios.get("http://localhost:3000/Notification/all");
+    const response = await axios.get("http://eduapi.senaycreatives.com/Notification/all");
     return response.data;
   });
 
   // Mutation to add a new notification
   const addMutation = useMutation(
     (newNotification) =>
-      axios.post("http://localhost:3000/Notification/all", newNotification),
+      axios.post("http://eduapi.senaycreatives.com/Notification/all", newNotification),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["notifications"]);

@@ -168,7 +168,7 @@ export default function Id() {
 
             <ViewShot
               ref={backShotRef}
-              className="w-full flex items-center"
+       
               options={{ format: "png", quality: 1 }}
             >
               <View className="w-[95%] h-[220px] shadow-md flex items-center justify-center overflow-hidden relative rounded-md bg-zinc-100">

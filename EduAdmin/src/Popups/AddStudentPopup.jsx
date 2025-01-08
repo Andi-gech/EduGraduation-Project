@@ -1,25 +1,7 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
-  TextField,
-  Checkbox,
-  FormControlLabel,
-  Stepper,
-  Step,
-  StepLabel,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
-import { AiFillCloseCircle } from "react-icons/ai";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import IsLoading from "../Components/IsLoading";
+import svg from "../assets/student.svg";
 
 const initialStudentData = {
   firstName: "",
@@ -37,57 +19,53 @@ const initialStudentData = {
   email: "",
   password: "",
   agreeToPrivacy: false,
-  studentId: "", // Add the studentId field
+  studentId: "",
 };
 
-export default function AddStudentPopup({ open, onClose }) {
+export default function AddStudentForm() {
   const [activeStep, setActiveStep] = useState(0);
   const [studentData, setStudentData] = useState(initialStudentData);
-  const transformStudentDataForBackend = (studentData) => {
-    return {
-      user: {
-        firstName: studentData.firstName,
-        lastName: studentData.lastName,
-        gender: studentData.gender,
-        isMilitary: studentData.isMilitary,
-        studentid: studentData.studentId,
-      },
-      auth: {
-        email: studentData.email,
-        password: studentData.password,
-        Role: "student",
-      },
-      class: {
-        department: studentData.department,
-        yearLevel: String(studentData.yearLevel),
-        semister: String(studentData.semester), // Fix typo (semister -> semester)
-      },
-    };
-  };
 
-  const steps = ["User Profile", "Authentication Details"];
+  const transformStudentDataForBackend = (studentData) => ({
+    user: {
+      firstName: studentData.firstName,
+      lastName: studentData.lastName,
+      gender: studentData.gender,
+      isMilitary: studentData.isMilitary,
+      studentid: studentData.studentId,
+    },
+    auth: {
+      email: studentData.email,
+      password: studentData.password,
+      Role: "student",
+    },
+    class: {
+      department: studentData.department,
+      yearLevel: String(studentData.yearLevel),
+      semester: String(studentData.semester),
+    },
+  });
+
+  const steps = ["Basic Details", "Class Details", "Authentication Details"];
   const departments = [
     "Computer Science",
-    "electronics",
-    "civil",
+    "Electronics",
+    "Civil",
     "Mechanical",
     "Electrical",
     "Aeronautical",
     "Production",
-    "chemical",
+    "Chemical",
     "Motor Vehicles",
   ];
   const semesters = [
     { value: 1, label: "Fall" },
     { value: 2, label: "Spring" },
   ];
-
   const yearLevels = [1, 2, 3, 4, 5];
 
-  // Mutation for submitting the student data
-  const mutation = useMutation(
-    (newStudent) =>
-      axios.post("http://localhost:3000/auth/register", newStudent) // Replace with your actual API endpoint
+  const mutation = useMutation((newStudent) =>
+    axios.post("http://eduapi.senaycreatives.com/auth/register", newStudent)
   );
 
   const handleNext = () => {
@@ -95,12 +73,9 @@ export default function AddStudentPopup({ open, onClose }) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     } else {
       const formattedData = transformStudentDataForBackend(studentData);
-      console.log("Student data to be submitted", formattedData);
-      // Trigger the mutation when submitting
       mutation.mutate(formattedData, {
         onSuccess: () => {
           console.log("Student data submitted successfully!");
-          onClose(); // Close the popup
         },
         onError: (error) => {
           console.error("Failed to submit student data", error);
@@ -122,182 +97,213 @@ export default function AddStudentPopup({ open, onClose }) {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+  const Generate4digit = () => {
+    const random = Math.floor(1000 + Math.random() * 9000);
+    setStudentData((prevData) => ({
+      ...prevData,
+      studentId: random,
+    }));
+  }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      {mutation.isLoading && <IsLoading />}
-      <DialogTitle>
-        <div className="flex items-center justify-between">
-          Add Student
-          <AiFillCloseCircle
-            className="text-red-600 cursor-pointer"
-            onClick={onClose}
-          />
-        </div>
-      </DialogTitle>
-      <DialogContent>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+     <div className="flex justify-between items-center">
+        
+        
+    
+          
+         
+    <div className="max-w-[350px] mx-auto p-6 bg-gradient-to-r from-purple-200 to-purple-100 shadow-lg rounded-lg">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Add Student
+      </h1>
 
-        {activeStep === 0 && (
-          <div className="flex flex-col space-y-4 mt-4">
-            <TextField
-              label="First Name"
-              name="firstName"
-              value={studentData.firstName}
-              onChange={handleChange}
-              fullWidth
-            />
-            <TextField
-              label="Last Name"
-              name="lastName"
-              value={studentData.lastName}
-              onChange={handleChange}
-              fullWidth
-            />
-            <TextField
-              label="Gender"
-              name="gender"
-              value={studentData.gender}
-              onChange={handleChange}
-              fullWidth
-            />
-            <TextField
-              label="Student ID"
-              name="studentId"
-              value={studentData.studentId}
-              onChange={handleChange}
-              fullWidth
-            />
-
-            <FormControl fullWidth>
-              <InputLabel>Department</InputLabel>
-              <Select
-                name="department"
-                value={studentData.department}
-                onChange={handleChange}
-                fullWidth
-              >
-                {departments.map((dept) => (
-                  <MenuItem key={dept} value={dept}>
-                    {dept}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Semester</InputLabel>
-              <Select
-                name="semester"
-                value={studentData.semester}
-                onChange={handleChange}
-                fullWidth
-              >
-                {semesters.map((sem) => (
-                  <MenuItem key={sem.value} value={sem.value}>
-                    {sem.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <InputLabel>Year Level</InputLabel>
-              <Select
-                name="yearLevel"
-                value={studentData.yearLevel}
-                onChange={handleChange}
-                fullWidth
-              >
-                {yearLevels.map((year) => (
-                  <MenuItem key={year} value={year}>
-                    {`${year}${
-                      year === 1
-                        ? "st"
-                        : year === 2
-                        ? "nd"
-                        : year === 3
-                        ? "rd"
-                        : "th"
-                    } Year`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="isMilitary"
-                  checked={studentData.isMilitary}
-                  onChange={handleChange}
-                />
-              }
-              label="Military"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="incomponund"
-                  checked={studentData.incomponund}
-                  onChange={handleChange}
-                />
-              }
-              label="In Compound"
-            />
+     
+      <div className="flex justify-center space-x-2 mb-6">
+        {steps.map((label, index) => (
+          <div
+            key={label}
+            className={`h-8 w-8 flex items-center justify-center rounded-full text-sm font-bold transition-colors duration-300
+              ${activeStep === index ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600"}`}
+          >
+            {index + 1}
           </div>
-        )}
+        ))}
+      </div>
+
+   
+      <div className="space-y-6">
+      {activeStep === 0 && (
+  <div className="space-y-4">
+    <input
+      className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+      type="text"
+      name="firstName"
+      placeholder="First Name"
+      value={studentData.firstName}
+      onChange={handleChange}
+    />
+    <input
+      className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+      type="text"
+      name="lastName"
+      placeholder="Last Name"
+      value={studentData.lastName}
+      onChange={handleChange}
+    />
+    <div>
+      <label className="block text-gray-700 font-medium mb-2">Gender</label>
+      <div className="flex space-x-4">
+        <label className="flex items-center space-x-2">
+          <input
+            type="radio"
+            name="gender"
+            value="Male"
+            checked={studentData.gender === "Male"}
+            onChange={handleChange}
+            className="h-4 w-4 text-blue-600 focus:ring focus:ring-blue-200"
+          />
+          <span>Male</span>
+        </label>
+        <label className="flex items-center space-x-2">
+          <input
+            type="radio"
+            name="gender"
+            value="Female"
+            checked={studentData.gender === "Female"}
+            onChange={handleChange}
+            className="h-4 w-4 text-blue-600 focus:ring focus:ring-blue-200"
+          />
+          <span>Female</span>
+        </label>
+      </div>
+    </div>
+    <div  className="relative">
+    <input
+      className="w-full  p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+      type="text"
+      name="studentId"
+      placeholder="Student ID"
+      value={studentData.studentId}
+      onChange={handleChange}
+    />
+    <div onClick={Generate4digit} className="absolute h-[40px] cursor-pointer  mt-[5px] mx-3 px-3 rounded-md  bg-zinc-200 top-0 right-0 flex items-center pr-3">
+      <p className="text-zinc-900">Generate</p>
+      </div>
+    
+      
+    </div>
+     
+    <label className="flex items-center space-x-2">
+      <input
+       type="radio"
+        name="isMilitary"
+        checked={studentData.isMilitary}
+        onChange={handleChange}
+        className="h-4 w-4 text-blue-600 focus:ring focus:ring-blue-200"
+      />
+      <span>Military</span>
+    </label>
+  </div>
+)}
+
 
         {activeStep === 1 && (
-          <div className="flex flex-col space-y-4 mt-4">
-            <TextField
-              label="Email"
-              name="email"
-              type="email"
-              value={studentData.email}
+          <div className="space-y-4">
+            <select
+              className="w-full p-3 border bg-white border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              name="department"
+              value={studentData.department}
               onChange={handleChange}
-              fullWidth
-            />
-            <TextField
-              label="Password"
-              name="password"
-              type="password"
-              value={studentData.password}
+            >
+              <option value="">Select Department</option>
+              {departments.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </select>
+            <select
+              className="w-full p-3 border bg-white border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              name="semester"
+              value={studentData.semester}
               onChange={handleChange}
-              fullWidth
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="agreeToPrivacy"
-                  checked={studentData.agreeToPrivacy}
-                  onChange={handleChange}
-                />
-              }
-              label="I agree to the privacy policy"
-            />
+            >
+              <option value="">Select Semester</option>
+              {semesters.map((sem) => (
+                <option key={sem.value} value={sem.value}>
+                  {sem.label}
+                </option>
+              ))}
+            </select>
+            <select
+              className="w-full p-3 border bg-white border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              name="yearLevel"
+              value={studentData.yearLevel}
+              onChange={handleChange}
+            >
+              <option value="">Select Year Level</option>
+              {yearLevels.map((year) => (
+                <option key={year} value={year}>
+                  {year} Year
+                </option>
+              ))}
+            </select>
           </div>
         )}
 
-        <div className="flex justify-between mt-4">
-          <Button disabled={activeStep === 0} onClick={handleBack}>
-            Back
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleNext}
-            disabled={activeStep === 1 && !studentData.agreeToPrivacy}
-          >
-            {activeStep === steps.length - 1 ? "Submit" : "Next"}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+        {activeStep === 2 && (
+          <div className="space-y-4">
+            <input
+              className="w-full p-3 border bg-white border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={studentData.email}
+              onChange={handleChange}
+            />
+            <input
+              className="w-full p-3 border  border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={studentData.password}
+              onChange={handleChange}
+            />
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="agreeToPrivacy"
+                checked={studentData.agreeToPrivacy}
+                onChange={handleChange}
+                className="h-4 w-4 text-blue-600 focus:ring focus:ring-blue-200"
+              />
+              <span>I agree to the privacy policy</span>
+            </label>
+          </div>
+        )}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-6">
+        <button
+          className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg focus:outline-none focus:ring focus:ring-gray-200 disabled:opacity-50"
+          disabled={activeStep === 0}
+          onClick={handleBack}
+        >
+          Back
+        </button>
+        <button
+          className={`px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-200 transition-colors duration-300
+            ${activeStep === steps.length - 1 ? "bg-green-500 text-white" : "bg-blue-500 text-white"}`}
+          onClick={handleNext}
+          disabled={activeStep === 2 && !studentData.agreeToPrivacy}
+        >
+          {activeStep === steps.length - 1 ? "Submit" : "Next"}
+        </button>
+      </div>
+    </div>
+    <img src={svg} className="flex w-[60%] h-[500px]  items-center"/>
+     
+  </div>
   );
 }

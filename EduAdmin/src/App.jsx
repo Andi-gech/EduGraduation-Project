@@ -6,43 +6,43 @@ import Complain from "./Pages/Complain";
 import Student from "./Pages/Student";
 import Department from "./Pages/Department";
 import CafeCataloge from "./Pages/CafeCataloge";
-import CafeSub from "./Pages/CafeSub";
-import Cafe from "./Pages/Cafe";
-import AddCafeSubscription from "./Pages/AddCafeSubscription";
+
 import Acadamics from "./Pages/Acadamics";
 import CourseOfferingPage from "./Pages/CourseOfferingPage";
 import Verification from "./Pages/Verification";
-import DigitalIdCards from "./Pages/DigitalIdCards";
+
 
 import ScialClubs from "./Pages/ScialClubs";
 import Event from "./Pages/Event";
 import Notifications from "./Pages/Notifications";
 import Permission from "./Pages/Permission";
 
+import GateList from "./Pages/GateList";
+
 function App() {
   return (
-    <div className=" flex flex-row overflow-hidden bg-white flex-1 w-screen h-screen">
+    <div className=" flex flex-row overflow-hidden bg-white font-Roboto flex-1 w-screen h-screen">
       <SideHeaders />
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/complain" element={<Complain />} />
         <Route path="/cafe" element={<CafeCataloge />} />
+        <Route path="/Gate/report" element={<GateList/>} />
         <Route path="/student" element={<Student />} />
         <Route path="/department" element={<Department />} />
-        <Route path="/cafe/subscription" element={<CafeSub />} />
-        <Route path="/cafe/addsubscription" element={<AddCafeSubscription />} />
-        <Route path="/cafe/gate" element={<Cafe />} />
-        <Route path="/Acadamics" element={<Acadamics />} />
+      
+        <Route path="/academics" element={<Acadamics />} />
         <Route
           path="/CourseOffering/:department/:year/:semester"
           element={<CourseOfferingPage />}
         />
-        <Route path="/student/IdentityCard" element={<DigitalIdCards />} />
+      
         <Route path="/student/verifications" element={<Verification />} />
         <Route path="/SocialClubs" element={<ScialClubs />} />
         <Route path="/Event" element={<Event />} />
         <Route path="/Notification" element={<Notifications />} />
         <Route path="/Permission" element={<Permission />} />
+
         <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </div>
