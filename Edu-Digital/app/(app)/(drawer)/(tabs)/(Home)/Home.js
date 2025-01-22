@@ -95,7 +95,7 @@ console.log(data?.data)
     error: CafeStatusError,
   } = UseFetchCafeStatus();
 
-  const isFirstFiveDaysOfMonth = new Date().getDate() <= 5;
+  const isFirstFiveDaysOfMonth = new Date().getDate() <= 15;
   const isAlreadySubscribed = cafestatus?.data?.status;
   const blurhash = "L8Glk-009GQ+MvxoVDD$*J+uxu9E";
   const isCafeSubscribeBtnActive = useMemo(() => {

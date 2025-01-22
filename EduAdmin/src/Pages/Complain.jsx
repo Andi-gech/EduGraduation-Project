@@ -5,15 +5,15 @@ import {
   MenuItem,
   Snackbar,
   Alert,
-  Typography,
+ 
 } from "@mui/material";
 import { useState } from "react";
-import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import UseFetchComplains from "../../hooks/UseFetchComplains";
-import { FiAlignLeft, FiArrowLeftCircle } from "react-icons/fi";
+
 import IsLoading from "../Components/IsLoading";
-import { FaBars } from "react-icons/fa";
+import Api from "../utils/Api";
+import { VscFeedback } from "react-icons/vsc";
 
 export default function Complain() {
   const { data, isLoading } = UseFetchComplains();
@@ -24,7 +24,7 @@ export default function Complain() {
   // Mutation for deleting a complaint
   const deleteMutation = useMutation({
     mutationFn: (data) => {
-      return axios.delete(`http://eduapi.senaycreatives.com/complain/${data.id}`, data);
+      return Api.delete(`/complain/${data.id}`, data);
     },
     onSuccess: () => {
       setSuccess("Complain deleted successfully");
@@ -38,7 +38,7 @@ export default function Complain() {
   // Mutation for updating the status
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }) => {
-      return axios.put(`http://eduapi.senaycreatives.com/complain/${id}`, {
+      return Api.put(`/complain/${id}`, {
         status,
       });
     },
@@ -131,11 +131,11 @@ export default function Complain() {
   ];
 
   return (
-    <div className="min-h-screen  bg-white w-full m-6 ">
+    <div className="min-h-screen  relative bg-white w-full m-6 ">
    
 <div className="flex justify-between items-center h-[70px] mb-5 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
               <div className="flex items-center">
-                <FiAlignLeft size={30} color="orange" />
+                <VscFeedback size={30} color="orange" />
                 
                 <h2 className="ml-4 text-2xl text-black font-bold">{"Complains "}</h2>
               </div>

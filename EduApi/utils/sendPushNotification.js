@@ -5,6 +5,23 @@ const { Expo } = require("expo-server-sdk");
 const expo = new Expo({
   accessToken: process.env.EXPO_ACCESS_TOKEN,
 });
+async function sendtoadmin(notificationData) {
+  try{
+   await Notifications.create({
+      notification: notificationData,
+      type: "General",
+      user: null,
+      isForAdmin: true,
+
+
+    })
+  }
+  catch (error) {
+    console.error("Error sending push notification:", error);
+    throw error;
+  }
+}
+
 
 async function sendPushNotification(userId, notificationData) {
   try {
@@ -41,8 +58,15 @@ async function sendPushNotificationToAll(notificationData) {
     const users = await User.find({ PushToken: { $exists: true } }); // Get all users with push tokens
     if (!users.length) throw new Error("No users found with push tokens");
 
-    const groupedMessages = {}; // Group messages by experienceId
+    const groupedMessages = {}; 
     const invalidTokens = [];
+    Notifications.create({
+      notification: notificationData,
+      type: "General",
+      user: null,
+
+
+    })
 
     for (const user of users) {
       const pushToken = user.PushToken;
@@ -92,4 +116,5 @@ async function sendPushNotificationToAll(notificationData) {
 module.exports = {
   sendPushNotification,
   sendPushNotificationToAll,
+  sendtoadmin,
 };

@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
   },
   studentid: {
     type: String,
-    required: true,
+   
   },
   dob: {
     type: Date,
@@ -46,6 +46,22 @@ const userSchema = new mongoose.Schema({
   },
   PushToken: {
     type: String,
+  },
+  department: {
+    type: String,
+    enum: [
+      "Computer Science",
+      "electronics",
+      "civil",
+      "Mechanical",
+      "Electrical",
+      "Aeronautical",
+      "Production",
+      "chemical",
+      "Motor Vehicles",
+      
+    ],
+    nullable: true,
   },
   Enrollment: [
     {
@@ -80,6 +96,7 @@ const validateUser = (user) => {
     gender: Joi.string().valid("Male", "Female").required(),
     phone: Joi.number().optional(),
     studentid: Joi.string().required(),
+    department: Joi.string().optional(),
 
     isMilitary: Joi.boolean().default(false),
     Enrollment: Joi.array().items(Joi.string()).optional(),

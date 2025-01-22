@@ -1,33 +1,17 @@
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import Api from "../utils/Api";
+import { FiBell, FiTrash } from "react-icons/fi";
+import IsLoading from "../Components/IsLoading";
+import { IoMdNotificationsOutline } from "react-icons/io";
 
 export default function Notifications() {
   const queryClient = useQueryClient();
 
   const [notificationContent, setNotificationContent] = useState("");
-  const [notificationType, setNotificationType] = useState("normal"); // Default to normal
+  const [notificationType, setNotificationType] = useState("normal");
   const [notificationTypeOption, setNotificationTypeOption] =
-    useState("general"); // Default to General
+    useState("general");
 
   // Fetch Notifications
   const {
@@ -35,29 +19,13 @@ export default function Notifications() {
     isLoading,
     isError,
   } = useQuery(["notifications"], async () => {
-    const response = await axios.get("http://eduapi.senaycreatives.com/Notification/all");
+    const response = await Api.get("/Notification/all");
     return response.data;
   });
 
   // Mutation to add a new notification
   const addMutation = useMutation(
-    (newNotification) =>
-      axios.post("http://eduapi.senaycreatives.com/Notification/all", newNotification),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["notifications"]);
-        setNotificationContent("");
-      },
-    }
-  );
-
-  // Mutation to add a push notification
-  const addPushNotificationMutation = useMutation(
-    (newPushNotification) =>
-      axios.post(
-        "http://192.168.1.15:3000/Notification/all",
-        newPushNotification
-      ),
+    (newNotification) => Api.post("/Notification/all", newNotification),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["notifications"]);
@@ -68,7 +36,7 @@ export default function Notifications() {
 
   // Mutation to delete a notification
   const deleteMutation = useMutation(
-    (id) => axios.delete(`http://192.168.1.15:3000/Notification/${id}`),
+    (id) => Api.delete(`/Notification/${id}`),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["notifications"]);
@@ -77,174 +45,114 @@ export default function Notifications() {
   );
 
   // Handle input change
-  const handleChange = (e) => {
-    setNotificationContent(e.target.value);
-  };
-
-  // Handle notification type change
-  const handleTypeChange = (e) => {
-    setNotificationType(e.target.value);
-  };
-
-  // Handle notification type option change (General / Notice)
-  const handleNotificationTypeOptionChange = (e) => {
-    setNotificationTypeOption(e.target.value);
-  };
+  const handleChange = (e) => setNotificationContent(e.target.value);
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (notificationType === "normal") {
-      addMutation.mutate({
-        notification: notificationContent,
-        type: notificationTypeOption, // Add type to the notification payload
-      });
-    } else {
-      addPushNotificationMutation.mutate({ notification: notificationContent });
-    }
+    addMutation.mutate({
+      notification: notificationContent
+    });
   };
 
   // Handle notification deletion
-  const handleDelete = (id) => {
-    deleteMutation.mutate(id);
-  };
+  const handleDelete = (id) => deleteMutation.mutate(id);
 
-  if (isLoading)
+  if (isError) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500 font-semibold">
+          Error fetching notifications
+        </p>
+      </div>
     );
-
-  if (isError)
-    return (
-      <Typography color="error" align="center" mt={4}>
-        Error fetching notifications
-      </Typography>
-    );
+  }
 
   return (
-    <Box sx={{ p: 4, backgroundColor: "#f4f6f9", minHeight: "100vh" }}>
-      <Typography
-        variant="h4"
-        align="center"
-        gutterBottom
-        sx={{ fontWeight: "bold", color: "primary.main" }}
-      >
-        Notifications Management
-      </Typography>
+    <div className="min-h-screen bg-white p-6">
+       <div className="flex justify-between items-center h-[70px] mb-8 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
+                     <div className="flex items-center">
+                       <IoMdNotificationsOutline size={30} color="orange" />
+                       
+                       <h2 className="ml-4 text-2xl text-black font-bold">Notification</h2>
+                     </div>
+                     </div>
 
-      <Grid container spacing={4}>
-        {/* Notifications List */}
-        <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 3, height: 400, overflowY: "scroll" }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
-              Existing Notifications
-            </Typography>
-            <List>
-              {notifications.map((notification) => (
-                <ListItem
-                  key={notification._id}
-                  divider
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+        <div className="bg-white relative overflow-y-auto h-[500px] w-[500px] rounded-lg shadow-lg px-6">
+          <h2 className="text-xl bg-white sticky top-0 left-0 w-full h-[40px] font-semibold mb-4">Existing Notifications</h2>
+          {isLoading && <IsLoading />}
+          <ul className="space-y-4">
+            {notifications?.length === 0 && (
+              <p className="text-gray-500">No notifications available</p> )}
+            {notifications?.map((notification) => (
+              <li
+                key={notification._id}
+                className="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-sm"
+              >
+                <span>{notification.notification}</span>
+                <button
+                  className="text-red-500 hover:text-red-700"
+                  onClick={() => handleDelete(notification._id)}
+                  disabled={deleteMutation.isLoading}
                 >
-                  <ListItemText primary={notification.notification} />
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      color="error"
-                      onClick={() => handleDelete(notification._id)}
-                      disabled={deleteMutation.isLoading}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
-        </Grid>
+                  <FiTrash />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        {/* Notification Form */}
-        <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
-              Add a New Notification
-            </Typography>
-            <form onSubmit={handleSubmit}>
-              {/* Notification Type Selector */}
-              <FormControl fullWidth sx={{ mb: 3 }}>
-                <InputLabel>Notification Type</InputLabel>
-                <Select
-                  value={notificationType}
-                  onChange={handleTypeChange}
-                  label="Notification Type"
+      
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">Add a New Notification</h2>
+          <form onSubmit={handleSubmit}>
+          
+
+            {notificationType === "normal" && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Notification Type Option
+                </label>
+                <select
+                  value={notificationTypeOption}
+                  onChange={(e) => setNotificationTypeOption(e.target.value)}
+                  className="w-full mt-2 p-2 border bg-white border-gray-300 rounded-md"
                 >
-                  <MenuItem value="normal">Normal Notification</MenuItem>
-                  <MenuItem value="push">Push Notification</MenuItem>
-                </Select>
-              </FormControl>
+                  <option value="general">General</option>
+                  <option value="notice">Notice</option>
+                </select>
+              </div>
+            )}
 
-              {/* If Normal Notification is selected, show Notification Type option (General or Notice) */}
-              {notificationType === "normal" && (
-                <FormControl fullWidth sx={{ mb: 3 }}>
-                  <InputLabel>Notification Type Option</InputLabel>
-                  <Select
-                    value={notificationTypeOption}
-                    onChange={handleNotificationTypeOptionChange}
-                    label="Notification Type Option"
-                  >
-                    <MenuItem value="general">General</MenuItem>
-                    <MenuItem value="notice">Notice</MenuItem>
-                  </Select>
-                </FormControl>
-              )}
-
-              {/* Notification Content Input */}
-              <TextField
-                name="notification"
-                label="Notification Content"
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Notification Content
+              </label>
+              <textarea
                 value={notificationContent}
                 onChange={handleChange}
-                fullWidth
                 required
-                variant="outlined"
-                multiline
-                rows={4}
-                sx={{ mb: 3 }}
+                className="w-full mt-2 p-2 border border-gray-300 rounded-md"
+                rows="4"
               />
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                disabled={
-                  addMutation.isLoading || addPushNotificationMutation.isLoading
-                }
-              >
-                {addMutation.isLoading ||
-                addPushNotificationMutation.isLoading ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : notificationType === "normal" ? (
-                  "Add Normal Notification"
-                ) : (
-                  "Add Push Notification"
-                )}
-              </Button>
-            </form>
-          </Paper>
-        </Grid>
-      </Grid>
-    </Box>
+            </div>
+
+            <button
+              type="submit"
+              className={`w-full py-2 rounded-md text-white font-semibold ${
+                addMutation.isLoading
+                  ? "bg-gray-400"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+              disabled={addMutation.isLoading}
+            >
+              {addMutation.isLoading ? "Adding..." : "Add Notification"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 }

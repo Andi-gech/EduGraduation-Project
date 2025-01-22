@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+
 import svg from "../assets/student.svg";
+import Api from "../utils/Api";
 
 const initialStudentData = {
   firstName: "",
@@ -65,7 +66,7 @@ export default function AddStudentForm() {
   const yearLevels = [1, 2, 3, 4, 5];
 
   const mutation = useMutation((newStudent) =>
-    axios.post("http://eduapi.senaycreatives.com/auth/register", newStudent)
+    Api.post("/auth/register", newStudent)
   );
 
   const handleNext = () => {
@@ -197,6 +198,7 @@ export default function AddStudentForm() {
       <input
        type="radio"
         name="isMilitary"
+        value={true}
         checked={studentData.isMilitary}
         onChange={handleChange}
         className="h-4 w-4 text-blue-600 focus:ring focus:ring-blue-200"

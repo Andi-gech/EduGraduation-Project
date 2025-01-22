@@ -8,8 +8,12 @@ const NotificationsSchema=new mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Auth",
-        required:true
+        default: null,
     },
+    isForAdmin: {
+        type: Boolean,
+        default: false, // True for admin-specific notifications
+      },
     date:{
         type:Date,
         default:Date.now

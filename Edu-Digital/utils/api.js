@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://eduapi.senaycreatives.com",
+  baseURL: "http://192.168.1.7:3000",
 });
 
 api.interceptors.request.use(

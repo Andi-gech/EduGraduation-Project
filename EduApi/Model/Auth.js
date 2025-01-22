@@ -51,6 +51,7 @@ const validateAuth = (auth) => {
       "teacher",
       "student",
       "library",
+     
       "StudentOfficer",
       "AcademicOfficer",
       "Cafe",

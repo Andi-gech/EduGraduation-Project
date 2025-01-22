@@ -35,7 +35,7 @@ function DigitalIdCards() {
     {field: "profilePic", headerName: "Profile Picture", width: 80, renderCell: (params) => {
         return (
           <img
-            src={`https:eduapi.senaycreatives.com/`+params.value}
+            src={`${import.meta.env.VITE_API_URL}/`+params.value}
             
             alt="Pp"
             
@@ -52,7 +52,7 @@ function DigitalIdCards() {
       renderCell: (params) => {
         return params.value ? (
           <div className="h-[60px] flex flex-row items-center justify-center">
-            <FaCircle  className="text-green-300" size={10} />
+            <FaCircle  className="text-green-500 animate-pulse" size={10} />
             <p className="text-sm text-zinc-600 font-bold mx-[1px]">active</p>
           </div>
         ) : (
@@ -110,7 +110,7 @@ function DigitalIdCards() {
          </div>
        
       
-      {/* Uncomment if you want to implement a modal for viewing details */}
+
       {openModal && (
         <IdcardPopup id={selectedStudent} onClose={handleCloseModal} />
       )}

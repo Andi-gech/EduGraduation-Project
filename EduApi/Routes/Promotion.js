@@ -2,6 +2,7 @@ const express = require("express");
 const { User } = require("../Model/User");
 const { Class } = require("../Model/Class");
 const mongoose = require("mongoose");
+const { sendPushNotificationToAll } = require("../utils/sendPushNotification");
 
 const Router = express.Router();
 const Years = ["1", "2", "3", "4", "5", "Graduated"];
@@ -77,9 +78,13 @@ Router.post("/promote", async (req, res) => {
     );
 
     await session.commitTransaction();
+    sendPushNotificationToAll(
+      "New semester has started. Check your class schedule."
+    );
     res.status(200).json({ message: "Users promoted successfully." });
   } catch (error) {
     await session.abortTransaction();
+  
     console.error("Error promoting users:", error);
     res.status(500).json({ error: "Internal server error." });
   } finally {

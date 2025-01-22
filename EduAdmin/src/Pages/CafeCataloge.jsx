@@ -9,8 +9,8 @@ import {
 import { FiAlignLeft } from 'react-icons/fi';
 import { FaBars, FaBell } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+import { GrCafeteria } from "react-icons/gr";
 
-import { FiCoffee, FiFileText, FiLock } from "react-icons/fi";
 import Cafe from "../Components/Cafe";
 import { useState } from "react";
 import AddCafeSubscription from "../Components/AddCafeSubscription";
@@ -49,7 +49,7 @@ export default function CafeCataloge() {
     <div className="min-h-screen  bg-white w-screen m-6  overflow-hidden">
      <div className="flex justify-between items-center h-[70px] mb-5 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
               <div className="flex items-center">
-                <FiAlignLeft size={30} color="orange" />
+                <GrCafeteria size={30} color="orange" />
                 <h2 className="ml-4 text-2xl text-black font-bold">{Selected==="Dashboard"?"Cafe Dashboard":Selected +" Dashboard"}</h2>
               </div>
                

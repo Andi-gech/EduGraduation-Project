@@ -6,7 +6,7 @@ import UseFetchNotification from "../../../../../hooks/UseFetchNotification";
 import IsLoading from "../../../../../Components/Loading";
 export default function Notification() {
   const { data, isLoading } = UseFetchNotification();
-
+console.log(data?.data)
   return (
     <View className="flex-1 px-2 flex items-center bg-white  dark:bg-black duration-75 transition-all ease-in-out   flex-col">
       <Headers name="Notification" />

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import Api from "../src/utils/Api";
 
 export default function UseFetchUser() {
   const Fetchqr = async () => {
-    return await axios.get(`http://eduapi.senaycreatives.com/user`);
+    return await Api.get(`/user/get/teachers`);
   };
 
   return useQuery({

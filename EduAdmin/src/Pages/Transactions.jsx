@@ -4,9 +4,10 @@ import UseFechCafeGateReport from "../../hooks/UseFechCafeGateReport";
 import { FiArrowLeftCircle } from "react-icons/fi";
 import IsLoading from "../Components/IsLoading";
 import { useState, useMemo } from "react";
+import UseFetchTransaction from "../../hooks/UseFetchTransaction";
 
 export default function Transactions() {
-  const { data, isLoading } = UseFechCafeGateReport();
+  const { data, isLoading } = UseFetchTransaction();
 
 
   const [filterDate, setFilterDate] = useState({
@@ -65,47 +66,50 @@ export default function Transactions() {
   const rows = useMemo(() => {
     const mappedRows = data?.data?.map((item, index) => ({
       id: item._id || index + 1, // Use item._id if available, otherwise fallback to index + 1
-      _id: index + 1,
-      BreakFast: item.BreakFast,
-      Date: item.Date,
-      Dinner: item.Dinner,
-      Lunch: item.Lunch,
-      FirstName: item.user?.firstName,
-      LastName: item.user?.lastName,
+      _id: item.transactionId,
+      amount: item.amount + " Birr",
+      Date: item.transactionDate,
+      mode: item.paymentMethod ==="test"? "Chapa":"manual",
+      no: index + 1,
+      profilepic: item.user?.profilePic,
+     
+      fullname: `${item.user?.firstName} ${item.user?.lastName}`,
+      Status: item.status,
     }));
     return filterRows(mappedRows);
   }, [data, filterDate]);
 
 
   const columns = [
-    { field: "_id", headerName: "ID", width: 50 },
-    { field: "FirstName", headerName: "First Name", width: 200 },
-    { field: "LastName", headerName: "Last Name", width: 200 },
-    {
-      field: "BreakFast",
-      headerName: "Payment Method",
-      width: 200,
-      renderCell: (params) => {
-        return params.value ? (
-          <div className="h-[60px] flex items-center justify-center">
-            <FaCheck style={{ color: "green" }} />
-          </div>
-        ) : (
-          <div className="h-[60px] flex items-center justify-center">
-            <FaTimes style={{ color: "red" }} />
-          </div>
-        );
-      },
-    },
+    { field: "no", headerName: "No", width: 50 },
+    {field:"profilepic", headerName:"Photo", width: 60,renderCell: (params) => {
+      return (
+        <img
+        src={`https:eduapi.senaycreatives.com/`+ params.value}
+        
+       
+        className='w-[40px] h-[40px] rounded-full bg-zinc-100'
+    
+      />
+      );
+    },},
+    { field: "fullname", headerName: "Full Name", width: 160 },
+   
+    { field: "_id", headerName: "Txn id", width: 260 },
+   { field: "mode", headerName: "Mode", width: 70 },
+    { field: "amount", headerName: "amount", width: 100 },
+    
     
     {
-      field: "Lunch",
+      field: "Status",
       headerName: "Status",
-      width: 150,
+      width: 100,
       renderCell: (params) => {
         return params.value ? (
-          <div className="h-[60px] flex items-center justify-center">
-            <FaCheck style={{ color: "green" }} />
+<div className="flex h-[60px] items-center justify-center">
+          <div className=" bg-green-600  px-3 rounded-full h-[24px] flex items-center justify-center">
+            <p className="text-white font-bold">Approved</p>
+          </div>
           </div>
         ) : (
           <div className="h-[60px] flex items-center justify-center">

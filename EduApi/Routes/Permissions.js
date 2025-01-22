@@ -5,7 +5,7 @@ const AuthMiddleware = require("../MiddleWare/AuthMiddleware");
 const { roleAuth } = require("../MiddleWare/RoleAuth");
 const mongoose = require("mongoose");
 
-const { sendPushNotification } = require("../utils/sendPushNotification");
+const { sendPushNotification,sendtoadmin } = require("../utils/sendPushNotification");
 
 
 Router.post("/", AuthMiddleware, async (req, res) => {
@@ -27,7 +27,7 @@ Router.post("/", AuthMiddleware, async (req, res) => {
       user: req.user.userid,
       permissionDate: req.body.permissionDate,
     });
-
+sendtoadmin("new permission has been submitted by a student need to be approved")
     await permission.save();
     return res.send(permission);
   } catch (err) {
@@ -53,10 +53,7 @@ Router.get("/new", async (req, res) => {
   try {
     const currentDate = new Date().toISOString(); 
     
-    const permissions = await Permission.find({
-      status: "pending",
-      permissionDate: currentDate,
-    });
+    const permissions = await Permission.find().populate("user");
 
     return res.send(permissions);
   } catch (err) {

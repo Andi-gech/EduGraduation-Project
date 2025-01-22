@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Router = express.Router();
 const Authetication = require("../MiddleWare/AuthMiddleware");
 const { roleAuth } = require("../MiddleWare/RoleAuth");
-const { sendPushNotification } = require("../utils/sendPushNotification");
+const { sendPushNotification,sendtoadmin } = require("../utils/sendPushNotification");
 /**
  * @swagger
  * /complain:
@@ -79,11 +79,7 @@ Router.post("/", Authetication, async (req, res) => {
       type: "Notice",
     };
     console.log("Notification data:", notificationData);
-
-    const { notification, ticket } = await sendPushNotification(
-      req.user.userid,
-      notificationData
-    );
+    sendtoadmin("new complaint has been submitted by a student need to be resolved")
     return res.send(complain);
   } catch (error) {
     return res.status(500).send(error.message || "Something went wrong");

@@ -1,5 +1,6 @@
 const express = require("express");
 const { Cafe } = require("../Model/Cafe");
+const {Transaction}=require("../Model/Transactions")
 const { User } = require("../Model/User");
 const Router = express.Router();
 const AuthMiddleware = require("../MiddleWare/AuthMiddleware");
@@ -177,6 +178,20 @@ Router.get("/MealTimes", async (req, res) => {
 Router.post("/cafeinfo/verify", async (req, res) => {
   try {
     const { reference } = req.body.meta;
+    const transaction = await Transaction.findOneAndUpdate(
+      { transactionId: req.body.tx_ref },
+      { $set: { status: "Success" ,
+        user: reference,
+      transactionDate: req.body.created_at,
+      amount:req.body.amount,
+      mobile:req.body.mobile,
+      paymentMethod:req.body.payment_method,
+      } },
+      { new: true, upsert: true }
+    );
+
+  
+
     const cafe = new Cafe({
       location: "JIJIGA",
       user: reference,

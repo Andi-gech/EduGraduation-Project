@@ -6,39 +6,40 @@ import {
   Snackbar,
   Alert,
   Typography,
+  TextField,
 } from "@mui/material";
 import { useState } from "react";
-import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-import { FiArrowLeftCircle } from "react-icons/fi";
+import { FaPersonCircleQuestion } from "react-icons/fa6";
 import IsLoading from "../Components/IsLoading";
 import UseFetchpermissions from "../../hooks/UseFechPermission";
+import Api from "../utils/Api";
 
 export default function Permission() {
-  const { data, isLoading } = UseFetchpermissions(); // Hook to fetch complaints or permissions data
+  const { data, isLoading } = UseFetchpermissions(); 
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
+  const [filterStatus, setFilterStatus] = useState("all"); 
+  const [filterDate, setFilterDate] = useState(null);
   const queryClient = useQueryClient();
 
-  // Mutation for deleting a permission
   const deleteMutation = useMutation({
     mutationFn: (data) => {
-      return axios.delete(`http://eduapi.senaycreatives.com/permissions/${data.id}`, data);
+      return Api.delete(`/permissions/${data.id}`, data);
     },
     onSuccess: () => {
       setSuccess("Permission deleted successfully");
-      queryClient.invalidateQueries(["fetchPermissions"]);
+      queryClient.invalidateQueries("fetchPermissions");
     },
     onError: (error) => {
       setError(error.response?.data || "An error occurred");
     },
   });
 
-  // Mutation for updating the permission status
+
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }) => {
-      return axios.put(`http://eduapi.senaycreatives.com/permissions/update/${id}`, {
+      return Api.put(`/permissions/update/${id}`, {
         status,
       });
     },
@@ -50,19 +51,29 @@ export default function Permission() {
     },
   });
 
-  // Mapping the data to rows for the DataGrid
-  const rows = data?.data?.map((item) => ({
-    id: item._id,
-    reason: item.Reason,
-    user: item.user, // Assuming user is an ID or can be resolved later
-    permissionDate: new Date(item.permissionDate).toLocaleDateString(),
-    status: item.status,
-  }));
+ 
+  const rows = data?.data
+    ?.filter((item) => {
+      if (filterStatus === "all") return true;
+      return item.status === filterStatus;
+    })
+    ?.filter((item) => {
+      if (!filterDate) return true;
+      const permissionDate = new Date(item.permissionDate).toLocaleDateString();
+      return permissionDate === new Date(filterDate).toLocaleDateString();
+    })
+    .map((item) => ({
+      id: item._id,
+      reason: item.Reason,
+      user: item?.user?.firstName + " "+ item?.user?.lastName, // Assuming user is an ID or can be resolved later
+      permissionDate: new Date(item.permissionDate).toLocaleDateString(),
+      status: item.status,
+    }));
 
-  // Defining columns for the DataGrid
+ 
   const columns = [
-    { field: "reason", headerName: "Reason", width: 280 },
-    { field: "user", headerName: "User", width: 150 },
+    { field: "reason", headerName: "Reason", width: 250 },
+    { field: "user", headerName: "Fullname", width: 160 },
     {
       field: "permissionDate",
       headerName: "Permission Date",
@@ -87,7 +98,7 @@ export default function Permission() {
             backgroundColor:
               params.row.status === "pending"
                 ? "yellow"
-                : params.row.status === "completed"
+                : params.row.status === "approved"
                 ? "green"
                 : "red",
             color: params.row.status === "pending" ? "black" : "white",
@@ -123,24 +134,46 @@ export default function Permission() {
 
   return (
     <div style={{ padding: 20 }}>
-      {/* Header Section */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 20,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <FiArrowLeftCircle size={30} style={{ marginRight: 10 }} />
-          <Typography variant="h6" fontWeight="bold">
-            Permissions
-          </Typography>
-        </div>
-      </div>
+      
+       <div className="flex justify-between items-center h-[70px] mb-8 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
+                <div className="flex items-center">
+                  <FaPersonCircleQuestion size={30} color="orange" />
+                  <h2 className="ml-4 text-2xl text-black font-bold">Permissions </h2>
+                </div>
+              
+            
 
-      {/* Success and Error Messages */}
+     
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            variant="outlined"
+            size="small"
+            sx={{ width: 150 }}
+          >
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="pending">Pending</MenuItem>
+            <MenuItem value="approved">Approved</MenuItem>
+            <MenuItem value="denied">Denied</MenuItem>
+          </Select>
+
+          <TextField
+            label="Filter by Date"
+            type="date"
+            variant="outlined"
+            size="small"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            sx={{ width: 200 }}
+          />
+        </div>
+     </div>
+
+     
       <Snackbar
         open={!!success}
         autoHideDuration={3000}
@@ -162,7 +195,7 @@ export default function Permission() {
         </Alert>
       </Snackbar>
 
-      {/* DataGrid Section */}
+   
       {(isLoading || updateStatusMutation.isLoading) && <IsLoading />}
       <div style={{ height: 500, width: "100%" }}>
         <DataGrid

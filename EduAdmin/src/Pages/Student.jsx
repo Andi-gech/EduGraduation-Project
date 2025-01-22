@@ -1,5 +1,5 @@
 
-import { FiAlignLeft } from "react-icons/fi";
+import { PiStudentLight } from "react-icons/pi";
 
 import AddStudentPopup from "../Popups/AddStudentPopup";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import { FaBars } from "react-icons/fa";
 import StudentList from "../Components/StudentList";
 import DigitalIdCards from "../Components/DigitalIdCards";
 import Verification from "./Verification";
+import AddteacherForm from "../Popups/AddTeacherPopup";
 
 
 export default function Student() {
@@ -19,6 +20,8 @@ export default function Student() {
 
   const selectedOutput = () => {
     switch (Selected) {
+      case "Add Teacher":
+        return <AddteacherForm />;
       case "Dashboard":
         return <AddStudentPopup/>;
       case "StudentList":
@@ -39,7 +42,7 @@ export default function Student() {
     
        <div className="flex justify-between items-center h-[70px] mb-5 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
                     <div className="flex items-center">
-                      <FiAlignLeft size={30} color="orange" />
+                      <PiStudentLight size={30} color="orange" />
                       <h2 className="ml-4 text-2xl text-black font-bold">{Selected==="Dashboard"?"Student Dashboard":Selected +" Dashboard"}</h2>
                     </div>
                      
@@ -65,6 +68,13 @@ export default function Student() {
                           }
                           className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
                           <p className="text-lg font-normal text-gray-800">StudentList</p>
+                          </div>
+                          <div
+                          onClick={
+                            () => setSelected("Add Teacher")
+                          }
+                          className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                          <p className="text-lg font-normal text-gray-800">Add Teacher</p>
                           </div>
                           <div
                           onClick={

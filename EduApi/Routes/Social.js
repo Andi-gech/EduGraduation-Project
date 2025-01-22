@@ -6,7 +6,12 @@ const Router = express.Router();
 
 Router.get("/", async (req, res) => {
   try {
-    const socials = await Social.find();
+    const socials = await Social.find().populate({
+      path: "clubMembers",
+      populate: {
+        path: "Class",
+      },
+    });
     return res.send(socials);
   } catch (error) {
     return res.status(500).send(error.message || "Something went wrong");

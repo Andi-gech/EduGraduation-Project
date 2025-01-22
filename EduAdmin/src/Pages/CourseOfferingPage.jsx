@@ -1,21 +1,21 @@
 import { useState } from "react";
 import {
-  Box,
+  
   Button,
-  Typography,
-  Grid,
-  Paper,
-  CircularProgress,
+ 
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { FaPlus, FaEye } from "react-icons/fa";
+import { FaPlus,FaEye} from "react-icons/fa";
 import { FiAlignLeft } from "react-icons/fi";
+
+
 import { useParams } from "react-router-dom";
-import axios from "axios";
+
 import { useMutation,useQueryClient } from "@tanstack/react-query";
 import UseFetchCourseOffering from "../../hooks/UseFetchCourseOffering";
 import CourseDetailPopup from "../Popups/CourseDetailPopup";
 import AddCoursePopup from "../Popups/AddCoursePopup";
+import Api from "../utils/Api";
 
 
 export default function CourseOfferingPage() {
@@ -40,8 +40,9 @@ export default function CourseOfferingPage() {
       0
     );
 
-  const rows = data?.data?.courses.map((course) => ({
+  const rows = data?.data?.courses.map((course,index) => ({
     id: course?._id,
+    no: index + 1,
     courseCode: course?.course?.Coursecode,
     title: course?.course?.Coursename,
     instructor: course?.teacher
@@ -51,14 +52,15 @@ export default function CourseOfferingPage() {
   }));
 
   const columns = [
+    { field: "no", headerName: "Number", width: 50 },
     { field: "courseCode", headerName: "Course Code", width: 150 },
-    { field: "title", headerName: "Course Title", width: 250 },
+    { field: "title", headerName: "Course Title", width: 230 },
     { field: "instructor", headerName: "Instructor", width: 200 },
     { field: "creditHours", headerName: "Credit Hrs", width: 100 },
     {
       field: "actions",
       headerName: "Actions",
-      width: 150,
+      width: 100,
       renderCell: (params) => (
         <Button
           variant="contained"
@@ -83,7 +85,7 @@ export default function CourseOfferingPage() {
     {
       field: "action",
       headerName: "Delete",
-      width: 150,
+      width: 100,
       renderCell: (params) => (
         <Button
           variant="contained"
@@ -118,8 +120,8 @@ export default function CourseOfferingPage() {
   };
   const mutation = useMutation({
     mutationFn: (datas) =>
-      axios.put(
-        `http://192.168.1.7:3000/enrollment/remove/course/${data?.data?._id}`,
+      Api.put(
+        `/enrollment/remove/course/${data?.data?._id}`,
         datas
       ),
     mutationKey: "addCourse",
@@ -134,7 +136,7 @@ export default function CourseOfferingPage() {
   });
   
   return (
-    <div className="w-4/5 mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="w-full  flex flex-col px-[20px] ">
      
       <div className="flex justify-between items-center h-[70px] mb-5 bg-gradient-to-r from-white to-white p-4 rounded-xl shadow-zinc-100 shadow-md text-white">
               <div className="flex items-center">
@@ -148,7 +150,7 @@ export default function CourseOfferingPage() {
             </div>
 
      
-      <div className="p-4 bg-white rounded shadow mb-4">
+      <div className="p-4 bg-white rounded shadow flex flex-row mb-4">
        <p
           className={`font-semibold ${
             calculateTotalCreditHours(data?.data?.courses) > 18
@@ -160,13 +162,14 @@ export default function CourseOfferingPage() {
           {calculateTotalCreditHours(data?.data?.courses) > 18 &&
             "(Overloaded)"}
         </p>
+        <Button onClick={() => setAddCourse(true)} startIcon={<FaPlus />}/>
       </div>
 
     
       
     
-        <div className="overflow-x-auto h-[430px] bg-white rounded shadow">
-        <DataGrid rows={rows} columns={columns} pageSize={10} />
+        <div style={{ height: 440,width:"100%" }} className="   bg-white rounded shadow">
+        <DataGrid rows={rows} columns={columns} pageSize={5} />
         </div>
       
 

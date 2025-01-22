@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+
 import SimpleTimeInput from 'react-simple-time-input';
+import Api from '../utils/Api';
 
 // Convert Ethiopian time (UTC+3) to UTC
 const convertToUTC = (ethiopianTime) => {
@@ -31,12 +32,12 @@ const convertToEthiopian = (utcTime) => {
 };
 
 const fetchMealTimes = async () => {
-  const response = await axios.get('http://192.168.1.7:3000/cafe/MealTimes');
+  const response = await Api.get('/cafe/MealTimes');
   return response.data;
 };
 
 const updateMealTimes = async (mealTimes) => {
-  const response = await axios.post('http://192.168.1.7:3000/cafe/MealTimes', mealTimes);
+  const response = await Api.post('/cafe/MealTimes', mealTimes);
   return response.data;
 };
 
@@ -48,6 +49,7 @@ export default function CafeController() {
       queryClient.invalidateQueries(['mealTimes']);
     },
   });
+  const [Trsesshold, setTrsesshold] = useState(0);
 
   const [newMealTimes, setNewMealTimes] = useState({
     breakfastStart: '',
@@ -98,8 +100,31 @@ export default function CafeController() {
   if (isError) return <div>Error loading meal times</div>;
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-semibold mb-4">Update Meal Times</h1>
+    <div className="p-4 overflow-y-scroll  flex flex-row">
+      <div className="w-1/2">
+      <h1 className="text-xl font-semibold mb-4">Update Cafe Payment </h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex flex-col">
+        <label className="block text-sm font-medium text-gray-700">
+          Cafe Trsesshold
+        </label>
+        <input 
+          type="number"
+          value={newMealTimes.cafeThreshold}
+          onChange={handleChange}
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+        </div>
+        <div>
+          <button name='cafeThreshold' type="submit" disabled={mutation.isLoading} className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50">
+            {mutation.isLoading ? 'Updating...' : 'Update Cafe Trsesshold'}
+          </button>
+        </div>
+      </form>
+      </div>
+      <div className="w-1/2 px-4">
+      
+      <h1 className="text-xl font-semibold ">Update Meal Times</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         {['breakfast', 'lunch', 'dinner'].map((meal) => (
           <div key={meal}>
@@ -134,6 +159,8 @@ export default function CafeController() {
           </button>
         </div>
       </form>
+      </div>
+
       {mutation.isError && (
         <div className="mt-4 text-red-600">
           Error updating meal times: {mutation.error.message}

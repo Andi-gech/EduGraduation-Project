@@ -99,18 +99,17 @@ const handleAIQuery = async (socket, userQuery, userId, room) => {
       "Sorry, I couldn't understand the question.";
     console.log("AI Response:", aiResponse);
 
-    // Save AI response to the database
+
     const aiChat = new Chat({
       message: aiResponse,
-      sender: "674b79e1e956748e8b899376", // AI user ID
+      sender: null, // AI user ID
       room,
     });
 
     await aiChat.save();
 
-    // Emit the AI response to the room (excluding the sender)
     io.to(room).emit("message", {
-      sender: "674b79e1e956748e8b899376",
+      sender: null,
       message: aiResponse,
       date: new Date(),
     });

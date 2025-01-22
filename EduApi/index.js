@@ -16,6 +16,7 @@ const Report = require("./Routes/Report");
 const Chatroom = require("./Routes/ChatRoom");
 const Complain = require("./Routes/Complain");
 const resources = require("./Routes/Resource");
+const transactions=require("./Routes/Transactions")
 const notification = require("./Routes/Notifications");
 const Social = require("./Routes/Social");
 const Events = require("./Routes/Event");
@@ -44,6 +45,7 @@ app.use("/notification", notification);
 app.use("/post", Posts);
 app.use("/Social", Social);
 app.use("/Events", Events);
+app.use("/transaction",transactions);
 
 const { initializeSocket } = require("./Routes/Chat");
 
