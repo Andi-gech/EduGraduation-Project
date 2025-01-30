@@ -4,10 +4,11 @@ import {
   useColorScheme,
   View,
   StyleSheet,
+  Appearance
 } from "react-native";
 import React, { useState } from "react";
 import Logo from "../../Components/Logo";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import Input from "../../Components/Input";
 import Buttons from "../../Components/Buttons";
 import { useRouter } from "expo-router";
@@ -15,185 +16,168 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "../../Components/Loading";
-
 import { StatusBar } from "expo-status-bar";
-import { Appearance } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { MotiView } from "moti";
 
-export default function login() {
+
+export default function Login() {
   const router = useRouter();
-  const [Password, setPassword] = useState("");
+  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
 
   const mutation = useMutation({
-    mutationFn: async (newTodo) => {
+    mutationFn: async (credentials) => {
       return await axios.post(
-        "http://192.168.1.7:3000/auth/login",
-        newTodo
+        "http://192.168.1.8:3000/auth/login",
+        credentials
       );
     },
     onSuccess: async (response) => {
-      const isapproved = response.data.isapproved;
-      const isVerified = response.data.isVerified;
-
+      const { isapproved, isVerified, token } = response.data;
       if (isapproved && isVerified) {
-        const token = response.data.token;
-
         await AsyncStorage.setItem("token", token);
-
         router.replace("/(app)/Home");
       } else {
         router.replace({
           pathname: "/(Auth)/Signup/Verification",
-          params: {
-            email: email,
-            isapproved: isapproved,
-            isVerified: isVerified,
-          },
+          params: { email, isapproved, isVerified },
         });
       }
     },
     onError: (error) => {
-      setError(error.response.data);
-      setTimeout(() => {
-        setError("");
-      }, 3000);
+      setError(error.response?.data || "An error occurred");
+      setTimeout(() => setError(""), 3000);
     },
-
-    mutationKey: ["todos"],
+    mutationKey: ["login"],
   });
 
   return (
-    <View className="relative flex-1 flex items-center bg-white dark:bg-black   flex-col">
-      {mutation.isPending && <Loading />}
-      <View className="absolute top-0 -right-10  w-[200px]   h-full ">
-        {[...Array(16)].map((_, rowIndex) =>
-          [...Array(12)].map((_, colIndex) => (
-            <View
+    <LinearGradient
+      colors={
+        colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#4f46e5", "#0891b2"]
+      }
+      locations={[0.1, 0.9]}
+      className="flex-1 items-center"
+    >
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+
+      <MotiView
+        from={{ rotate: '0deg' }}
+        animate={{ rotate: '5deg' }}
+        transition={{ loop: true, duration: 30000 }}
+        className="absolute top-0 -right-10 w-[200px] h-full"
+      >
+        {[...Array(4)].map((_, rowIndex) =>
+          [...Array(3)].map((_, colIndex) => (
+            <MotiView
               key={`${rowIndex}-${colIndex}`}
               style={[
                 styles.box,
                 {
                   top: rowIndex * 50,
                   left: colIndex * 50,
-
-                  backgroundColor:
-                    (rowIndex + colIndex) % 2 === 0
-                      ? `${
-                          colorScheme === "dark"
-                            ? "rgba(93, 91, 90, 0.16)"
-                            : "rgba(224, 224, 224, 0.3)"
-                        }`
-                      : `${
-                          colorScheme === "dark"
-                            ? "rgba(0, 0, 0, 0.8)"
-                            : "rgba(240, 240, 240, 0.05)"
-                        }`,
+                  backgroundColor: (rowIndex + colIndex) % 2 === 0 
+                    ? 'rgba(255,255,255,0.05)' 
+                    : 'rgba(0,0,0,0.03)',
                 },
               ]}
+              from={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1500 }}
             />
           ))
         )}
-      </View>
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+      </MotiView>
 
-      <View className="flex items-start    justify-between  w-[61%] flex-row    mt-[30px]   ">
-        <View className="flex w-full items-center justify-center">
-          <Logo />
-        </View>
+      <View className="w-full px-6 pt-12 flex-row justify-between items-center">
+        <Logo />
         <TouchableOpacity
-          onPress={() => {
-            Appearance.setColorScheme(
-              colorScheme === "dark" ? "light" : "dark"
-            );
-          }}
+          onPress={() => Appearance.setColorScheme(colorScheme === "dark" ? "light" : "dark")}
+          className="p-2 bg-white/10 rounded-full"
         >
-          {colorScheme === "dark" ? (
-            <Feather name="sun" size={24} color="white" />
-          ) : (
-            <Feather name="moon" size={24} color="black" />
-          )}
+          <Feather 
+            name={colorScheme === "dark" ? "sun" : "moon"} 
+            size={24} 
+            color={accentColor} 
+          />
         </TouchableOpacity>
       </View>
-      <View className="mt-[29px] flex items-center  w-[90%] pt-[30px] h-[374px]   ">
-        <Text className="text-[23.52px]   text-black dark:text-white font-bold">
-          Login
-        </Text>
-        <View className="mt-5 w-full flex items-center justify-center">
-          {error && <Text className="text-red-500">{error}</Text>}
-          <View className="w-[90%] h-[55px] flex items-center  ">
-            <Input
-              placeholder={"Email"}
-              type={"email"}
-              onchange={(event) => {
-                setEmail(event);
-              }}
-              value={email}
-              className="placeholder-white bg-zinc-900 "
-            />
-          </View>
-          <View className="w-[90%] mt-[13px] h-[55px] flex items-center  ">
-            <Input
-              type={"password"}
-              placeholder={"Password"}
-              className="placeholder-white bg-zinc-900 "
-              onchange={(event) => {
-                setPassword(event);
-              }}
-              value={Password}
-            />
-          </View>
-        </View>
-        <View className="mt-[25px] w-[80%] h-[55px] flex items-center justify-center">
-          <Buttons
-            name={"Login"}
-            onPress={() =>
-              mutation.mutate({
-                email: email.replace(/\s+/g, ""),
-                password: Password,
-              })
-            }
-          />
-        </View>
-        <View className="mt-[25px] w-full flex items-start ml-[45px] justify-center">
-          <View className="flex items-center justify-center flex-row">
-            <Text className="text-[14px]    text-black dark:text-white">
-              Don't have an account?
-            </Text>
 
-            <TouchableOpacity onPress={() => router.push("/(Auth)/Signup")}>
-              <Text className="text-[14px] mx-[14px]  text-orange-500">
-                Sign Up
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View className="flex items-center mt-[10px] h-[40px] justify-center flex-row">
-            <Text className="text-[14px]  text-black dark:text-white">
-              Forget Password?
+      <MotiView
+        from={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        className="w-[90%] mt-4 bg-white/10 dark:bg-black/20 p-6 rounded-2xl"
+        style={{ shadowColor: accentColor, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 10 }}
+      >
+        <Text className="text-3xl font-bold text-center text-white mb-8">
+          Welcome Back
+        </Text>
+
+        {error && (
+          <MotiView
+            from={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mb-4 p-3 bg-red-100 rounded-lg"
+          >
+            <Text className="text-red-600 text-center">{error}</Text>
+          </MotiView>
+        )}
+
+        <Input
+          icon="mail-outline"
+          placeholder="Email"
+          value={email}
+          onchange={setEmail}
+          containerStyle="mb-4"
+          accentColor={accentColor}
+        />
+
+        <Input
+          icon="lock-closed-outline"
+          placeholder="Password"
+          secureTextEntry
+          type={"password"}
+          value={password}
+          onchange={setPassword}
+          containerStyle="mb-6"
+          accentColor={accentColor}
+        />
+
+        <Buttons
+          name="Login"
+          onPress={() => mutation.mutate({
+            email: email.replace(/\s+/g, ""),
+            password
+          })}
+          accentColor={accentColor}
+          loading={mutation.isPending}
+        />
+
+        <View className="mt-6 flex-row justify-between">
+          <TouchableOpacity onPress={() => router.push("/(Auth)/Signup")}>
+            <Text className="text-white">
+              New here? <Text className="text-yellow-400 font-semibold">Sign Up</Text>
             </Text>
-            <TouchableOpacity
-              onPress={() => router.push("/(Auth)/ResetPassword")}
-              className="flex items-center justify-center mx-[14px] "
-            >
-              <Text className="text-[14px]  text-orange-500">
-                Reset Password
-              </Text>
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => router.push("/(Auth)/ResetPassword")}>
+            <Text className="text-white">
+              Forgot Password? <Text className="text-yellow-400 font-semibold">Reset</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
-      </View>
-    </View>
+      </MotiView>
+
+      {mutation.isPending && <Loading />}
+    </LinearGradient>
   );
 }
+
 const styles = StyleSheet.create({
-  pattern: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    top: 0,
-    right: 0,
-  },
   box: {
     position: "absolute",
     width: 50,

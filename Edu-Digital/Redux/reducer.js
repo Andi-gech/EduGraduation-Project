@@ -3,6 +3,7 @@ import {
   SET_USER,
   SET_USER_DATA,
   SET_USER_PROFILE_LIST,
+  SET_API_URL,
 } from "./actions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -18,6 +19,9 @@ const userDataInitialState = {
 };
 const profileListInitialState = {
   profileList: [], // Start with a default value (null)
+};
+const apiUrlInitialState = {
+  apiUrl: "http://localhost:3000", // Start with a default value (null)
 };
 
 const socketReducer = (state = initialState, action) => {
@@ -74,4 +78,13 @@ const profileListReducer = (state = profileListInitialState, action) => {
   }
 };
 
-export { socketReducer, userReducer, userDataReducer, profileListReducer };
+const apiUrlReducer = (state = apiUrlInitialState, action) => {
+  switch (action.type) {
+    case SET_API_URL:
+      return { ...state, apiUrl: action.payload };
+    default:
+      return state;
+  }
+}
+
+export { socketReducer, userReducer, userDataReducer, profileListReducer, apiUrlReducer };

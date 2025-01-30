@@ -1,69 +1,61 @@
+import { LinearGradient } from 'expo-linear-gradient';
+import { MotiView } from 'moti';
+import React, { useState } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
   Animated,
   Platform,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
   UIManager,
   useColorScheme,
-} from "react-native";
-import React, { useState } from "react";
-import { CalendarList } from "react-native-calendars";
-import UseFetchEvent from "../../../../hooks/UseFetchEvent";
-import IsLoading from "../../../../Components/Loading";
+  View,
+} from 'react-native';
+import { CalendarList } from 'react-native-calendars';
+import { PanGestureHandler } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IsLoading from '../../../../Components/Loading';
+import UseFetchEvent from '../../../../hooks/UseFetchEvent';
 
-// Enable LayoutAnimation for Android
-if (
-  Platform.OS === "android" &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
 export default function Calendar() {
   const { data: periodEvents, isLoading } = UseFetchEvent();
-
-  const [selectedEvent, setSelectedEvent] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState('');
   const fadeAnim = useState(new Animated.Value(0))[0];
+  const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
+  const isDark = colorScheme === 'dark';
 
   const generateMarkedDates = (events) => {
     const markedDates = {};
 
     if (Array.isArray(events?.data)) {
-      events?.data.forEach((event) => {
-        const startDate = new Date(event.StartDate); // Use Date object here
-        const endDate = new Date(event.EndDate); // Use Date object here
+      events.data.forEach((event) => {
+        const startDate = new Date(event.StartDate);
+        const endDate = new Date(event.EndDate);
+        let currentDate = new Date(startDate);
 
-        // Convert startDate and endDate to YYYY-MM-DD format
-        let currentDate = new Date(startDate); // Keep as Date object
-        const endDateStr = endDate.toISOString().split("T")[0]; // End date in YYYY-MM-DD format
-
-        // Loop from startDate to endDate, marking all days in between
         while (currentDate <= endDate) {
-          const currentDateStr = currentDate.toISOString().split("T")[0]; // Get string representation of the date
+          const currentDateStr = currentDate.toISOString().split('T')[0];
+          const isStart = currentDateStr === startDate.toISOString().split('T')[0];
+          const isEnd = currentDateStr === endDate.toISOString().split('T')[0];
 
-          if (currentDateStr === startDate.toISOString().split("T")[0]) {
-            markedDates[currentDateStr] = {
-              startingDay: true,
-              color: "orange",
-              textColor: "white",
-            };
-          } else if (currentDateStr === endDateStr) {
-            markedDates[currentDateStr] = {
-              endingDay: true,
-              color: "orange",
-              textColor: "lightgray",
-            };
-          } else {
-            markedDates[currentDateStr] = {
-              selected: true,
-              color: "orange",
-              textColor: "white",
-            };
-          }
+          markedDates[currentDateStr] = {
+            startingDay: isStart,
+            endingDay: isEnd,
+            color: isDark ? '#f59e0b' : '#3b82f6',
+            textColor: isDark ? '#18181b' : '#f8fafc',
+            customContainerStyle: {
+              borderRadius: isStart ? 8 : 0,
+              marginRight: -1,
+            },
+          };
 
-          // Move to the next day
-          currentDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000); // Increment by one day
+          currentDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
         }
       });
     }
@@ -73,91 +65,165 @@ export default function Calendar() {
 
   const onDayPress = (day) => {
     const event = periodEvents?.data.find((event) => {
-      const startDate = new Date(event.StartDate).toISOString().split("T")[0];
-
-      const endDate = new Date(event.EndDate).toISOString().split("T")[0];
-
+      const startDate = new Date(event.StartDate).toISOString().split('T')[0];
+      const endDate = new Date(event.EndDate).toISOString().split('T')[0];
       return day.dateString >= startDate && day.dateString <= endDate;
     });
-
+console.log(event)
     if (event) {
       setSelectedEvent(event.name);
-      Animated.timing(fadeAnim, {
+      Animated.spring(fadeAnim, {
         toValue: 1,
-        duration: 100,
+        friction: 3,
         useNativeDriver: true,
       }).start(() => {
         setTimeout(() => {
-          Animated.timing(fadeAnim, {
+          Animated.spring(fadeAnim, {
             toValue: 0,
-            duration: 600,
+            friction: 4,
             useNativeDriver: true,
-          }).start(() => setSelectedEvent(""));
+          }).start(() => setSelectedEvent(''));
         }, 2000);
       });
-    } else {
-      setSelectedEvent("");
     }
   };
-  const colorScheme = useColorScheme();
 
   return (
-    <View className=" flex-1 bg-white dark:bg-black">
-      <View style={darkStyles.header}>
-        <Text className=" text-black font-bold text-[20px] dark:text-white  ">
-          Academic Calendar
-        </Text>
-      </View>
-      {isLoading && <IsLoading />}
-      {periodEvents && (
-        <CalendarList
-          markingType={"period"}
-          markedDates={generateMarkedDates(periodEvents)}
-          onDayPress={onDayPress}
-          theme={{
-            calendarBackground: colorScheme === "dark" ? "#000" : "#fff",
-            dayTextColor: colorScheme === "dark" ? "#fff" : "#000",
-            textDisabledColor: "#555",
-            monthTextColor: colorScheme === "dark" ? "#fff" : "#000",
-            arrowColor: colorScheme === "dark" ? "#fff" : "#000",
-          }}
-        />
+    <LinearGradient
+      colors={isDark ? ['#09090b', '#18181b'] : ['#f8fafc', '#e2e8f0']}
+      className="flex-1"
+    >
+      <MotiView
+        from={{ translateY: -20, opacity: 0 }}
+        animate={{ translateY: 0, opacity: 1 }}
+        className="px-4 pt-2 pb-4"
+        style={{ paddingTop: insets.top }}
+      >
+        <LinearGradient
+          colors={isDark ? ['#3b82f6', '#2563eb'] : ['#3b82f6', '#2563eb']}
+          className="rounded-2xl p-4"
+        >
+          <Text className="text-2xl font-bold text-white text-center">
+            Academic Calendar
+          </Text>
+        </LinearGradient>
+      </MotiView>
+
+      {isLoading ? (
+        <IsLoading />
+      ) : (
+        <PanGestureHandler>
+          <MotiView
+            from={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex-1 px-2"
+          >
+            <CalendarList
+              markingType="period"
+              markedDates={generateMarkedDates(periodEvents)}
+              onDayPress={onDayPress}
+              theme={{
+                calendarBackground: 'transparent',
+                dayTextColor: isDark ? '#fff' : '#1e293b',
+                textSectionTitleColor: isDark ? '#94a3b8' : '#64748b',
+                monthTextColor: isDark ? '#fff' : '#1e293b',
+                arrowColor: isDark ? '#3b82f6' : '#1e293b',
+                textDisabledColor: isDark ? '#475569' : '#94a3b8',
+                todayTextColor: isDark ? '#3b82f6' : '#3b82f6',
+                'stylesheet.calendar.header': {
+                  week: {
+                    marginTop: 5,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 8,
+                  },
+                },
+              }}
+              dayComponent={({ date, state, marking, onPress }) => (
+                <TouchableWithoutFeedback 
+                  onPress={() => onPress(date)} // Add this line
+                  hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }} // Increase touch area
+                >
+                  <View className="items-center justify-center h-10">
+                    <View
+                      className={`w-8 h-8 rounded-lg items-center justify-center ${
+                        marking?.startingDay && 'rounded-l-full'
+                      } ${marking?.endingDay && 'rounded-r-full'} ${
+                        state === 'disabled' ? 'opacity-50' : ''
+                      }`}
+                      style={{
+                        backgroundColor: marking?.color,
+                        marginHorizontal: -1,
+                      }}
+                    >
+                      <Text
+                        className={`text-sm font-medium ${
+                          marking?.textColor === '#f8fafc' ? 'text-white' : 'text-zinc-900'
+                        }`}
+                      >
+                        {date.day}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableWithoutFeedback>
+              )}
+            />
+          </MotiView>
+        </PanGestureHandler>
       )}
-      {selectedEvent ? (
-        <Animated.View style={[darkStyles.eventPopup, { opacity: fadeAnim }]}>
-          <Text style={darkStyles.eventPopupText}>{selectedEvent}</Text>
-        </Animated.View>
-      ) : null}
-    </View>
+
+
+<Animated.View
+  style={[
+    styles.eventPopup,
+    {
+      opacity: fadeAnim,
+      transform: [
+        {
+          translateY: fadeAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [-40, 0], // More noticeable translation
+          }),
+        },
+        {
+          scale: fadeAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0.8, 1], // Add scale animation
+          }),
+        },
+      ],
+      backgroundColor: isDark ? '#3b82f6' : '#1e40af',
+      zIndex: 899, // Ensure it's above other elements
+    },
+  ]}
+>
+  <Icon
+    name="calendar-alert"
+    size={20}
+    color="#fff"
+    style={{ marginRight: 8 }}
+  />
+  <Text className="text-base font-semibold text-white">{selectedEvent}</Text>
+</Animated.View>
+    </LinearGradient>
   );
 }
 
-const darkStyles = StyleSheet.create({
-  header: {
-    width: "100%",
-    height: 60,
-    paddingTop: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerText: {
-    fontSize: 19,
-    fontWeight: "bold",
-    color: "#fff",
-  },
+const styles = StyleSheet.create({
   eventPopup: {
-    position: "absolute",
-    top: 50,
+    position: 'absolute',
+    top: 100,
     left: 20,
-    right: 20,
-    backgroundColor: "orange",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  eventPopupText: {
-    color: "#fff",
-    fontSize: 16,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 5,
   },
 });

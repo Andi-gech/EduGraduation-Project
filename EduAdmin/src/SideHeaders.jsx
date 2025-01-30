@@ -17,17 +17,33 @@ const Sidebar = () => {
   }
 
   const auth = useAuthUser()
-  const menuItems = [
-    { name: 'Dashboard', path: '/' },
-    { name: 'CafeController', path: '/cafe' },
-    { name: 'Complains', path: '/complain' },
-    { name: 'Students', path: '/student' },
-    { name: 'Academics', path: '/academics' },
-    { name: 'SocialClubs', path: '/socialClubs' },
-    { name: 'Event', path: '/event' },
-    { name: 'Permission', path: '/permission' },
-    { name: 'Notification', path: '/notification' },
-  ];
+  
+  const menuItems=()=>{ 
+    switch (auth.role) {
+
+    case 'systemadmin':
+      return [
+        { name: 'Dashboard', path: '/' },
+        { name: 'CafeController', path: '/cafe' },
+        { name: 'Complains', path: '/complain' },
+        { name: 'Students', path: '/student' },
+        { name: 'Academics', path: '/academics' },
+        { name: 'SocialClubs', path: '/socialClubs' },
+        { name: 'Event', path: '/event' },
+        { name: 'Permission', path: '/permission' },
+        { name: 'Notification', path: '/notification' },
+      ];
+    default:
+      return [
+        { name: 'Dashboard', path: '/teacher/dashboard' },
+        { name: 'Courses', path: '/teacher/course' },
+        { name: 'Notify Student', path: '/teacher/notify' },
+      ];
+    }
+  }
+
+  
+
   const avatar = useMemo(() => {
     return createAvatar(initials, {
       size: 128,
@@ -53,7 +69,7 @@ const Sidebar = () => {
       </div>
 
       <ul className="w-[300px]">
-        {menuItems.map((item, index) => {
+        {menuItems().map((item, index) => {
           const isActive = location.pathname === item.path;
           return (
             <li key={index} className="w-full text-center my-2">

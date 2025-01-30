@@ -1,99 +1,165 @@
-import { ScrollView, TouchableHighlight, Text, View } from "react-native";
+import { ScrollView, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
-
+import { MotiView, AnimatePresence } from "moti";
+import { LinearGradient } from "expo-linear-gradient";
+import { useColorScheme } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import CoursesCard from "../../../Components/CoursesCard";
 import Loading from "../../../Components/Loading";
-import Buttons from "../../../Components/Buttons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import UseFetchMyCourse from "../../../hooks/UseFetchMyCourse";
 import Header from "../../../Components/Header";
-import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
+
 
 export default function Class() {
   const params = useLocalSearchParams();
   const userdata = useSelector((state) => state.userData);
   const router = useRouter();
   const { data, error, isLoading } = UseFetchMyCourse();
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
 
   if (!params) {
     return (
-      <View className="flex-1 flex flex-col items-center justify-center ">
-        <Ionicons name="sad" size={64} color="gray" />
-        <Text className=" text-red-900 ">{error?.message}</Text>
-      </View>
+      <LinearGradient
+        colors={
+          colorScheme === "dark"
+            ? ["#09090b", "#18181b"]
+            : ["#f8fafc", "#e2e8f0"]
+        }
+        className="flex-1  items-center justify-center"
+      >
+        <Ionicons name="sad" size={64} color={accentColor} />
+        <Text className="text-red-400 text-lg mt-4">{error?.message}</Text>
+      </LinearGradient>
     );
   }
+
   return (
-    <View className="flex bg-white dark:bg-black relative flex-1 px-[10px]">
-      {isLoading && <Loading />}
-      <Header name="My Classes" />
-      <View className="w-[99%]  mb-[20px]   flex-col  px-2 mt-2 flex justify-start">
-        <View className="mt-3 w-[]  ">
-          <View className="flex h-[30px]    items-center flex-row">
-            <Text className="font-bold   text-black dark:text-white ">
-              Department:
-            </Text>
-            <Text className="ml-2  font-bold   text-black dark:text-white">
-              {userdata.userdata.department}
-            </Text>
-          </View>
-          <View className="flex h-[30px]    items-center flex-row">
-            <Text className="font-bold   text-black dark:text-white ">
-              Acadamic Year:
-            </Text>
-            <Text className="ml-2  font-bold   text-black dark:text-white">
-              {userdata.userdata.yearLevel} Year
-            </Text>
-          </View>
-          <View className="flex h-[30px]   items-center flex-row">
-            <Text className="font-bold   text-black dark:text-white ">
-              Acadamic Semister:
-            </Text>
-            <Text className="ml-2   font-bold   text-black dark:text-white">
-              {userdata.userdata.semister} Semister
-            </Text>
-          </View>
-        </View>
-        <TouchableHighlight
-          onPress={() => router.push("ClassSchedule")}
-          className="w-[160px] h-[50px] flex items-center justify-center rounded-md mt-1 bg-yellow-400"
+    <LinearGradient
+      colors={
+        colorScheme === "dark"
+          ? ["#09090b", "#18181b"]
+          : ["#f8fafc", "#e2e8f0"]
+      }
+      className="flex-1 pt-[20px]"
+    >
+      <Header name="My Classes" accentColor={accentColor} showBack />
+
+      <View className="flex-1 px-4">
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          className="mt-4 p-6 rounded-2xl"
+          style={{
+            backgroundColor: colorScheme === "dark" ? "#18181b" : "white",
+            shadowColor: accentColor,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.1,
+            shadowRadius: 12,
+          }}
         >
-          <Text className="text-black">See Class Schedule</Text>
-        </TouchableHighlight>
-      </View>
-      <View className="flex flex-row justify-between  mb-4  w-full  ">
-        <Text className=" text-black dark:text-white text-[20px] font-bold">
+          <View className="space-y-3">
+            <View className="flex-row items-center">
+              <Ionicons name="school" size={20} color={accentColor} />
+              <Text className="ml-2 font-semibold text-zinc-900 dark:text-zinc-100">
+                Department: {userdata.userdata.department}
+              </Text>
+            </View>
+            
+            <View className="flex-row items-center">
+              <Ionicons name="calendar" size={20} color={accentColor} />
+              <Text className="ml-2 font-semibold text-zinc-900 dark:text-zinc-100">
+                Academic Year: {userdata.userdata.yearLevel} Year
+              </Text>
+            </View>
+
+            <View className="flex-row items-center">
+              <Ionicons name="time" size={20} color={accentColor} />
+              <Text className="ml-2 font-semibold text-zinc-900 dark:text-zinc-100">
+                Semester: {userdata.userdata.semister}
+              </Text>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => router.push("ClassSchedule")}
+            className="mt-4 flex-row items-center justify-center p-3 rounded-xl"
+            style={{
+              backgroundColor: accentColor,
+              shadowColor: accentColor,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.2,
+              shadowRadius: 8,
+            }}
+          >
+            <Ionicons name="calendar" size={20} color="white" />
+            <Text className="text-white font-semibold ml-2">View Schedule</Text>
+          </TouchableOpacity>
+        </MotiView>
+
+        <Text className="text-xl font-bold mt-6 text-zinc-900 dark:text-zinc-100">
           Current Courses
         </Text>
+
+        {data?.data ? (
+          <ScrollView 
+            className="mt-4 flex-1"
+            contentContainerStyle={{ paddingBottom: 120 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <AnimatePresence>
+              {data.data.map((item, index) => (
+                <MotiView
+                  key={item._id}
+                  from={{ opacity: 0, translateY: 20 }}
+                  animate={{ opacity: 1, translateY: 0 }}
+                  transition={{ delay: index * 50 }}
+                >
+                  <CoursesCard item={item} accentColor={accentColor} />
+                </MotiView>
+              ))}
+            </AnimatePresence>
+          </ScrollView>
+        ) : (
+          <Text className="text-center mt-8 text-zinc-500 dark:text-zinc-400">
+            No courses enrolled yet
+          </Text>
+        )}
+
+        {/* Fixed Bottom Container */}
+        <View className="absolute bottom-0 left-0 right-0 px-4 pb-6 bg-transparent">
+          <TouchableOpacity
+            onPress={() => router.push("Enroll")}
+            className="w-full flex-row items-center justify-center p-3 rounded-xl mb-3"
+            style={{
+              backgroundColor: accentColor,
+              shadowColor: accentColor,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.2,
+              shadowRadius: 8,
+            }}
+          >
+            <Ionicons name="add-circle" size={20} color="white" />
+            <Text className="text-white font-semibold ml-2">
+              Enroll in New Course
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="flex-row items-center justify-center space-x-2"
+            onPress={() => router.push("Progress")}
+          >
+            <Ionicons name="analytics" size={20} color={accentColor} />
+            <Text className="text-blue-500 dark:text-blue-400 font-medium">
+              View Academic Progress
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {data?.data && (
-        <ScrollView className="   flex    flex-col ">
-          {data?.data?.map((item) => {
-            return <CoursesCard key={item._id} item={item} />;
-          })}
-        </ScrollView>
-      )}
-
-      {error?.response?.data && (
-        <Text className="text-red-500 text-center mt-10">
-          {error?.response?.data}
-        </Text>
-      )}
-      <View className="w-[90%] mx-auto mt-3 h-[50px]">
-        <Buttons
-          name={"Enroll"}
-          onPress={() => {
-            router.push("Enroll");
-          }}
-        />
-      </View>
-
-      <Text className=" text-blue-600 underline mt-[10px] mb-[30px]">
-        Show All Mark Progress
-      </Text>
-    </View>
+      {isLoading && <Loading />}
+    </LinearGradient>
   );
 }

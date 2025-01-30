@@ -11,7 +11,7 @@ export default function resources() {
   const { data, isLoading } = UseFetchResource();
 
   return (
-    <View className="flex-1 bg-white dark:bg-black flex items-center  flex-col ">
+    <View className="flex-1 pt-[20px] bg-white dark:bg-black flex items-center  flex-col ">
       <Header name="Resources" />
       {isLoading && <Loading />}
       <View className="w-full flex-1 flex  flex-col mb-5">

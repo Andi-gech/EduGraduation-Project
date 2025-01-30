@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
+import { MotiView, AnimatePresence } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import Header from "../../../../../Components/Header";
@@ -19,9 +20,10 @@ import * as Linking from "expo-linking";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRouter } from "expo-router";
 import { useColorScheme } from "react-native";
+
 export default function Subscribe() {
-  const redirecturl = Linking.createURL("app/drawer/tabs/Home/Subscribe", {
-    sucess: true,
+  const redirecturl = Linking.createURL("app/drawer/tabs/Home/Subscribe",{
+success: true,
   });
   const { data, isLoading, refetch } = UseFetchChapaInitialize(redirecturl);
   const navigate = useRouter();
@@ -30,8 +32,8 @@ export default function Subscribe() {
     refetch: checkstatus,
     isFetching,
   } = UseFetchCafeStatus();
-  const [sucess, setsucess] = useState(false);
-
+  const [ success, setsucess] = useState(false);
+  const accentColor = colorScheme === "dark" ? "#10b981" : "#059669";
   useEffect(() => {
     refetch();
   }, [redirecturl]);
@@ -47,7 +49,7 @@ export default function Subscribe() {
     }
   }, [cafestatus]);
 
-  const Format = (date) => {
+  const formatDate = (date) => {
     const d = new Date(date);
     return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
   };
@@ -67,80 +69,130 @@ export default function Subscribe() {
   };
   const colorScheme = useColorScheme();
   return (
-    <View className="flex-1  bg-white dark:bg-black flex items-center flex-col">
-      <Header name="Subscription" />
-      {sucess && (
-        <View className=" absolute w-full h-full z-50    flex items-center justify-center">
-          <View className=" absolute top-0 w-full h-full bg-white dark:bg-black  rounded-md flex items-center justify-center"></View>
-          <View className="w-[300px] h-[300px] bg-white dark:bg-zinc-900 rounded-md flex items-center justify-center">
-            <Ionicons
-              name="checkmark-circle"
-              size={150}
-              color={colorScheme === "dark" ? "white" : "black"}
-            />
-            <Text className=" text-black dark:text-white text-center text-[20px] font-bold">
-              Sucess
-            </Text>
-            <View className="flex flex-row items-center mt-[100px]  justify-center">
-              <Text className=" text-black dark:text-white  text-center text-[12px] font-bold">
-                redirecting to home page
+    <LinearGradient
+      colors={
+        colorScheme === "dark"
+          ? ["#09090b", "#18181b"]
+          : ["#f8fafc", "#e2e8f0"]
+      }
+      className="flex-1"
+    >
+      <Header name="Cafe Subscription" accentColor={accentColor} showBack />
+
+      <AnimatePresence>
+        {success && (
+          <MotiView
+            from={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 items-center justify-center bg-black/50"
+          >
+            <MotiView
+              from={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              className="w-80 p-8 rounded-2xl"
+              style={{ backgroundColor: colorScheme === "dark" ? "#18181b" : "white" }}
+            >
+              <MotiView
+                animate={{ rotate: "360deg" }}
+                transition={{ loop: true, duration: 2000 }}
+                className="items-center"
+              >
+                <Ionicons name="checkmark-circle" size={80} color={accentColor} />
+              </MotiView>
+              <Text className="text-2xl font-bold text-center mt-6 text-zinc-900 dark:text-zinc-100">
+                Payment Successful!
               </Text>
-              <ActivityIndicator
-                size="small"
-                color={colorScheme === "dark" ? "white" : "black"}
-              />
-            </View>
-          </View>
-        </View>
-      )}
+              <View className="flex-row items-center justify-center mt-8">
+                <ActivityIndicator color={accentColor} />
+                <Text className="text-zinc-500 dark:text-zinc-400 ml-2">
+                  Redirecting...
+                </Text>
+              </View>
+            </MotiView>
+          </MotiView>
+        )}
+      </AnimatePresence>
+
       {data?.data && (
-        <View className="flex-1 w-full flex items-center justify-start">
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          className="flex-1 px-4 pt-8"
+        >
           <LinearGradient
-            colors={["#010101", "green"]}
-            locations={[0.0, 0.8]}
-            className="w-[90%] mt-[50px] rounded-md bg-slate-400 flex items-center justify-center"
+            colors={["#059669", "#10b981"]}
+            className="rounded-2xl p-6"
+            style={{
+              shadowColor: accentColor,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.2,
+              shadowRadius: 12,
+            }}
           >
             <Image
               source={chapa}
-              className="w-[200px]  mt-[20px] h-[50px] object-scale-down"
+              className="w-40 h-12 mb-6 self-center"
+              contentFit="contain"
             />
-            <Text className=" text-white mt-2">
-              Pay Your Cafe Bill With Chapa
-            </Text>
 
-            <View className="w-full h-[100px] px-5 mt-5 rounded-md bg-opacity-40 flex items-center justify-center">
-              <Text className=" text-white text-[30px] font-extrabold">
-                {data?.data?.price} Birr
+            <View className="items-center mb-8">
+              <Text className="text-white text-lg font-medium">
+                Monthly Cafe Subscription
+              </Text>
+              <Text className="text-white text-4xl font-bold mt-2">
+                {data.data.price} ETB
               </Text>
             </View>
+
+            <View className="flex-row justify-between mb-6">
+              <View className="items-center">
+                <Ionicons name="calendar" size={20} color="white" />
+                <Text className="text-white text-sm mt-2">
+                  {formatDate(data.data.StartDate)}
+                </Text>
+              </View>
+              <View className="items-center">
+                <Ionicons name="calendar" size={20} color="white" />
+                <Text className="text-white text-sm mt-2">
+                  {formatDate(data.data.EndDate)}
+                </Text>
+              </View>
+            </View>
+
+            <MotiView
+              animate={{ scale: 0.98 }}
+              transition={{ loop: true, duration: 1000 }}
+            >
+              <TouchableOpacity
+                onPress={handlePayment}
+                className="w-full py-4 rounded-xl items-center"
+                style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              >
+                <Text className="text-white text-lg font-semibold">
+                  Proceed to Payment
+                </Text>
+              </TouchableOpacity>
+            </MotiView>
           </LinearGradient>
 
-          <View className="w-full flex px-5 mt-5">
-            <Text className=" text-black dark:text-white text-center mt-5">
-              Start Date:{" "}
-              <Text className="font-bold mx-5">
-                {Format(data?.data.StartDate)}
+          <View className="mt-8 p-4 rounded-xl bg-zinc-100 dark:bg-zinc-800">
+            <View className="flex-row items-center">
+              <Ionicons
+                name="information-circle"
+                size={24}
+                color={accentColor}
+              />
+              <Text className="text-zinc-900 dark:text-zinc-100 ml-2 text-sm">
+                Secure payment processed through Chapa's official payment gateway
               </Text>
-            </Text>
-            <Text className=" text-black dark:text-white text-center mt-5">
-              End Date:{" "}
-              <Text className="font-bold mx-5">
-                {Format(data?.data.EndDate)}
-              </Text>
-            </Text>
+            </View>
           </View>
-
-          <TouchableOpacity
-            onPress={handlePayment}
-            className="w-[200px] mt-[100px] bg-lime-500 rounded-md py-3 flex items-center justify-center"
-          >
-            <Text className=" text-white text-lg font-bold">Pay Now</Text>
-          </TouchableOpacity>
-        </View>
+        </MotiView>
       )}
 
       {(isLoading || isFetching) && <Loading />}
-    </View>
+    </LinearGradient>
   );
 }
 

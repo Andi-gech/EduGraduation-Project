@@ -8,163 +8,177 @@ import {
   useColorScheme,
 } from "react-native";
 import React, { useRef, useState } from "react";
-import RoundButton from "../../../../../Components/RoundButton";
+import { MotiView } from "moti";
+import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
+import Header from "../../../../../Components/Header";
 import SucessPopup from "../../../../../Components/SucessPopup";
 import ErrorPopup from "../../../../../Components/ErrorPopup";
-import { LinearGradient } from "expo-linear-gradient";
-
-import { useMutation } from "@tanstack/react-query";
 import Loading from "../../../../../Components/Loading";
+import { useMutation } from "@tanstack/react-query";
 import api from "../../../../../utils/api";
-import { useRouter } from "expo-router";
-import Header from "../../../../../Components/Header";
 
 export default function Complain() {
-  const [selectedLanguage, setSelectedLanguage] = useState("dormitary");
-  const [sucess, setSucess] = useState(false);
+  const [selectedType, setSelectedType] = useState("dormitary");
   const [complain, setComplain] = useState("");
-  const [errormessage, setErrorMessage] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
+  const [sucess, setSucess] = useState(false);
   const [error, setError] = useState(false);
-  const router = useRouter();
-  const pickerref = useRef();
+  const [errormessage, setErrorMessage] = useState("");
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+  const pickerRef = useRef();
 
-  const mutation = useMutation({
-    mutationFn: async (data) => await api.post(`/complain`, data),
-    mutationKey: ["complain"],
-    onSuccess: async (response) => {
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data) => api.post(`/complain`, data),
+    onSuccess: () => {
       setSucess(true);
-
-      setTimeout(() => {
-        setSucess(false);
-      }, 2000);
+      setComplain("");
+      setTimeout(() => setSucess(false), 3000);
     },
     onError: (error) => {
       setError(true);
-      setErrorMessage(error.response.data);
-      setTimeout(() => {
-        setError(false);
-        setErrorMessage("");
-      }, 2000);
-    },
+      setErrorMessage(error.response?.data || "An error occurred");
+      setTimeout(() => setError(false), 3000);
+    }
   });
-  const handleSendRequest = () => {
-    mutation.mutate({
-      type: selectedLanguage,
-      complain: complain,
-    });
-  };
-  const colorScheme = useColorScheme();
 
   return (
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}
-      className="flex flex-1 px-[10px]  mt-[5px]"
+    <LinearGradient
+      colors={
+        colorScheme === "dark" 
+          ? ["#09090b", "#18181b"] 
+          : ["#f8fafc", "#e2e8f0"]
+      }
+      className="flex-1 pt-[20px]"
     >
-      <View className="relative w-full h-full flex flex-col px-[10px]  bg-white dark:bg-black   items-center">
-        {mutation.isPending && <Loading />}
-        <SucessPopup visible={sucess} />
-        <ErrorPopup message={errormessage} visible={error} />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View className="flex-1 px-4">
+          <Header name="Report an Issue" accentColor={accentColor} showBack />
+          
+          {isPending && <Loading />}
+          <SucessPopup visible={sucess} />
+          <ErrorPopup message={errormessage} visible={error} />
 
-        <Header name="Tell us the issue " />
-        <View className=" w-full pt-4 px-[2px] flex flex-col">
-          <View className="w-[99%] flex-col  flex ">
-            <Text className=" my-[20px] text-black dark:text-white font-semibold ">
-              What issue are you facing
-            </Text>
-
-            <Picker
-              numberOfLines={1}
-              mode="dropdown"
-              itemStyle={{
-                height: 120,
-
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              className=" bg-zinc-100 dark:bg-zinc-900"
-              dropdownIconRippleColor={
-                colorScheme === "dark" ? "white" : "black"
-              }
-              selectionColor={colorScheme === "dark" ? "white" : "black"}
-              ref={pickerref}
-              dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
-              selectedValue={selectedLanguage}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedLanguage(itemValue)
-              }
-            >
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="Dormitary Problem"
-                value="dormitary"
-              />
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="Class Room and Labratory "
-                value="class"
-              />
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="Adminstration "
-                value="admin"
-              />
-
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="Security Issue"
-                value="security"
-              />
-
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="Other"
-                value="other"
-              />
-            </Picker>
-          </View>
-          <View className="w-[99%] flex-col   mt-[25px] flex ">
-            <Text className="my-[10px]  text-black dark:text-white font-semibold ">
-              Tell us more
-            </Text>
-            <TextInput
-              onChangeText={(text) => setComplain(text)}
-              multiline
-              placeholder="Tell us more"
-              placeholderTextColor={colorScheme === "dark" ? "white" : "black"}
-              className="w-[99%] h-[100px]  bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white rounded-[12px] px-2 mt-2"
-            />
-          </View>
-          <View className="w-[99%] flex-col items-center justify-center mt-7  flex ">
-            <TouchableOpacity
-              onPress={() => handleSendRequest()}
-              className="w-[150px]  flex items-center justify-center rounded-md h-[50px] bg-zinc-100 dark:bg-zinc-800"
-            >
-              <Text className="text-black dark:text-white text-center font-bold">
-                Submit
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            className="mt-6 space-y-6"
+          >
+            {/* Issue Type Selector */}
+            <View>
+              <Text className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+                Select Issue Type
               </Text>
-            </TouchableOpacity>
-          </View>
+              
+              <TouchableOpacity
+                onPress={() => setShowPicker(!showPicker)}
+                className="flex-row items-center justify-between p-4 rounded-xl"
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "#18181b" : "white",
+                  shadowColor: accentColor,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 8,
+                }}
+              >
+                <Text className="text-zinc-900 dark:text-zinc-100">
+                  {selectedType.replace(/^\w/, c => c.toUpperCase())}
+                </Text>
+                <Ionicons 
+                  name={showPicker ? "chevron-up" : "chevron-down"} 
+                  size={20} 
+                  color={accentColor} 
+                />
+              </TouchableOpacity>
+
+              {showPicker && (
+                <View className="mt-2 rounded-xl overflow-hidden">
+                  <Picker
+                    ref={pickerRef}
+                    selectedValue={selectedType}
+                    onValueChange={(value) => {
+                      setSelectedType(value);
+                      setShowPicker(false);
+                    }}
+                    dropdownIconColor={accentColor}
+                    style={{
+                      backgroundColor: colorScheme === "dark" ? "#262626" : "white",
+                    }}
+                  >
+                    {[
+                      { label: "Dormitory Problem", value: "dormitary" },
+                      { label: "Classroom/Lab Issue", value: "class" },
+                      { label: "Administration", value: "admin" },
+                      { label: "Security Issue", value: "security" },
+                      { label: "Other", value: "other" },
+                    ].map((item, index) => (
+                      <Picker.Item
+                        key={item.value}
+                        label={item.label}
+                        value={item.value}
+                        color={colorScheme === "dark" ? "white" : "black"}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+              )}
+            </View>
+
+            {/* Complaint Input */}
+            <View>
+              <Text className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+                Describe the Issue
+              </Text>
+              
+              <MotiView
+                animate={{
+                  borderColor: complain ? accentColor : "#e5e7eb",
+                  borderWidth: 1.5
+                }}
+                className="rounded-xl p-4"
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "#18181b" : "white",
+                }}
+              >
+                <TextInput
+                  multiline
+                  placeholder="Provide detailed information..."
+                  placeholderTextColor="#94a3b8"
+                  className="text-zinc-900 dark:text-zinc-100 text-base h-32"
+                  onChangeText={setComplain}
+                />
+              </MotiView>
+            </View>
+
+            {/* Submit Button */}
+            <MotiView
+              animate={{ scale: complain ? 1.05 : 1 }}
+              transition={{ type: 'timing' }}
+            >
+              <TouchableOpacity
+                onPress={() => mutate({ type: selectedType, complain })}
+                disabled={!complain}
+                className="flex-row items-center justify-center p-4 rounded-xl"
+                style={{
+                  backgroundColor: accentColor,
+                  opacity: complain ? 1 : 0.6,
+                  shadowColor: accentColor,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 8,
+                }}
+              >
+                <Ionicons name="send" size={20} color="white" />
+                <Text className="text-white font-semibold ml-2">
+                  Submit Report
+                </Text>
+              </TouchableOpacity>
+            </MotiView>
+          </MotiView>
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </LinearGradient>
   );
 }

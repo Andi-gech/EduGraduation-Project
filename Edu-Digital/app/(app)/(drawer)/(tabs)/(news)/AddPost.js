@@ -3,28 +3,40 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
   View,
+  useColorScheme,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import Header from "../../../../../Components/Header";
+import { MotiView } from "moti";
 import { Ionicons } from "@expo/vector-icons";
-
-import SucessPopup from "../../../../../Components/SucessPopup";
-import Loading from "../../../../../Components/Loading";
-import ErrorPopup from "../../../../../Components/ErrorPopup";
+import { useNavigation } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-
+import { Image } from "expo-image";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SucessPopup from "../../../../../Components/SucessPopup";
+import ErrorPopup from "../../../../../Components/ErrorPopup";
+import Loading from "../../../../../Components/Loading";
 
 export default function AddPost() {
+  const navigation = useNavigation();
+  const colorScheme = useColorScheme();
   const [image, setImage] = useState(null);
-  const [content, setcontent] = useState(null);
+  const [content, setContent] = useState("");
   const [sucess, setSucess] = useState(false);
   const [error, setError] = useState(false);
-  const [imageError, setImageError] = useState(false); // For image validation
+  const [imageError, setImageError] = useState(false);
   const [Loadings, setLoading] = useState(false);
+
+  // Theme configurations
+  const gradientColors = colorScheme === "dark" 
+    ? ["#09090b", "#18181b"] 
+    : ["#4f46e5", "#0891b2"];
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+  const cardBg = colorScheme === "dark" ? "#18181b" : "#ffffff";
+  const borderColor = colorScheme === "dark" ? "#3f3f46" : "#e5e7eb";
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -36,105 +48,205 @@ export default function AddPost() {
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      setImageError(false); // Clear error if image is selected
+      setImageError(false);
     }
   };
 
-  const onSubmit = async () => {
+  const handleSubmit = async () => {
+    Keyboard.dismiss(); // Dismiss keyboard on submit
     if (!image) {
-      setImageError(true); // Show error if no image is selected
+      setImageError(true);
       return;
     }
-    setLoading(true);
 
-    const multform = new FormData();
-    multform.append("content", content);
-    multform.append("Image", {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("content", content);
+    formData.append("Image", {
       uri: image,
-      name: "image.jpg",
-      type: "image/jpg",
+      name: "post_image.jpg",
+      type: "image/jpeg",
     });
 
     try {
-      const response = await fetch(`https://eduapi.senaycreatives.com/post`, {
+      const token = await AsyncStorage.getItem("token");
+      const response = await fetch("http://192.168.1.8:3000/post", {
         method: "POST",
-        body: multform,
         headers: {
-          Authorization: `${await AsyncStorage.getItem("token")}`,
+          Authorization: token,
           "Content-Type": "multipart/form-data",
         },
+        body: formData,
       });
 
-      const result = await response.json();
-      if (result) {
-        setLoading(false);
-        setSucess(true);
-        setTimeout(() => {
-          setSucess(false);
-        }, 2000);
+      if (!response.ok) throw new Error("Post creation failed");
 
-        setImage(null);
-        setcontent("");
-      }
-    } catch (error) {
-      setError(true);
+      setSucess(true);
       setTimeout(() => {
-        setError(false);
+        setSucess(false);
+        navigation.goBack();
       }, 2000);
-
+    } catch (error) {
+      console.error("Post error:", error);
+      setError(true);
+      setTimeout(() => setError(false), 2000);
+    } finally {
       setLoading(false);
       setImage(null);
+      setContent("");
     }
   };
 
   return (
-    <View className="flex-1 flex bg-white dark:bg-black  items-center flex-col">
-      <Header name={"Create Posts "} />
-      {sucess && <SucessPopup message="Post Created" />}
-      {sucess && <Text className="text-green-500">Post Created</Text>}
-      {error && <Text className="text-red-500">Failed to create post</Text>}
-      {error && <ErrorPopup message="Failed to create post" />}
-      {Loadings && <Loading />}
-      {image && (
-        <View className=" p-2 flex items-center justify-center bg-gray-200 border-2 border-yellow-400 rounded-md">
-          <Image
-            source={{ uri: image }}
-            className="w-[80px] h-[80px] bg-zinc-600 rounded-md"
-          />
-        </View>
-      )}
-      <TextInput
-        value={content}
-        onChange={(e) => setcontent(e.nativeEvent.text)}
-        multiline
-        placeholder="Tell us more"
-        className="w-[92%] h-[100px] bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white  rounded-[12px] px-2 mt-2"
-      />
-      <TouchableOpacity
-        onPress={pickImage}
-        className="w-[99%] flex-row items-center justify-center mt-7  flex "
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <LinearGradient
+        colors={gradientColors}
+        locations={[0.1, 0.9]}
+        className="flex-1"
       >
-        <Ionicons
-          name="add-circle"
-          size={24}
-          className=" text-black dark:text-white "
-        />
-        <Text className=" text-black dark:text-white mx-3 font-semibold">
-          Add Image
-        </Text>
-      </TouchableOpacity>
-      {imageError && (
-        <Text className="text-red-500 mx-3 mt-2">Please select an image</Text>
-      )}
+        <View className="flex-1 px-4 pt-8">
+          {/* Header Section */}
+          <MotiView
+            className="flex-row items-center justify-between mb-6"
+            from={{ opacity: 0, translateY: -20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+          >
+            <Text className="text-2xl font-bold text-white">Create Post</Text>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              className="p-2"
+            >
+              <Ionicons name="close" size={28} color={accentColor} />
+            </TouchableOpacity>
+          </MotiView>
 
-      <TouchableOpacity
-        onPress={onSubmit}
-        className="w-[89%] rounded-md h-[50px] flex-row items-center justify-center mt-7 bg-yellow-400  flex "
-      >
-        <Text className="text-black mx-3 font-semibold">Post</Text>
-      </TouchableOpacity>
-    </View>
+          {/* Main Content Card */}
+          <MotiView
+            className="rounded-3xl p-6 mb-4"
+            style={[styles.card, { backgroundColor: cardBg }]}
+            from={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring' }}
+          >
+            {/* Image Upload Section */}
+            <MotiView
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 200 }}
+            >
+              <TouchableOpacity
+                onPress={pickImage}
+                style={[styles.imageContainer, { borderColor }]}
+                className="items-center justify-center mb-4"
+              >
+                {image ? (
+                  <Image
+                    source={{ uri: image }}
+                    className="w-full h-full rounded-xl"
+                    transition={300}
+                  />
+                ) : (
+                  <View className="items-center space-y-2">
+                    <Ionicons
+                      name="camera-outline"
+                      size={32}
+                      color={colorScheme === 'dark' ? '#71717a' : '#9ca3af'}
+                    />
+                    <Text className="text-neutral-400 dark:text-zinc-500 text-sm">
+                      Add Featured Image
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              {imageError && (
+                <Text className="text-red-400 text-sm ml-2 mb-2">
+                  Please select an image
+                </Text>
+              )}
+            </MotiView>
+
+            {/* Content Input */}
+            <MotiView
+              from={{ opacity: 0, translateY: 10 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ delay: 100 }}
+            >
+              <TextInput
+                value={content}
+                onChangeText={setContent}
+                multiline
+                placeholder="Share your thoughts..."
+                placeholderTextColor="#9ca3af"
+                style={[
+                  styles.input,
+                  { 
+                    backgroundColor: colorScheme === 'dark' ? '#27272a' : '#f3f4f6',
+                    color: colorScheme === 'dark' ? '#f4f4f5' : '#18181b'
+                  }
+                ]}
+                className="rounded-xl p-4 text-base leading-5"
+                textAlignVertical="top"
+                returnKeyType="done"
+                onSubmitEditing={Keyboard.dismiss}
+              />
+            </MotiView>
+
+            {/* Submit Button */}
+            <MotiView
+              className="mt-6"
+              from={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 300 }}
+            >
+              <TouchableOpacity
+                onPress={handleSubmit}
+                style={styles.buttonShadow}
+              >
+                <LinearGradient
+                  colors={['#facc15', '#eab308']}
+                  className="w-full py-4 rounded-xl items-center"
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  <Text className="text-white font-semibold text-base">
+                    Publish Post
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </MotiView>
+          </MotiView>
+
+          {/* Status Indicators */}
+          {Loadings && <Loading />}
+          <SucessPopup visible={sucess} message="Post created successfully!" />
+          <ErrorPopup visible={error} message="Failed to create post" />
+        </View>
+      </LinearGradient>
+    </TouchableWithoutFeedback>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  card: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  imageContainer: {
+    height: 200,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderStyle: 'dashed',
+  },
+  input: {
+    height: 120,
+  },
+  buttonShadow: {
+    shadowColor: '#facc15',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+  },
+});

@@ -1,69 +1,109 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { MotiView } from "moti";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import Header from "../../../../../Components/Header";
 import NotificationCard from "../../../../../Components/NotificationCard";
-import Headers from "../../../../../Components/Header";
 import UseFetchNotification from "../../../../../hooks/UseFetchNotification";
-import IsLoading from "../../../../../Components/Loading";
+import Loading from "../../../../../Components/Loading";
+import { useColorScheme } from "react-native";
+
+const NotificationSection = ({ title, icon, items }) => {
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+
+  return (
+    <MotiView
+      from={{ opacity: 0, translateY: 20 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      className="mb-6"
+    >
+      <View className="flex-row items-center mb-4">
+        <Ionicons name={icon} size={24} color={accentColor} />
+        <Text className="text-xl font-bold ml-2 text-zinc-900 dark:text-zinc-100">
+          {title}
+        </Text>
+        <View className="flex-1 h-px bg-zinc-200 dark:bg-zinc-700 ml-3" />
+      </View>
+
+      {items.length > 0 ? (
+        items.map((item, index) => (
+          <MotiView
+            key={item._id}
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ delay: index * 50 }}
+          >
+            <NotificationCard data={item} />
+          </MotiView>
+        ))
+      ) : (
+        <View className="items-center py-4 rounded-xl bg-zinc-100 dark:bg-zinc-800">
+          <Ionicons
+            name="checkmark-circle"
+            size={32}
+            color={colorScheme === "dark" ? "#a1a1aa" : "#71717a"}
+          />
+          <Text className="text-zinc-500 dark:text-zinc-400 mt-2">
+            No notifications
+          </Text>
+        </View>
+      )}
+    </MotiView>
+  );
+};
+
 export default function Notification() {
   const { data, isLoading } = UseFetchNotification();
-console.log(data?.data)
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+
+  const groupedNotifications = {
+    General: data?.data?.filter((item) => item.type === "General") || [],
+    Announcement: data?.data?.filter((item) => item.type === "Announcment") || [],
+    Notice: data?.data?.filter((item) => item.type === "Notice") || [],
+  };
+
   return (
-    <View className="flex-1 px-2 flex items-center bg-white  dark:bg-black duration-75 transition-all ease-in-out   flex-col">
-      <Headers name="Notification" />
-      {isLoading && <IsLoading />}
-      {data?.data && (
+    <LinearGradient
+      colors={
+        colorScheme === "dark"
+          ? ["#09090b", "#18181b"]
+          : ["#f8fafc", "#e2e8f0"]
+      }
+      className="flex-1"
+    >
+      <Header name="Notifications" accentColor={accentColor} showBack />
+
+      {isLoading ? (
+        <Loading />
+      ) : (
         <ScrollView
-          className="w-full  flex  mb-[80px]  flex-col "
+          className="px-4 pt-4"
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 40 }}
         >
-          <Text className="  text-black dark:text-white  font-semibold my-2 text-[18px]">
-            General
-          </Text>
-          <View className=" w-full flex flex-col items-center justify-center  min-h-[100px]">
-            {data?.data
-              ?.filter((item) => item.type == "General")
-              .map((item) => (
-                <NotificationCard key={item._id} data={item} />
-              ))}
-            {data?.data?.filter((item) => item.type == "General") == 0 && (
-              <Text className="  text-black dark:text-white">
-                No Notification
-              </Text>
-            )}
-          </View>
-          <Text className="  text-black dark:text-white  font-semibold my-2 text-[18px]">
-            Announcment
-          </Text>
-          <View className=" w-full flex flex-col items-center  justify-center  min-h-[100px]">
-            {data?.data
-              ?.filter((item) => item.type == "Announcment")
-              .map((item) => (
-                <NotificationCard key={item._id} data={item} />
-              ))}
-            {data?.data?.filter((item) => item.type == "Announcment") == 0 && (
-              <Text className="  text-black dark:text-white">
-                No Notification
-              </Text>
-            )}
-          </View>
-          <Text className="  text-black dark:text-white  font-semibold my-2 text-[18px]">
-            Notice
-          </Text>
-          <View className=" w-full flex-col flex items-center justify-center  min-h-[100px]">
-            {data?.data
-              ?.filter((item) => item.type == "Notice")
-              .map((item) => (
-                <NotificationCard key={item._id} data={item} />
-              ))}
-            {data?.data?.filter((item) => item.type == "Notice") == 0 && (
-              <Text className="  text-black dark:text-white">
-                No Notification
-              </Text>
-            )}
-          </View>
+          <NotificationSection
+            title="General"
+            icon="notifications"
+            items={groupedNotifications.General}
+          />
+
+          <NotificationSection
+            title="Announcement"
+            icon="megaphone"
+            items={groupedNotifications.Announcement}
+          />
+
+          <NotificationSection
+            title="Notice"
+            icon="alert-circle"
+            items={groupedNotifications.Notice}
+          />
         </ScrollView>
       )}
-    </View>
+    </LinearGradient>
   );
 }
 

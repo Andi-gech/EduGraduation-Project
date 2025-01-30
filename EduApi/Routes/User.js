@@ -16,6 +16,7 @@ const fs = require("fs");
 const path = require("path");
 const sendMail = require("../utils/sendmail");
 const { sendtoadmin } = require("../utils/sendPushNotification");
+const { Teacher } = require("../Model/Teacher");
 
 
 
@@ -294,16 +295,9 @@ Router.get("/", async (req, res) => {
 });
 Router.get("/get/teachers", async (req, res) => {
   try {
-    const teachers = await User.find()
-    .populate({
-      path: "auth",
-      match: { Role: "teacher" },
-      select: "-password",
-    }).exec();
+    const teachers = await Teacher.find()
 
-    const filteredTeachers = teachers.filter((teacher) => teacher.auth !== null);
-
-    res.send(filteredTeachers);
+    res.send(teachers);
   } catch (err) {
     res.send(err.message);
   }

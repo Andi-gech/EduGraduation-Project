@@ -1,19 +1,83 @@
-import { StyleSheet, View, ActivityIndicator } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from "react";
+import { MotiView } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
+import { useColorScheme } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Loading() {
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+
   return (
-    <View className=" absolute  z-[900]  top-0  left-0    w-screen h-screen flex items-center justify-center">
-      <View
-        locations={[0.0, 0.8]}
-        className="p-9 rounded-lg  bg-white dark:bg-black  z-30 border-[1px] border-gray-300 dark:border-gray-900 "
+    <LinearGradient
+      colors={
+        colorScheme === "dark" 
+          ? ["rgba(9,9,11,0.95)", "rgba(24,24,27,0.98)"]
+          : ["rgba(255,255,255,0.95)", "rgba(248,250,252,0.98)"]
+      }
+      className="absolute z-50 top-0 left-0 w-screen h-screen items-center justify-center"
+    >
+      <MotiView
+        from={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: 'timing', duration: 300 }}
+        className="p-8 rounded-2xl"
+        style={{
+          shadowColor: accentColor,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.2,
+          shadowRadius: 15,
+          elevation: 5
+        }}
       >
-        <ActivityIndicator size="large" color="#facc15" />
-      </View>
-      <View className="absolute top-0 left-0 w-screen h-screen bg-white dark:bg-black opacity-50"></View>
-    </View>
+        <LinearGradient
+          colors={
+            colorScheme === "dark" 
+              ? ["#18181b", "#262626"] 
+              : ["#ffffff", "#f8fafc"]
+          }
+          className="p-8 rounded-xl items-center justify-center border"
+          style={{
+            borderColor: colorScheme === "dark" ? "#374151" : "#e2e8f0"
+          }}
+        >
+          {/* Rotating Spinner */}
+          <MotiView
+            from={{ rotate: '0deg' }}
+            animate={{ rotate: '360deg' }}
+            transition={{ loop: true, duration: 1000 }}
+          >
+            <Ionicons 
+              name="reload-circle" 
+              size={54} 
+              color={accentColor} 
+            />
+          </MotiView>
+
+          {/* Pulsing Dots */}
+          <View className="flex-row mt-4 space-x-2">
+            {[0, 1, 2].map((index) => (
+              <MotiView
+                key={index}
+                from={{ opacity: 0.3, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'timing',
+                  duration: 1000,
+                  delay: index * 200,
+                  loop: true
+                }}
+              >
+                <View 
+                  className="w-2 h-2 rounded-full" 
+                  style={{ backgroundColor: accentColor }}
+                />
+              </MotiView>
+            ))}
+          </View>
+        </LinearGradient>
+      </MotiView>
+    </LinearGradient>
   );
 }
-
-const styles = StyleSheet.create({});

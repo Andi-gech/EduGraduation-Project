@@ -51,7 +51,7 @@ const { initializeSocket } = require("./Routes/Chat");
 
 const server = http.createServer(app);
 
-// Initialize Socket.io
+
 initializeSocket(server);
 
 const url = "192.168.1.7";

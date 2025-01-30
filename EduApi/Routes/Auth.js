@@ -6,6 +6,7 @@ const { generateAuthToken } = require("../utils/jwt");
 const mongoose = require("mongoose");
 const { User, validateUser } = require("../Model/User");
 const { Class, validateClass } = require("../Model/Class");
+const { Teacher, validateTeacher } = require("../Model/Teacher");
 const { Chatroom } = require("../Model/Chatrooms");
 const swagger = require("../utils/swagger");
 const GenerateEmailCode = require("../utils/GenerateEmailCode");
@@ -99,8 +100,7 @@ Router.post("/register", async (req, res) => {
       `
     );
 
-    // Respond with created user (excluding sensitive information)
-    res.send({
+   res.send({
       user: {
         _id: user._id,
         firstName: user.firstName,
@@ -201,96 +201,26 @@ Router.post("/changepassword", AuthMiddleware, async (req, res) => {
   }
 });
 Router.post("/createTeacher",  async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
-  try {
-    const { error: authError } = validateAuth(req.body.auth);
-    if (authError) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(400).send(authError.details[0].message);
-    }
-
-
-
-    // Check if email already exists
-    let auth = await Auth.findOne({ email: req.body.auth.email }).session(
-      session
-    );
-    if (auth) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(400).send("Email already registered.");
-    }
-
-    // Hash password
-
-    const hashedPassword = securePassword(req.body.auth.password);
-    const emailToken = GenerateEmailCode();
-    auth = new Auth({
-      email: req.body.auth.email,
-      password: hashedPassword,
-      Role: "teacher",
-      emailToken: emailToken,
-    });
-    await auth.save({ session });
-
  
 
-    // Create new User document
-    const user = new User({
-      firstName: req.body.user.firstName,
-      lastName: req.body.user.lastName,
-      auth: auth._id,
-      department: req.body.user.department,
-
-   
-
-      gender: req.body.user.gender,
-
-      isMilitary: req.body.user.isMilitary,
-    });
-
-    await user.save({ session });
-
-    // Commit transaction
-    await session.commitTransaction();
-    session.endSession();
-    console.log("emailToken", emailToken);
-
-    sendMail(
-      req.body.auth.email,
-      "Email Verification",
-      `<h1>Email Verification</h1>
-      <p>Copy and paste the code below to verify your email</p>
-      <strong>${emailToken}</strong>
-      `
-    );
-
-    // Respond with created user (excluding sensitive information)
-    res.send({
-      user: {
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: auth.email,
-        dob: user.dob,
-        gender: user.gender,
-        phone: user.phone,
-        
-        department: user.department,
-        semester: user.semester,
-        address: user.address,
-        profilePic: user.profilePic,
-        date: user.date,
-        isMilitary: user.isMilitary,
-      },
-    });
+  try {
+    const {error}=validateTeacher(req.body)
+    if(error) return res.status(400).send(error.details[0].message)
+    const TeacherExist=await Teacher.findOne({email:req.body.email})
+    if(TeacherExist) return res.status(400).send("Teacher already exist")
+    const teacher=new Teacher({
+      firstName:req.body.firstName,
+      lastName:req.body.lastName,
+      email:req.body.email,
+     department:req.body.department,
+     gender:req.body.gender,
+      isMilitary:req.body.isMilitary
+    })
+    await teacher.save()
+    res.send(teacher) 
+    
   } catch (err) {
-    await session.abortTransaction();
-
-    session.endSession();
+    
     res.status(500).send(err.message);
   }
 });
@@ -344,7 +274,8 @@ Router.post("/login", async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
-        userid: Profile._id
+        userid: Profile._id,
+        Role: user.Role,
       },
     });
   } catch (err) {
@@ -376,6 +307,7 @@ Router.post("/adminlogin", async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
+        Role: user.Role,
 
       },
     });

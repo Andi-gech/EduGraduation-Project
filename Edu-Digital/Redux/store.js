@@ -6,6 +6,7 @@ import {
   userReducer,
   userDataReducer,
   profileListReducer,
+  apiUrlReducer,
 } from "./reducer";
 import { legacy_createStore as createStore } from "redux";
 
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   userData: userDataReducer,
   profileList: profileListReducer,
+  apiUrl: apiUrlReducer,
 
   // other reducers can be added here
 });

@@ -1,24 +1,28 @@
+
 import React from "react";
 import { StyleSheet, Text, View, Linking, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { MotiView } from "moti";
+import { useColorScheme } from "react-native";
 import UseFetchProfilepic from "../hooks/UseFetchProfilepic";
 
 const ChatMessage = ({ message, sender, date }) => {
   const data = useSelector((state) => state.userData);
   const blurhash = "L8Glk-009GQ+MvxoVDD$*J+uxu9E";
-
   const { profile } = UseFetchProfilepic(sender);
-
   const isSender = sender === data?.userdata?._id;
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+
   const timeWithoutSeconds = new Date(date).toLocaleTimeString(undefined, {
     hour: "2-digit",
     minute: "2-digit",
   });
 
-  // Function to handle link press
+
   const handleLinkPress = (url) => {
     Linking.canOpenURL(url)
       .then((supported) => {
@@ -31,7 +35,7 @@ const ChatMessage = ({ message, sender, date }) => {
       .catch((err) => console.error("Error opening URL: ", err));
   };
 
-  // Function to render message with links
+
   const renderMessageWithLinks = (text) => {
     const words = text.split(" ");
     return words.map((word, index) => {
@@ -40,7 +44,7 @@ const ChatMessage = ({ message, sender, date }) => {
         return (
           <Text
             key={index}
-            style={{ color: "blue", textDecorationLine: "underline" }}
+            className="text-purple-200 underline"
             onPress={() => handleLinkPress(word)}
           >
             {word}{" "}
@@ -52,79 +56,91 @@ const ChatMessage = ({ message, sender, date }) => {
   };
 
   return (
-    <View className="w-full mt-2 h-fit flex flex-col">
-      <View
-        className={`w-full  h-fit flex ${
-          isSender ? "flex-row-reverse" : "flex-row"
-        }`}
-      >
+    <MotiView
+      from={{ opacity: 0, translateY: 20 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      className="w-full my-1.5"
+    >
+      <View className={`flex ${isSender ? "flex-row-reverse" : "flex-row"} items-end`}>
         {!isSender && (
-          <View>
-            {!profile?.image ? (
-              <Ionicons name="person-circle" size={50} color="gray" />
-            ) : (
-              <Image
-                source={{
-                  uri: `https://eduapi.senaycreatives.com/${profile?.image}`,
-                }}
-                cachePolicy={"memory-disk"}
-                placeholder={blurhash}
-                className="w-[50px] h-[50px] mx-2 rounded-full"
-              />
-            )}
-          </View>
-        )}
-        <View
-          style={
-            isSender
-              ? styles.messageContainerSent
-              : styles.messageContainerReceived
-          }
-        >
-          <LinearGradient
-            colors={isSender ? ["#0078fe", "#00c6ff"] : ["#f0f0f0", "orange"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={
-              isSender ? styles.messageBubbleSent : styles.messageBubbleReceived
-            }
+          <MotiView
+            from={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            className="mr-2 mb-1"
           >
-            <Text style={{ fontSize: 16, color: isSender ? "#fff" : "#000" }}>
-              {renderMessageWithLinks(message)}
+            {profile?.image ? (
+              <Image
+                source={{ uri: `http://192.168.1.8:3000/${profile?.image}` }}
+                className="w-10 h-10 rounded-full border-2"
+                style={{ borderColor: accentColor }}
+                placeholder={blurhash}
+                transition={300}
+              />
+            ) : (
+              <View className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-700 items-center justify-center">
+                <Ionicons name="person" size={20} color={accentColor} />
+              </View>
+            )}
+          </MotiView>
+        )}
+
+        <LinearGradient
+          colors={
+            isSender
+              ? ["#3b82f6", "#60a5fa"]
+              : colorScheme === "dark"
+              ? ["#374151", "#4b5563"]
+              : ["#f3f4f6", "#e5e7eb"]
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          className={`p-4 rounded-2xl ${
+            isSender
+              ? "rounded-br-none mr-2"
+              : "rounded-bl-none ml-2"
+          }`}
+          style={[
+            styles.messageShadow,
+            {
+              maxWidth: "80%",
+              shadowColor: accentColor,
+            },
+          ]}
+        >
+          {!isSender && (
+            <Text className="text-xs font-semibold mb-1 text-blue-500 dark:text-blue-300">
+              {profile?.name || "Unknown User"}
             </Text>
-            <Text style={{ fontSize: 10 }} className="text-blue-900">
-              {timeWithoutSeconds}
-            </Text>
-          </LinearGradient>
-        </View>
+          )}
+
+          <Text
+            className={`text-base ${
+              isSender ? "text-white" : "text-zinc-900 dark:text-zinc-100"
+            }`}
+          >
+            {renderMessageWithLinks(message)}
+          </Text>
+
+          <Text
+            className={`text-xs mt-1 ${
+              isSender ? "text-blue-100" : "text-zinc-500 dark:text-zinc-400"
+            }`}
+          >
+            {timeWithoutSeconds}
+          </Text>
+        </LinearGradient>
       </View>
-    </View>
+    </MotiView>
   );
 };
 
-export default React.memo(ChatMessage);
-
 const styles = StyleSheet.create({
-  messageContainerSent: {
-    marginRight: "5%",
-    maxWidth: "70%",
-    alignSelf: "flex-end",
-  },
-  messageBubbleSent: {
-    padding: 10,
-    borderRadius: 10,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-end",
-  },
-  messageContainerReceived: {
-    marginLeft: 4,
-    maxWidth: "70%",
-    marginTop: 20,
-    alignSelf: "flex-start",
-  },
-  messageBubbleReceived: {
-    padding: 10,
-    borderRadius: 10,
+  messageShadow: {
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
   },
 });
+
+export default React.memo(ChatMessage);

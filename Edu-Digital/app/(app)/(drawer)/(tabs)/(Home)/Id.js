@@ -3,32 +3,35 @@ import {
   ScrollView,
   View,
   Text,
-  ImageBackground,
   TouchableOpacity,
   Alert,
+  useColorScheme,
+  ImageBackground
 } from "react-native";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "expo-router";
 import ViewShot from "react-native-view-shot";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
+import { MotiView } from "moti";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 import pattern from "../../../../../assets/Pattern (1).png";
 import logo from "../../../../../assets/logo.png";
 import ethiopia from "../../../../../assets/th (2).jpeg";
 import UseFetchQrCode from "../../../../../hooks/UseFetchQrcode";
-import UseFetchMyData from "../../../../../hooks/UseFetchMyData";
-import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Header from "../../../../../Components/Header";
-import { useColorScheme } from "react-native";
 import ErrorMessage from "../../../../../Components/ErrorMessage";
 import Loading from "../../../../../Components/Loading";
 
 export default function Id() {
   const { data, isError, error, isLoading } = UseFetchQrCode();
-
   const frontShotRef = useRef(null);
   const backShotRef = useRef(null);
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+  const cardBg = colorScheme === "dark" ? "rgba(24, 24, 27, 0.9)" : "rgba(255, 255, 255, 0.9)";
 
   const handleCapture = async () => {
     try {
@@ -56,143 +59,176 @@ export default function Id() {
       Alert.alert("Error", "Something went wrong while capturing the ID pages");
     }
   };
-  const colorScheme = useColorScheme();
 
   return (
-    <View className="flex  bg-white dark:bg-black flex-1   ">
-      <Header name={"ID CARD"} className="self-start item" />
+    <LinearGradient
+      colors={colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#f8fafc", "#e2e8f0"]}
+      className="flex-1"
+    >
+      <Header name={"Digital ID Card"} />
+      
       {isError && (
-        <View className="h-[80%] w-screen px-[20px] flex items-center justify-center">
+        <MotiView
+          from={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="flex-1 items-center justify-center p-8"
+        >
           <FontAwesome5
             name="id-card"
             size={64}
-            color={colorScheme === "dark" ? "orange" : "orange"}
-            className={`mb-[40px]`}
+            color={accentColor}
+            className="mb-6"
           />
           <ErrorMessage type={"notice"} content={error.response.data} />
-        </View>
+        </MotiView>
       )}
-      {isLoading && <Loading />}
-      {data?.data && (
-        <ScrollView className="  mb-[80px]  flex  flex-col">
-          <View className="w-[99%] h-[220px] mb-[420px] flex items-center">
-            <View className="flex w-[99%] my-2 ">
-              <Text className="font-bold text-white text-[20px]">
-                Front Page
-              </Text>
-            </View>
 
-            <ViewShot
-              ref={frontShotRef}
-              options={{ format: "png", quality: 1 }}
-            >
-              <View className="w-[95%] h-[220px] shadow-md overflow-hidden relative rounded-md  bg-zinc-100">
-                <View className="w-full h-[50px] bg-gray-100 px-2 flex-row justify-between z-0 bg-opacity-30 flex items-center">
+      {isLoading && <Loading />}
+
+      {data?.data && (
+        <ScrollView className="flex-1 p-4" contentContainerStyle={{ paddingBottom: 100 }}>
+          {/* Front ID Card */}
+          <MotiView
+            from={{ translateY: 50, opacity: 0 }}
+            animate={{ translateY: 0, opacity: 1 }}
+            transition={{ type: 'spring' }}
+            className="mb-6"
+          >
+            <Text className="text-lg font-bold text-zinc-600 dark:text-zinc-300 mb-3">
+              Front Side
+            </Text>
+            
+            <ViewShot ref={frontShotRef} options={{ format: "png", quality: 1 }}>
+              <View className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-xl">
+                <LinearGradient
+                  colors={["#c2410c", "#ea580c"]}
+                  className="p-4 flex-row items-center justify-between"
+                >
                   <Image
                     source={logo}
-                    className="w-[40px] h-[40px] rounded-full"
+                    className="w-12 h-12 rounded-lg"
                   />
-                  <View className="flex flex-col items-center">
-                    <Text className="text-black text-[10px] font-extrabold">
+                  <View className="flex-1 mx-4">
+                    <Text className="text-white font-bold text-center text-sm">
                       Ethiopian Defence University
                     </Text>
-                    <Text className="text-black text-[10px] font-sm">
+                    <Text className="text-white text-xs text-center mt-1">
                       የኢትዮጵያ መከላከያ ዩኒቨርሲቲ
                     </Text>
-                    <Text className="text-black text-[10px]  font-extrabold">
-                      Student ID Card
-                    </Text>
                   </View>
-                  <Image source={ethiopia} className="w-[60px] h-[30px]" />
-                </View>
+                  <Image source={ethiopia} className="w-16 h-8" />
+                </LinearGradient>
 
-                <View className="flex flex-row w-full">
-                  <Image
-                    source={{
-                      uri: `https://eduapi.senaycreatives.com/${data?.data?.Photo}`,
-                    }}
-                    className="w-[110px] ml-2 h-[130px] z-0 mt-3 "
-                  />
-                  <View className="flex relative flex-1 items-center grayscale justify-center">
-                    <ImageBackground
-                      className="w-full brightness-0 z-10 grayscale opacity-5 absolute h-full"
-                      source={logo}
+                <View className="flex-row p-4 bg-white/90 dark:bg-zinc-800/90">
+                  <View className="relative">
+                    <Image
+                      source={{ uri: `http://192.168.1.8:3000/${data?.data?.Photo}` }}
+                      className="w-28 h-36 rounded-lg border-2 border-orange-500"
                     />
-                    <View className="w-full flex flex-col ml-[40px]">
-                      <Text className="text-orange-800 font-bold text-[8px] mt-[20px]">
-                        ሙሉ ስም/FullName
+                    <ImageBackground
+                      source={pattern}
+                      className="absolute w-full h-full opacity-10"
+                    />
+                  </View>
+
+                  <View className="flex-1 ml-4">
+                    <View className="mb-3">
+                      <Text className="text-[10px] font-bold text-orange-600 dark:text-orange-400">
+                        ሙሉ ስም / FULL NAME
                       </Text>
-                      <Text className="text-black font-bold text-[10px]">
-                        {data?.data?.AmharicFirstName.toUpperCase()}{" "}
+                      <Text className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
+                        {data?.data?.AmharicFirstName.toUpperCase()}
+                      </Text>
+                      <Text className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
                         {data?.data?.AmharicLastName.toUpperCase()}
                       </Text>
-
-                      <Text className="text-black font-bold text-[10px]">
+                      <Text className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
                         {data?.data?.EnglishFirstName.toUpperCase()}{" "}
                         {data?.data?.EnglishLastName.toUpperCase()}
                       </Text>
+                    </View>
 
-                      <Text className="text-orange-800 font-bold text-[8px] mt-1">
-                        ጾታ/Gender
-                      </Text>
-                      <Text className="text-black font-bold text-[11px]">
-                        {data?.data.Gender.toUpperCase()}
-                      </Text>
-                      <Text className="text-orange-800 font-bold text-[8px] mt-1">
-                        የተሰጠ ቀን/ Date Issued
-                      </Text>
-                      <Text className="text-black font-bold text-[11px]">
-                        {new Date(data?.data.DateOfIssue).toLocaleDateString()}
-                      </Text>
-                      <Text className="text-orange-800 font-bold text-[8px] mt-1">
-                        ጊዜው የሚያበቃበት ቀን/ Expire Date
-                      </Text>
-                      <Text className="text-black font-bold text-[11px]">
-                        {new Date(data?.data.DateOfExpiry).toLocaleDateString()}
-                      </Text>
+                    <View className="flex-row justify-between flex-wrap">
+                      <View className="mb-2">
+                        <Text className="text-[10px] font-bold text-orange-600 dark:text-orange-400">
+                          ጾታ / GENDER
+                        </Text>
+                        <Text className="text-sm text-zinc-800 dark:text-zinc-300">
+                          {data?.data.Gender.toUpperCase()}
+                        </Text>
+                      </View>
+
+                      <View className="mb-2">
+                        <Text className="text-[10px] font-bold text-orange-600 dark:text-orange-400">
+                          ISSUED DATE
+                        </Text>
+                        <Text className="text-sm text-zinc-800 dark:text-zinc-300">
+                          {new Date(data?.data.DateOfIssue).toLocaleDateString()}
+                        </Text>
+                      </View>
+
+                      <View>
+                        <Text className="text-[10px] font-bold text-orange-600 dark:text-orange-400">
+                          EXPIRY DATE
+                        </Text>
+                        <Text className="text-sm text-zinc-800 dark:text-zinc-300">
+                          {new Date(data?.data.DateOfExpiry).toLocaleDateString()}
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 </View>
-                <ImageBackground
-                  className="absolute w-full h-full z-40"
-                  source={pattern}
-                />
               </View>
             </ViewShot>
+          </MotiView>
 
-            <View className="flex w-[99%] my-2">
-              <Text className="font-bold text-white text-[20px]">
-                Back Page
-              </Text>
-            </View>
-
-            <ViewShot
-              ref={backShotRef}
-       
-              options={{ format: "png", quality: 1 }}
-            >
-              <View className="w-[95%] h-[220px] shadow-md flex items-center justify-center overflow-hidden relative rounded-md bg-zinc-100">
-                <View className=" flex items-center justify-center h-full">
+          {/* Back ID Card */}
+          <MotiView
+            from={{ translateY: 50, opacity: 0 }}
+            animate={{ translateY: 0, opacity: 1 }}
+            transition={{ type: 'spring', delay: 100 }}
+          >
+            <Text className="text-lg font-bold text-zinc-600 dark:text-zinc-300 mb-3">
+              Back Side
+            </Text>
+            
+            <ViewShot ref={backShotRef} options={{ format: "png", quality: 1 }}>
+              <View className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-xl p-6 items-center">
+                <View className="bg-zinc-100 dark:bg-zinc-800 p-4 rounded-xl">
                   <Image
                     source={{ uri: data?.data?.Qr }}
-                    className="w-[200px] h-[200px]"
+                    className="w-48 h-48"
                   />
-                  <Text className="text-black font-bold text-[11px]">
-                    Scan QR Code to Get Details
-                  </Text>
                 </View>
+                <Text className="text-sm font-semibold text-zinc-600 dark:text-zinc-300 mt-4">
+                  Scan QR Code to Verify Authenticity
+                </Text>
+                <Text className="text-xs text-zinc-500 dark:text-zinc-400 mt-2 text-center">
+                  This QR code contains encrypted student information
+                </Text>
               </View>
             </ViewShot>
+          </MotiView>
 
+          {/* Share Button */}
+          <MotiView
+            from={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 200 }}
+            className="mt-8"
+          >
             <TouchableOpacity
-              className="w-[200px] h-[50px] rounded-md mt-[10px] flex items-center justify-center bg-yellow-400"
+              className="flex-row items-center justify-center bg-orange-500 dark:bg-orange-600 p-4 rounded-2xl shadow-lg"
               onPress={handleCapture}
             >
-              <Text className="text-white font-bold">Print</Text>
+              <Ionicons name="share-social" size={20} color="white" />
+              <Text className="text-white font-semibold ml-2">
+                Share ID Card
+              </Text>
             </TouchableOpacity>
-          </View>
+          </MotiView>
         </ScrollView>
       )}
-    </View>
+    </LinearGradient>
   );
 }

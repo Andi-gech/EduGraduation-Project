@@ -2,47 +2,25 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Dimensions,
   useColorScheme,
 } from "react-native";
 import { Image } from "expo-image";
 import React, { useState } from "react";
+import { MotiView } from "moti";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import api from "../utils/api";
 import { useSelector } from "react-redux";
 
+
 export default function Posts({ content, image, id, time, likedBy, user }) {
   const data = useSelector((state) => state.userData);
-
   const [liked, setLiked] = useState(likedBy.includes(data.userdata._id));
   const [likeCount, setLikeCount] = useState(likedBy?.length);
-
-  const mutation = useMutation({
-    mutationFn: async (data) => await api.put(`/post/like/${id}`, data),
-    mutationKey: ["likepost"],
-    onSuccess: async (response) => {},
-    onError: (error) => {},
-  });
-
-  const unlikeMutation = useMutation({
-    mutationFn: async (data) => await api.put(`/post/unlike/${id}`, data),
-    mutationKey: ["unlikepost"],
-    onSuccess: async (response) => {},
-    onError: (error) => {},
-  });
-
-  const handleLike = () => {
-    if (liked) {
-      setLiked(false);
-      setLikeCount(likeCount - 1);
-      unlikeMutation.mutate();
-    } else {
-      setLiked(true);
-      setLikeCount(likeCount + 1);
-      mutation.mutate();
-    }
-  };
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+  const cardBg = colorScheme === "dark" ? "#18181b" : "#ffffff";
+  const textColor = colorScheme === "dark" ? "#f4f4f5" : "#18181b";
   const compare_Ago_date = (date) => {
     let currentDate = new Date();
     let previousDate = new Date(date);
@@ -67,78 +45,131 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
       return `${Math.floor(years)}y ago`;
     }
   };
+  const { mutate: toggleLike } = useMutation({
+    mutationFn: async () => await api.put(`/post/${liked ? 'unlike' : 'like'}/${id}`),
+    onSuccess: () => {
+      setLiked(!liked);
+      setLikeCount(prev => liked ? prev - 1 : prev + 1);
+    },
+    onError: () => {
+      // Rollback on error
+      setLiked(liked);
+      setLikeCount(prev => liked ? prev + 1 : prev - 1);
+    }
+  });
 
-  const blurhash = "L8Glk-009GQ+MvxoVDD$*J+uxu9E";
-  const colorScheme = useColorScheme();
+  const handleLike = () => toggleLike();
 
   return (
-    <View className="  border-t-[1px] border-b-[1px] pb-2 border-zinc-200 dark:border-zinc-900 stroke-white z-50 rounded-lg overflow-hidden my-[20px] w-screen self-center">
-      <View className="w-full h-[50px] px-2 flex flex-row items-center">
-        <Image
-          source={{
-            uri: `https://eduapi.senaycreatives.com/${user?.profilePic}`,
-          }}
-          cachePolicy={"memory-disk"}
-          className="w-[30px] h-[30px] bg-zinc-100 dark:bg-zinc-900 rounded-full"
-        ></Image>
-        <Text className="text-black dark:text-white font-semibold ml-3">
-          {user?.firstName}
-        </Text>
+    <MotiView
+      from={{ opacity: 0, translateY: 20 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      className="mb-4 mx-4"
+      style={{
+        borderRadius: 16,
+        backgroundColor: cardBg,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        elevation: 3,
+      }}
+    >
+      {/* User Header */}
+      <View className="flex-row items-center p-4">
+        <MotiView
+          from={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring' }}
+        >
+          <Image
+            source={{ uri: `http://192.168.1.8:3000/${user?.profilePic}` }}
+            className="w-10 h-10 rounded-full"
+            cachePolicy="memory-disk"
+          />
+        </MotiView>
+        
+        <View className="ml-3 flex-1">
+          <Text className="font-semibold text-base" style={{ color: textColor }}>
+            {user?.firstName} {user?.lastName}
+          </Text>
+          <Text className="text-xs opacity-75" style={{ color: textColor }}>
+{compare_Ago_date(time)}
+          </Text>
+        </View>
       </View>
 
-      {image && (
-        <View className="w-full ">
-          <Image
-            source={{
-              uri: `https://eduapi.senaycreatives.com/${image}`,
-            }}
-            cachePolicy={"memory-disk"}
-            className="w-full bg-zinc-100 dark:bg-zinc-950 h-full object-cover"
-            style={{
-              aspectRatio: 1,
-              width: Dimensions.get("window").width,
-              height: Dimensions.get("window").width,
-            }}
-          ></Image>
-        </View>
+      {/* Post Content */}
+      {content && (
+        <Text className="px-4 pb-2 text-base leading-5" style={{ color: textColor }}>
+          {content}
+        </Text>
       )}
 
-      <View className="flex flex-row my-1 p-1">
-        <TouchableOpacity
-          onPress={handleLike}
-          className=" flex flex-row items-center"
+      {/* Post Image */}
+      {image && (
+        <MotiView
+          from={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          className="bg-zinc-100 dark:bg-zinc-900"
         >
-          <Ionicons
-            name={liked ? "heart" : "heart-outline"}
-            size={30}
-            color={liked ? "red" : colorScheme === "light" ? "black" : "white"}
+          <Image
+            source={{ uri: `http://192.168.1.8:3000/${image}` }}
+            className="w-full aspect-square"
+            contentFit="cover"
+            transition={300}
           />
-          <Text className="text-black dark:text-white text-[18px] mx-1">
+        </MotiView>
+      )}
+
+      {/* Actions */}
+      <View className="flex-row items-center p-4">
+        <TouchableOpacity 
+          onPress={handleLike}
+          className="flex-row items-center mr-6"
+        >
+          <MotiView
+            animate={{ scale: liked ? [1, 0.8, 1.1, 1] : 1 }}
+            transition={{ type: 'spring' }}
+          >
+            <Ionicons
+              name={liked ? "heart" : "heart-outline"}
+              size={24}
+              color={liked ? "#ef4444" : accentColor}
+            />
+          </MotiView>
+          <Text className="ml-2 font-medium" style={{ color: textColor }}>
             {likeCount}
           </Text>
         </TouchableOpacity>
-      </View>
-      <View className="px-2 flex flex-row ">
-        <Text
-          numberOfLines={2}
-          className="text-black dark:text-white text-md leading-6  marker:@{user.firstName}"
-        >
-          <Text numberOfLines={1} className=" font-bold text-[14px]">
-            @{user.firstName}
+
+        <TouchableOpacity className="flex-row items-center">
+          <Ionicons
+            name="chatbubble-outline"
+            size={24}
+            color={accentColor}
+          />
+          <Text className="ml-2 font-medium" style={{ color: textColor }}>
+            0
           </Text>
-          {content}
-        </Text>
+        </TouchableOpacity>
       </View>
-      <View className="px-2">
-        <Text className=" text-gray-500 dark:text-gray-300 text-[12px]  leading-6">
-          #Music #Dance #Art #Fashion #Design
-        </Text>
+
+      {/* Hashtags */}
+      <View className="px-4 pb-4 flex-row flex-wrap">
+        {["Music", "Dance", "Art", "Fashion", "Design"].map((tag) => (
+          <Text 
+            key={tag}
+            className="mr-2 mb-1 px-2 py-1 rounded-full text-xs"
+            style={{ 
+              backgroundColor: `${accentColor}20`,
+              color: accentColor
+            }}
+          >
+            #{tag}
+          </Text>
+        ))}
       </View>
-      <View className="px-2">
-        <Text className="text-gray-300 text-[12px]  leading-6">
-          {compare_Ago_date(time)}
-        </Text>
-      </View>
-    </View>
+    </MotiView>
   );
 }

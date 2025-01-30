@@ -1,40 +1,36 @@
-import { StyleSheet, Text, View } from "react-native";
+import {  LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, Text, View ,ScrollView} from "react-native";
 import React, { useState } from "react";
+import { useColorScheme } from "react-native";
+import { MotiView } from "moti";
+import { Entypo, Ionicons } from "@expo/vector-icons";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { StatusBar } from "expo-status-bar";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 import Input from "../../../Components/Input";
 import Buttons from "../../../Components/Buttons";
-import { useRouter, useLocalSearchParams } from "expo-router";
-
-import { Entypo } from "@expo/vector-icons";
-
-import { useMutation } from "@tanstack/react-query";
-
 import Loading from "../../../Components/Loading";
-import axios from "axios";
-
 import Header from "../../../Components/Header";
 
 export default function Signup_step2() {
   const router = useRouter();
-
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
   const params = useLocalSearchParams();
 
   const mutation = useMutation({
     mutationKey: ["signup"],
     mutationFn: (data) =>
-      axios.post("https://eduapi.senaycreatives.com/auth/register", data),
-    onSuccess: async (response) => {
-      router.push("/(Auth)/login");
-    },
+      axios.post("http://192.168.1.8:3000/auth/register", data),
+    onSuccess: async () => router.push("/(Auth)/login"),
     onError: (error) => {
-      setError(error.response.data);
-      setTimeout(() => {
-        setError("");
-      }, 3000);
+      setError(error.response?.data || "An error occurred");
+      setTimeout(() => setError(""), 3000);
     },
   });
 
@@ -45,14 +41,9 @@ export default function Signup_step2() {
         lastName: params.last_name,
         gender: params.gender,
         studentid: params.student_id,
-
         isMilitary: params.is_military,
       },
-      auth: {
-        email: email,
-        password: password,
-        Role: "student",
-      },
+      auth: { email, password, Role: "student" },
       class: {
         department: params.department,
         yearLevel: params.year,
@@ -63,52 +54,104 @@ export default function Signup_step2() {
   };
 
   return (
-    <View className="flex relative flex-1 bg-white  dark:bg-black  items-center">
-      {mutation.isPending && <Loading />}
-      <Header name="Complete Account Creation " />
+    <LinearGradient
+      colors={
+        colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#4f46e5", "#0891b2"]
+      }
+      locations={[0.1, 0.9]}
+      className="flex-1 items-center pt-[20px]"
+    >
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
-      <View className="w-full flex flex-col  items-start mt-4 px-2">
-        <Text className="text-[16.52px]  my-2 text-orange-200">
+      {mutation.isPending && <Loading />}
+
+      <View className="w-full px-4 z-50">
+        <Header name="Complete Account Creation" />
+        <Text className="text-lg my-2 text-amber-400 font-semibold">
           (Step 2/3) Auth Information
         </Text>
       </View>
-      <View className="w-full flex flex-col items-start mt-4 px-2">
-        <Text className=" text-black dark:text-white">Email</Text>
-        <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
-          <Input
-            placeholder={"Enter Your Email"}
-            onchange={(e) => {
-              setEmail(e);
-            }}
-            value={email}
-          />
-        </View>
-      </View>
-      <View className="w-full flex flex-col items-start mt-4 px-2">
-        <Text className=" text-black dark:text-white">password</Text>
-        <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
-          <Input
-            placeholder={"Enter Your Password"}
-            type={"password"}
-            onchange={(e) => setPassword(e)}
-            value={password}
-          />
-        </View>
-      </View>
 
-      <View className="w-full flex flex-row items-center mt-4 px-2">
-        <Entypo name="info-with-circle" size={24} color="gray" />
-        <Text className="text-[12.52px] w-[90%] mx-2 text-gray-500">
-          Your Account Must Be Approved By The Department Before You Can Login
-        </Text>
-      </View>
-      {error && <Text className="text-sm mt-[10px] text-red-300">{error}</Text>}
+      <MotiView
+        className="w-[90%] my-4 bg-white dark:bg-zinc-900 rounded-2xl p-4"
+        from={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        style={{
+          shadowColor: accentColor,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.2,
+          shadowRadius: 10,
+        }}
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Email Input */}
+          <MotiView from={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4">
+            <Text className="text-sm text-zinc-600 dark:text-zinc-300 mb-1">
+              Email
+            </Text>
+            <Input
+              placeholder="Enter Your Email"
+              icon="mail-outline"
+              onchange={setEmail}
+              value={email}
+              accentColor={accentColor}
+            />
+          </MotiView>
 
-      <View className="w-[90%] h-[55px] flex flex-col items-start mt-[10px] ">
-        <Buttons onPress={() => handleSendRequest()} name={"Register"} />
-      </View>
-    </View>
+          {/* Password Input */}
+          <MotiView from={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
+            <Text className="text-sm text-zinc-600 dark:text-zinc-300 mb-1">
+              Password
+            </Text>
+            <Input
+              placeholder="Enter Your Password"
+              type="password"
+              icon="lock-closed-outline"
+              onchange={setPassword}
+              value={password}
+              accentColor={accentColor}
+            />
+          </MotiView>
+
+          {/* Info Message */}
+          <MotiView
+            className="flex-row items-center p-3 bg-amber-100/20 dark:bg-zinc-800 rounded-lg"
+            from={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+          >
+            <Entypo name="info-with-circle" size={20} color={accentColor} />
+            <Text className="text-xs ml-2 text-zinc-600 dark:text-zinc-300 flex-1">
+              Your account must be approved by the department before you can login
+            </Text>
+          </MotiView>
+
+          {/* Error Message */}
+          {error && (
+            <MotiView
+              className="mt-4 p-2 bg-red-100/30 rounded-lg"
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <Text className="text-red-400 text-sm text-center">{error}</Text>
+            </MotiView>
+          )}
+        </ScrollView>
+      </MotiView>
+
+      {/* Register Button */}
+      <MotiView
+        className="w-[100%] flex items-center mb-4"
+        from={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring' }}
+      >
+        <Buttons
+          onPress={handleSendRequest}
+          name="Register"
+          icon="person-add-outline"
+          disabled={mutation.isPending}
+        />
+      </MotiView>
+    </LinearGradient>
   );
 }
-
-const styles = StyleSheet.create({});

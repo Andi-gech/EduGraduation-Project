@@ -29,6 +29,7 @@ export default function Login() {
         userState: {
             email: data.user.email,
             uid: data.user.id,
+            role: data.user.Role
         }
     })){
         navigation('/')

@@ -25,10 +25,7 @@ import SocialDetail from "./Pages/SocialDetail";
 function App() {
   return (
     <div className=" flex flex-row overflow-hidden bg-white font-Roboto flex-1 w-screen h-screen">
-      {
-        // Side Headers
-
-      }
+    
       <SideHeaders />
       <Routes>
         <Route path="/login" element={<Login/>} />

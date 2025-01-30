@@ -7,7 +7,7 @@ export default function Header({ name }) {
   const navigation = useNavigation();
   return (
     <View className="w-[99%] h-[50px] mt-[30px] px-2   flex flex-row items-center">
-      <RoundButton icon="angle-left" onPress={() => navigation.goBack()} />
+      <RoundButton icon="angle-left"  onPress={() => navigation.goBack()}  />
       <Text className="font-bold mx-4 text-white text-[20px]">{name}</Text>
     </View>
   );

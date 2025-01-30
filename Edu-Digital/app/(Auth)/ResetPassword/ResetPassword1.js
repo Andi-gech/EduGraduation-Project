@@ -1,3 +1,6 @@
+
+import { MotiView } from "moti";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   StyleSheet,
   Text,
@@ -13,11 +16,8 @@ import { StatusBar } from "expo-status-bar";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigation, useRouter } from "expo-router";
-
 import { Ionicons } from "@expo/vector-icons";
-
 import Loading from "../../../Components/Loading";
-
 import Input from "../../../Components/Input";
 import Buttons from "../../../Components/Buttons";
 import RoundButton from "../../../Components/RoundButton";
@@ -26,13 +26,14 @@ export default function ResetPassword1() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [Email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [sucess, setSucess] = useState("");
+  const [success, setSuccess] = useState("");
   const [onsend, setOnsend] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const colorScheme = useColorScheme();
   const router = useRouter();
+ 
   const inputRefs = useRef([]);
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
 
   const handleChange = (text, index) => {
     if (text.length > 1) return; // Allow only a single digit
@@ -55,7 +56,7 @@ export default function ResetPassword1() {
     mutationKey: ["verification"],
     mutationFn: (data) =>
       axios.post(
-        "https://eduapi.senaycreatives.com/auth/VerifyEmailforPassword",
+        "http://192.168.1.8:3000/auth/VerifyEmailforPassword",
         data
       ),
     onSuccess: async (response) => {
@@ -76,7 +77,7 @@ export default function ResetPassword1() {
   const resendCode = useMutation({
     mutationKey: ["resendCode"],
     mutationFn: (data) =>
-      axios.post("https://eduapi.senaycreatives.com/auth/resendCode", data),
+      axios.post("http://192.168.1.8:3000/auth/resendCode", data),
     onSuccess: async (response) => {
       setResendCooldown(60);
       setOnsend(true);
@@ -91,87 +92,88 @@ export default function ResetPassword1() {
   const navigation = useNavigation();
 
   return (
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}
-      className="flex flex-1 px-[10px]  mt-[5px]"
-    >
-      <View className="relative flex-1 flex items-center justify-center bg-white dark:bg-black   flex-col">
-        {(mutation.isPending || resendCode.isPending) && <Loading />}
-        <View className="absolute top-0 -right-10  w-[200px]   h-full ">
-          {[...Array(16)].map((_, rowIndex) =>
-            [...Array(12)].map((_, colIndex) => (
-              <View
-                key={`${rowIndex}-${colIndex}`}
-                style={[
-                  styles.box,
-                  {
-                    top: rowIndex * 50,
-                    left: colIndex * 50,
-
-                    backgroundColor:
-                      (rowIndex + colIndex) % 2 === 0
-                        ? `${
-                            colorScheme === "dark"
-                              ? "rgba(93, 91, 90, 0.16)"
-                              : "rgba(224, 224, 224, 0.3)"
-                          }`
-                        : `${
-                            colorScheme === "dark"
-                              ? "rgba(0, 0, 0, 0.8)"
-                              : "rgba(240, 240, 240, 0.05)"
-                          }`,
-                  },
-                ]}
-              />
-            ))
-          )}
-        </View>
-        <View className="absolute top-[50px] left-0 w-full h-[50px]  flex items-start justify-center px-[10px]">
-          <RoundButton icon={"arrowleft"} onPress={() => navigation.goBack()} />
-        </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <LinearGradient
+        colors={
+          colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#4f46e5", "#0891b2"]
+        }
+        locations={[0.1, 0.9]}
+        className="flex-1 items-center justify-center"
+      >
         <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-        <View className="mb-[109px] flex items-center  w-[90%] pt-[30px] h-[374px]   ">
-          <Ionicons name="mail" size={50} color="white" />
-          <Text className="text-[23.52px]   text-black dark:text-white font-bold">
-            Verify Your Email
-          </Text>
-          <Text className="text-[14px] text-black dark:text-white mt-[10px]">
-            We have sent a verification code to your email{" "}
-          </Text>
-          <View className=" mt-[40px] w-full flex items-center justify-center">
-            {error && <Text className="text-red-500">{error}</Text>}
-            {sucess && <Text className="text-green-500">{sucess}</Text>}
-            <View className="w-[90%] h-[55px] flex items-center  ">
-              <Input
-                placeholder={" Enter Your Email"}
-                type={"email"}
-                onchange={(event) => {
-                  setEmail(event);
-                }}
-                value={code}
-                className="placeholder-white bg-zinc-900 "
-              />
-            </View>
-            {onsend && (
-              <View className="py-3">
-                <Text className="text-black dark:text-gray-300 text-[20px]">
-                  Enter the verification code
-                </Text>
+        {(mutation.isPending || resendCode.isPending) && <Loading />}
 
-                <View className="flex flex-row justify-between mx-auto mt-4">
-                  {code.map((digit, index) => (
+        <MotiView
+          className="w-[90%] bg-white dark:bg-zinc-900 rounded-2xl py-6 px-3"
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          style={{
+            shadowColor: accentColor,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 10,
+          }}
+        >
+          <RoundButton
+            icon="arrowleft"
+            onPress={() => navigation.goBack()}
+            className="absolute top-2 left-2 z-10"
+            iconColor={accentColor}
+          />
+
+          <View className="items-center mb-6">
+            <MotiView
+              from={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring' }}
+            >
+              <Ionicons name="mail" size={48} color={accentColor} />
+            </MotiView>
+            
+            <Text className="text-2xl font-bold text-black dark:text-white mt-4">
+              Password Reset
+            </Text>
+            <Text className="text-base text-center text-zinc-600 dark:text-zinc-300">
+              Enter your email to receive a verification code
+            </Text>
+          </View>
+
+          <MotiView from={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <Input
+              placeholder="Enter Your Email"
+              icon="mail-outline"
+              type="email"
+              onchange={setEmail}
+              value={Email}
+              accentColor={accentColor}
+              className="mb-4"
+            />
+          </MotiView>
+
+          {onsend && (
+            <MotiView
+              className="mb-6"
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <Text className="text-sm text-zinc-600 dark:text-zinc-300 mb-2">
+                Enter verification code:
+              </Text>
+              <View className="flex-row justify-between">
+                {code.map((digit, index) => (
+                  <MotiView
+                    key={index}
+                    from={{ scale: 0.9 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: index * 50 }}
+                  >
                     <TextInput
-                      key={index}
+                      className={`w-12 h-12 text-center text-lg rounded-lg mx-[2px] ${
+                        digit ? "bg-amber-400" : "bg-white/10"
+                      } border border-${accentColor}/30`}
                       style={{
-                        color: digit ? "white" : "black",
+                        color: colorScheme === "dark" ? "white" : "black",
                       }}
-                      className={`w-10 h-10 flex  border-gray-300 dark:border-gray-700 border-[1px] justify-center items-center text-center rounded-md text-lg mx-1 ${
-                        digit
-                          ? "bg-yellow-400"
-                          : colorScheme === "dark"
-                          ? "bg-gray-900"
-                          : "bg-gray-200"
-                      }`}
                       keyboardType="numeric"
                       maxLength={1}
                       value={digit}
@@ -179,69 +181,75 @@ export default function ResetPassword1() {
                       onKeyPress={(e) => handleKeyPress(e, index)}
                       ref={(ref) => (inputRefs.current[index] = ref)}
                     />
-                  ))}
-                </View>
+                  </MotiView>
+                ))}
               </View>
-            )}
-          </View>
-          <View className="mt-[25px] w-[80%] h-[55px] flex items-center justify-center">
+            </MotiView>
+          )}
+
+          {(error || success) && (
+            <MotiView
+              className="mb-4 p-3 rounded-lg"
+              style={{
+                backgroundColor: error ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)",
+              }}
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <Text
+                className={`text-sm text-center ${
+                  error ? "text-red-400" : "text-green-400"
+                }`}
+              >
+                {error || success}
+              </Text>
+            </MotiView>
+          )}
+
+          <MotiView from={{ scale: 0.9 }} animate={{ scale: 1 }}>
             <Buttons
-              name={onsend ? "Verify" : "Send"}
+              name={onsend ? "Verify Code" : "Send Code"}
+              icon={onsend ? "checkmark-circle" : "send"}
               onPress={() => {
                 if (!onsend) {
-                  resendCode.mutate({
-                    email: Email,
-                  });
+                  resendCode.mutate({ email: Email });
                 } else {
-                  let codestring = code.join("");
                   mutation.mutate({
                     email: Email,
-                    code: codestring,
+                    code: code.join("")
                   });
                 }
               }}
             />
-          </View>
-          <View className="mt-[30px] w-full flex items-start ml-[45px] justify-center">
+          </MotiView>
+
+          <MotiView
+            className="mt-4 items-center"
+            from={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
             <TouchableOpacity
-              onPress={() => {
-                resendCode.mutate({
-                  email: params.email,
-                });
-              }}
+              onPress={() => resendCode.mutate({ email: Email })}
               disabled={resendCooldown > 0}
-              className="h-[40px] w-[200px] flex items-center justify-center"
             >
               <Text
-                style={{
-                  color:
-                    resendCooldown > 0
-                      ? "gray"
-                      : colorScheme === "dark"
-                      ? "orange"
-                      : "black",
-                }}
-                className="text-[14px] mt-2  text-black dark:text-white"
+                className={`text-sm ${
+                  resendCooldown > 0
+                    ? "text-zinc-500"
+                    : "text-" + (colorScheme === "dark" ? "amber-400" : "blue-500")
+                }`}
               >
-                Resend Verification Code
-                {resendCooldown > 0 && `(${resendCooldown})`}
+                Resend Code {resendCooldown > 0 && `(${resendCooldown}s)`}
               </Text>
             </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+          </MotiView>
+        </MotiView>
+      </LinearGradient>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  pattern: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    top: 0,
-    right: 0,
-  },
   box: {
     position: "absolute",
     width: 50,

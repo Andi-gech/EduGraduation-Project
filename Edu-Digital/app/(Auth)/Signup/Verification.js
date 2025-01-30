@@ -1,3 +1,7 @@
+
+import { MotiView } from "moti";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
@@ -5,30 +9,29 @@ import {
   TouchableOpacity,
   useColorScheme,
   TextInput,
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
-import PendingSvg from "../../../Components/Pending";
-import Buttons from "../../../Components/Buttons";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import { Feather, Ionicons } from "@expo/vector-icons";
-
-import { StatusBar } from "expo-status-bar";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-
 import Loading from "../../../Components/Loading";
+import Buttons from "../../../Components/Buttons";
+import PendingSvg from "../../../Components/Pending";
 
 export default function Verification() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
-  const [sucess, setSucess] = useState("");
+  const [success, setSuccess] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const colorScheme = useColorScheme();
   const router = useRouter();
   const inputRefs = useRef([]);
-
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
   const params = useLocalSearchParams();
+
   useEffect(() => {
     if (params?.isVerified === "true") {
       setIsVerified(true);
@@ -61,12 +64,14 @@ export default function Verification() {
   const mutation = useMutation({
     mutationKey: ["verification"],
     mutationFn: (data) =>
-      axios.post("https://eduapi.senaycreatives.com/auth/verify", data),
+      axios.post("http://192.168.1.8:3000/auth/verify", data),
     onSuccess: async (response) => {
       setIsVerified(true);
     },
     onError: (error) => {
       setError(error.response.data);
+      setCode(["", "", "", "", "", ""]);
+      Keyboard.dismiss();
       setTimeout(() => {
         setError("");
       }, 3000);
@@ -75,7 +80,7 @@ export default function Verification() {
   const resendCode = useMutation({
     mutationKey: ["resendCode"],
     mutationFn: (data) =>
-      axios.post("https://eduapi.senaycreatives.com/auth/resendCode", data),
+      axios.post("http://192.168.1.8:3000/auth/resendCode", data),
     onSuccess: async (response) => {
       setSucess("Code sent successfully");
       setResendCooldown(60);
@@ -94,210 +99,214 @@ export default function Verification() {
 
   if (!isVerified) {
     return (
-      <View className="relative flex-1 flex items-center justify-center bg-white dark:bg-black   flex-col">
-        {(mutation.isPending || resendCode.isPending) && <Loading />}
-        <View className="absolute top-0 -right-10  w-[200px]   h-full ">
-          {[...Array(16)].map((_, rowIndex) =>
-            [...Array(12)].map((_, colIndex) => (
-              <View
-                key={`${rowIndex}-${colIndex}`}
-                style={[
-                  styles.box,
-                  {
-                    top: rowIndex * 50,
-                    left: colIndex * 50,
-
-                    backgroundColor:
-                      (rowIndex + colIndex) % 2 === 0
-                        ? `${
-                            colorScheme === "dark"
-                              ? "rgba(93, 91, 90, 0.16)"
-                              : "rgba(224, 224, 224, 0.3)"
-                          }`
-                        : `${
-                            colorScheme === "dark"
-                              ? "rgba(0, 0, 0, 0.8)"
-                              : "rgba(240, 240, 240, 0.05)"
-                          }`,
-                  },
-                ]}
-              />
-            ))
-          )}
-        </View>
+      <LinearGradient
+        colors={
+          colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#4f46e5", "#0891b2"]
+        }
+        locations={[0.1, 0.9]}
+        className="flex-1 items-center justify-center"
+      >
         <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+        {(mutation.isPending || resendCode.isPending) && <Loading />}
 
-        <View className="mb-[109px] flex items-center  w-[90%] pt-[30px] h-[374px]   ">
-          <Ionicons name="mail" size={50} color="white" />
-          <Text className="text-[23.52px]   text-black dark:text-white font-bold">
-            Verify Your Email
-          </Text>
-          <Text className="text-[14px] text-black dark:text-white mt-[10px]">
-            We have sent a verification code to your email{" "}
-            {params.email.slice(0, 4)}****@gmail.com
-          </Text>
-          <View className=" mt-[40px] w-full flex items-center justify-center">
-            {error && <Text className="text-red-500">{error}</Text>}
-            {sucess && <Text className="text-green-500">{sucess}</Text>}
-            <View className="flex flex-row justify-between  mx-auto mt-4">
+        <MotiView
+          className="w-[90%] bg-white dark:bg-zinc-900 rounded-2xl py-6"
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          style={{
+            shadowColor: accentColor,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 10,
+          }}
+        >
+          <View className="items-center mb-6">
+            <MotiView
+              from={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring' }}
+            >
+              <Ionicons
+                name="mail"
+                size={48}
+                color={accentColor}
+                className="mb-4"
+              />
+            </MotiView>
+            
+            <Text className="text-2xl font-bold text-black dark:text-white mb-2">
+              Verify Your Email
+            </Text>
+            <Text className="text-base text-center text-zinc-600 dark:text-zinc-300">
+              We've sent a 6-digit code to {params.email?.slice(0, 4)}****@gmail.com
+            </Text>
+          </View>
+
+          <View className="items-center mb-6">
+            <MotiView
+              className="flex-row justify-between w-full"
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
               {code.map((digit, index) => (
-                <TextInput
+                <MotiView
                   key={index}
-                  style={{
-                    color: digit ? "white" : "black",
-                  }}
-                  className={`w-10 h-10 flex  border-gray-300 dark:border-gray-700 border-[1px] justify-center items-center text-center rounded-md text-lg mx-1 ${
-                    digit
-                      ? "bg-yellow-400"
-                      : colorScheme === "dark"
-                      ? "bg-gray-900"
-                      : "bg-gray-200"
-                  }`}
-                  keyboardType="numeric"
-                  maxLength={1}
-                  value={digit}
-                  onChangeText={(text) => handleChange(text, index)}
-                  onKeyPress={(e) => handleKeyPress(e, index)}
-                  ref={(ref) => (inputRefs.current[index] = ref)}
-                />
+                  from={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: index * 50 }}
+                >
+                  <TextInput
+                    className={`w-12 h-12 text-center text-lg rounded-lg mx-1 ${
+                      digit ? "bg-amber-400" : "bg-white/10"
+                    } border border-${accentColor}/30`}
+                    style={{
+                      color: colorScheme === "dark" ? "white" : "black",
+                    }}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChangeText={(text) => handleChange(text, index)}
+                    onKeyPress={(e) => handleKeyPress(e, index)}
+                    ref={(ref) => (inputRefs.current[index] = ref)}
+                  />
+                </MotiView>
               ))}
-            </View>
-          </View>
-          <View className="mt-[25px] w-[80%] h-[55px] flex items-center justify-center">
-            <Buttons
-              name={"Verify"}
-              onPress={() => {
-                let codestring = code.join("");
+            </MotiView>
 
-                mutation.mutate({
-                  email: params.email,
-                  code: codestring,
-                });
-              }}
-            />
+            {(error || success) && (
+              <MotiView
+                className="mt-4 p-3 rounded-lg"
+                style={{
+                  backgroundColor: error ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)",
+                }}
+                from={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <Text
+                  className={`text-sm text-center ${
+                    error ? "text-red-400" : "text-green-400"
+                  }`}
+                >
+                  {error || success}
+                </Text>
+              </MotiView>
+            )}
           </View>
-          <View className="mt-[30px] w-full flex items-start ml-[45px] justify-center">
+
+          <MotiView className="w-full flex items-center" from={{ scale: 0.9 }} animate={{ scale: 1 }}>
+            <Buttons
+              name="Verify"
+              icon="checkmark-circle"
+              onPress={() => mutation.mutate({
+                email: params.email,
+                code: code.join("")
+              })}
+            />
+          </MotiView>
+
+          <MotiView
+            className="mt-4 items-center"
+            from={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
             <TouchableOpacity
-              onPress={() => {
-                resendCode.mutate({
-                  email: params.email,
-                });
-              }}
+              onPress={() => resendCode.mutate({ email: params.email })}
               disabled={resendCooldown > 0}
-              className="h-[40px] w-[200px] flex items-center justify-center"
             >
               <Text
-                style={{
-                  color:
-                    resendCooldown > 0
-                      ? "gray"
-                      : colorScheme === "dark"
-                      ? "orange"
-                      : "black",
-                }}
-                className="text-[14px] mt-2  text-black dark:text-white"
+                className={`text-sm ${
+                  resendCooldown > 0
+                    ? "text-zinc-500"
+                    : "text-" + (colorScheme === "dark" ? "amber-400" : "blue-500")
+                }`}
               >
-                Resend Verification Code
-                {resendCooldown > 0 && `(${resendCooldown})`}
+                Resend Code {resendCooldown > 0 && `(${resendCooldown}s)`}
               </Text>
             </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    );
-  } else {
-    return (
-      <View className="flex-1 items-center bg-white dark:bg-black   justify-center">
-        <View className="absolute top-0 -right-10  w-[200px]   h-full ">
-          {[...Array(16)].map((_, rowIndex) =>
-            [...Array(12)].map((_, colIndex) => (
-              <View
-                key={`${rowIndex}-${colIndex}`}
-                style={[
-                  styles.box,
-                  {
-                    top: rowIndex * 50,
-                    left: colIndex * 50,
-
-                    backgroundColor:
-                      (rowIndex + colIndex) % 2 === 0
-                        ? `${
-                            colorScheme === "dark"
-                              ? "rgba(93, 91, 90, 0.16)"
-                              : "rgba(224, 224, 224, 0.3)"
-                          }`
-                        : `${
-                            colorScheme === "dark"
-                              ? "rgba(0, 0, 0, 0.8)"
-                              : "rgba(240, 240, 240, 0.05)"
-                          }`,
-                  },
-                ]}
-              />
-            ))
-          )}
-        </View>
-        <View className="mt-2 w-[100px] h-[100px]">
-          <PendingSvg
-            className="w-[300px] text-white h-[200px]"
-            width={120}
-            height={120}
-          />
-        </View>
-        <View className="flex flex-row items-center w-[80%] justify-center mt-[20px]">
-          <Text className="text-[14px] mx-5 text-gray-500">
-            Email Verification
-          </Text>
-          <Ionicons
-            name="checkmark-circle"
-            color={"gray"}
-            className="mx-[20px] text-green-400"
-            size={24}
-          />
-        </View>
-        <View className="flex flex-row items-center w-[80%] justify-center mt-[20px]">
-          <Text className="text-[14px] mx-5 text-gray-500">
-            AcademicOfficer Approval
-          </Text>
-          <Ionicons
-            name="time"
-            color={"gray"}
-            className="mx-[20px] text-green-400"
-            size={24}
-          />
-        </View>
-
-        <Text className="mt-[20px] text-zinc-400  text-[20px] ">
-          Waiting For Approval...
-        </Text>
-        <View className="w-[200px] h-[50px] mt-[20px]">
-          <Buttons
-            name={"Back To Login"}
-            onPress={() => {
-              router.replace("/(Auth)/login");
-            }}
-          />
-        </View>
-
-        <View className="flex flex-row items-center w-[80%] justify-center mt-[20px]">
-          <Feather name="info" size={34} color={"white"} />
-          <Text className="text-[14px] text-white ml-2">
-            Verification could take up to 24 hours to be approved
-          </Text>
-        </View>
-      </View>
+          </MotiView>
+        </MotiView>
+      </LinearGradient>
     );
   }
+
+  return (
+    <LinearGradient
+      colors={
+        colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#4f46e5", "#0891b2"]
+      }
+      locations={[0.1, 0.9]}
+      className="flex-1 items-center justify-center"
+    >
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+      
+      <MotiView
+        className="w-[90%] bg-white dark:bg-zinc-900 rounded-2xl p-6"
+        from={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+      >
+        <View className="items-center mb-8">
+          <MotiView
+            from={{ rotate: "0deg" }}
+            animate={{ rotate: "360deg" }}
+            transition={{ loop: true, duration: 2000 }}
+          >
+            <PendingSvg width={100} height={100} fill={accentColor} />
+          </MotiView>
+
+          <Text className="text-2xl font-bold text-black dark:text-white mt-4">
+            Approval Pending
+          </Text>
+        </View>
+
+        <View className="space-y-4">
+          {[
+            { label: "Email Verification", icon: "checkmark-circle", status: "complete" },
+            { label: "Academic Officer Approval", icon: "time", status: "pending" },
+          ].map((item, index) => (
+            <MotiView
+              key={index}
+              className="flex-row items-center p-3 bg-white/5 rounded-lg"
+              from={{ opacity: 0, translateX: -20 }}
+              animate={{ opacity: 1, translateX: 0 }}
+              transition={{ delay: index * 100 }}
+            >
+              <Ionicons
+                name={item.icon}
+                size={24}
+                color={item.status === "complete" ? "#10B981" : accentColor}
+                className="mr-3"
+              />
+              <Text className="flex-1 text-zinc-600 dark:text-zinc-300">
+                {item.label}
+              </Text>
+            </MotiView>
+          ))}
+        </View>
+
+        <MotiView className="mt-8" from={{ scale: 0.9 }} animate={{ scale: 1 }}>
+          <Buttons
+            name="Back to Login"
+            icon="log-in"
+            onPress={() => router.replace("/(Auth)/login")}
+          />
+        </MotiView>
+
+        <MotiView
+          className="mt-6 flex-row items-center p-3 bg-amber-100/20 dark:bg-zinc-800 rounded-lg"
+          from={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <Feather name="info" size={20} color={accentColor} />
+          <Text className="ml-2 text-sm text-zinc-600 dark:text-zinc-300 flex-1">
+            Verification may take up to 24 hours to complete
+          </Text>
+        </MotiView>
+      </MotiView>
+    </LinearGradient>
+  );
 }
 
 const styles = StyleSheet.create({
-  pattern: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    top: 0,
-    right: 0,
-  },
   box: {
     position: "absolute",
     width: 50,

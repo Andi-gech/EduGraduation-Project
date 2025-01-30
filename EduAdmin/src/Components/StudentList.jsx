@@ -18,10 +18,10 @@ export default function StudentList() {
       id: student._id, // This 'id' field is mandatory for DataGrid
       _id: index,
       fullName: student.firstName + " " + student.lastName,
-      email: student.auth.email,
-      department: student.Class.department,
-      semester: student.Class.semister||"N/A",
-      yearLevel: student.Class.yearLevel,
+      email: student?.auth?.email,
+      department: student?.Class?.department,
+      semester: student?.Class?.semister||"N/A",
+      yearLevel: student?.Class?.yearLevel,
       enrollmentDate: student.date,
       profilePic: student.profilePic,
     }));

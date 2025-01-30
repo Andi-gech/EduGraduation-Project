@@ -6,18 +6,19 @@ import {
   StyleSheet,
 } from "react-native";
 import React, { useRef, useState } from "react";
-
+import { MotiView } from "moti";
+import { LinearGradient } from "expo-linear-gradient";
+import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 import Input from "../../../Components/Input";
 import Buttons from "../../../Components/Buttons";
-import { useRouter } from "expo-router";
-
-import { Picker } from "@react-native-picker/picker";
 import Header from "../../../Components/Header";
+import { useRouter } from "expo-router";
 
 export default function Signup() {
   const router = useRouter();
   const [errors, setErrors] = useState({});
-
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",
@@ -28,13 +29,16 @@ export default function Signup() {
     student_id: "",
     is_military: false,
   });
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+  const pickerref = useRef();
+
   const validateForm = () => {
     const newErrors = {};
     if (!form.first_name) newErrors.first_name = "First Name is required.";
     if (!form.last_name) newErrors.last_name = "Last Name is required.";
     if (!form.student_id) newErrors.student_id = "Student ID is required.";
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
@@ -42,7 +46,6 @@ export default function Signup() {
     setForm({ ...form, [field]: value });
   };
 
-  const pickerref = useRef();
   const handleSendRequest = () => {
     if (validateForm()) {
       router.push({
@@ -50,110 +53,281 @@ export default function Signup() {
         params: form,
       });
     }
-    setTimeout(() => {
-      setErrors({});
-    }, 5000);
+    setTimeout(() => setErrors({}), 5000);
   };
-  const colorScheme = useColorScheme();
 
   return (
-    <View className="flex flex-1  bg-white relative dark:bg-black items-center">
-      <View className="w-full flex flex-col  items-start  px-2">
-        <Header name="Create Your Account " />
+    <LinearGradient
+      colors={
+        colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#4f46e5", "#0891b2"]
+      }
+      locations={[0.1, 0.9]}
+      className="flex-1 items-center pt-[20px]"
+    >
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
-        <Text className="text-[16.52px]  my-2 text-yellow-500 font-semibold">
-          (Step 1/3) Student Information
-        </Text>
-      </View>
-      <View className="absolute top-0 -right-10  w-[200px]   h-full ">
-        {[...Array(16)].map((_, rowIndex) =>
-          [...Array(12)].map((_, colIndex) => (
-            <View
+      <MotiView
+        from={{ rotate: '0deg' }}
+        animate={{ rotate: '5deg' }}
+        transition={{ loop: true, duration: 30000 }}
+        className="absolute top-0 -right-10 w-[200px] h-full"
+      >
+        {[...Array(4)].map((_, rowIndex) =>
+          [...Array(3)].map((_, colIndex) => (
+            <MotiView
               key={`${rowIndex}-${colIndex}`}
               style={[
                 styles.box,
                 {
                   top: rowIndex * 50,
                   left: colIndex * 50,
-
-                  backgroundColor:
-                    (rowIndex + colIndex) % 2 === 0
-                      ? `${
-                          colorScheme === "dark"
-                            ? "rgba(0, 0, 0, 0.8)"
-                            : "rgba(224, 224, 224, 0.3)"
-                        }`
-                      : `${
-                          colorScheme === "dark"
-                            ? "rgba(93, 91, 90, 0.16)"
-                            : "rgba(240, 240, 240, 0.05)"
-                        }`,
+                  backgroundColor: (rowIndex + colIndex) % 2 === 0 
+                    ? 'rgba(255,255,255,0.05)' 
+                    : 'rgba(0,0,0,0.03)',
                 },
               ]}
+              from={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1500 }}
             />
           ))
         )}
+      </MotiView>
+
+      <View className="w-full px-4 z-50">
+        <Header name="Create Your Account" />
+        <Text className="text-lg my-2 text-amber-400 font-semibold">
+          (Step 1/3) Student Information
+        </Text>
       </View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        className="w-[90%] flex flex-col  mb-4  bg-white dark:bg-zinc-950   border-t-[2px] border-yellow-900 rounded-[20px]  shadow-lg shadow-gray-900  "
-      >
-        <View className="w-full flex flex-col items-start mt-4 px-2">
-          <Text className=" text-black dark:text-white">First Name</Text>
-          <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
-            <Input
-              placeholder={"Enter First Name"}
-              onchange={(e) => {
-                handleInputChange("first_name", e);
-              }}
-              value={form.first_name}
-            />
-            {errors.first_name && (
-              <Text className="text-red-500 text-sm">{errors.first_name}</Text>
-            )}
+
+      Copy
+
+<MotiView
+  className="w-[90%]  bg-white dark:bg-zinc-900 rounded-2xl p-4"
+  style={{ 
+ 
+    maxHeight: '70%', 
+    shadowColor: accentColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+  }}
+  from={{ opacity: 0, translateY: 20 }}
+  animate={{ opacity: 1, translateY: 0 }}
+><ScrollView 
+    showsVerticalScrollIndicator={false}
+    contentContainerStyle={{ paddingBottom: 20 }} // Add bottom padding
+  >       {[
+            { label: "First Name", field: "first_name", icon: "person-outline" },
+            { label: "Last Name", field: "last_name", icon: "person-outline" },
+            { label: "Student ID", field: "student_id", icon: "id-card-outline" },
+          ].map(({ label, field, icon }) => (
+            <View key={field} className="mb-4">
+              <Text className="text-sm text-zinc-600 dark:text-zinc-300 mb-1">
+                {label}
+              </Text>
+              <Input
+                placeholder={`Enter ${label}`}
+                icon={icon}
+                onchange={(e) => handleInputChange(field, e)}
+                value={form[field]}
+                accentColor={accentColor}
+              />
+              {errors[field] && (
+                <MotiView
+                  from={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-red-400 text-xs mt-1"
+                >
+                  <Text className="text-red-400">{errors[field]}</Text>
+                </MotiView>
+              )}
+            </View>
+          ))}
+
+          {/* Year/Semester Picker Group */}
+          <View className="w-full flex-col mt-4 flex">
+            <Text className="px-2 text-black dark:text-white">
+              Choose Your Year/Semester
+            </Text>
+            <View className="flex flex-row text-black dark:text-white">
+              <Picker
+                numberOfLines={1}
+                mode="dropdown"
+                dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
+                itemStyle={{
+                  height: 50,
+                  color: colorScheme === "dark" ? "white" : "black",
+                  fontSize: 18,
+                }}
+                ref={pickerref}
+                selectedValue={form.year}
+                style={{
+                  height: 50,
+                  color: colorScheme === "dark" ? "white" : "black",
+                  marginVertical: 10,
+                  marginTop: 10,
+                  width: "70%",
+                }}
+                onValueChange={(itemValue) => {
+                  handleInputChange("year", itemValue);
+                }}
+              >
+                {[1, 2, 3, 4, 5].map((year) => (
+                  <Picker.Item
+                    key={year}
+                    style={{
+                      backgroundColor: colorScheme === "dark" ? "black" : "white",
+                      color: colorScheme === "dark" ? "white" : "black",
+                    }}
+                    label={`Year ${year}`}
+                    value={String(year)}
+                  />
+                ))}
+              </Picker>
+
+              <Picker
+                numberOfLines={1}
+                mode="dropdown"
+                dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
+                itemStyle={{
+                  height: 50,
+                  color: colorScheme === "dark" ? "white" : "black",
+                  fontSize: 18,
+                }}
+                ref={pickerref}
+                selectedValue={form.semister}
+                style={{
+                  height: 50,
+                  marginVertical: 10,
+                  marginTop: 10,
+                  color: colorScheme === "dark" ? "white" : "black",
+                  width: "40%",
+                }}
+                onValueChange={(itemValue) => {
+                  handleInputChange("semister", itemValue);
+                }}
+              >
+                {[1, 2].map((sem) => (
+                  <Picker.Item
+                    key={sem}
+                    style={{
+                      backgroundColor: colorScheme === "dark" ? "black" : "white",
+                      color: colorScheme === "dark" ? "white" : "black",
+                    }}
+                    label={`Sem ${sem}`}
+                    value={String(sem)}
+                  />
+                ))}
+              </Picker>
+            </View>
           </View>
-        </View>
-        <View className="w-full flex flex-col items-start mt-4 px-2">
-          <Text className=" text-black dark:text-white">Last Name</Text>
-          <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
-            <Input
-              placeholder={"Enter Last Name"}
-              onchange={(e) => {
-                handleInputChange("last_name", e);
-              }}
-              value={form.last_name}
-            />
-            {errors.last_name && (
-              <Text className="text-red-500 text-sm">{errors.last_name}</Text>
-            )}
-          </View>
-        </View>
-        <View className="w-full flex-col mt-4  flex ">
-          <Text className="px-2  text-black dark:text-white">
-            choose Your year/semister
-          </Text>
-          <View className="flex flex-row  text-black dark:text-white">
+
+          {/* Department Picker */}
+          <View className="w-full flex-col mt-4 flex">
+            <Text className="px-2 text-black dark:text-white">
+              Choose Your Department
+            </Text>
             <Picker
               numberOfLines={1}
               mode="dropdown"
-              dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
               itemStyle={{
                 height: 50,
-
                 color: colorScheme === "dark" ? "white" : "black",
                 fontSize: 18,
               }}
               ref={pickerref}
-              selectedValue={form.year}
+              selectedValue={form.department}
+              dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
+              style={{
+                height: 50,
+                marginVertical: 10,
+                marginTop: 10,
+                width: "100%",
+                color: colorScheme === "dark" ? "white" : "black",
+              }}
+              onValueChange={(itemValue) => {
+                handleInputChange("department", itemValue);
+              }}
+            >
+              {departments.map((dept) => (
+                <Picker.Item
+                  key={dept}
+                  style={{
+                    backgroundColor: colorScheme === "dark" ? "black" : "white",
+                    color: colorScheme === "dark" ? "white" : "black",
+                  }}
+                  label={dept}
+                  value={dept}
+                />
+              ))}
+            </Picker>
+          </View>
+
+          {/* Gender and Military Status */}
+          <View className="w-full flex-row items-center mt-4 px-2">
+            <Text className="text-black dark:text-white">Gender:</Text>
+            <Picker
+              numberOfLines={1}
+              mode="dropdown"
+              itemStyle={{
+                height: 50,
+                width: "100%",
+                color: colorScheme === "dark" ? "white" : "black",
+                fontSize: 18,
+              }}
+              ref={pickerref}
+              selectedValue={form.gender}
+              dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
+              selectionColor={colorScheme === "dark" ? "white" : "black"}
               style={{
                 height: 50,
                 color: colorScheme === "dark" ? "white" : "black",
-                marginVertical: 10,
-                marginTop: 10,
-                width: "70%",
+                marginLeft: 10,
+                width: "60%",
               }}
               onValueChange={(itemValue) => {
-                handleInputChange("year", itemValue);
+                handleInputChange("gender", itemValue);
+              }}
+            >
+              {['Male', 'Female'].map((gender) => (
+                <Picker.Item
+                  key={gender}
+                  style={{
+                    backgroundColor: colorScheme === "dark" ? "black" : "white",
+                    color: colorScheme === "dark" ? "white" : "black",
+                  }}
+                  label={gender}
+                  value={gender}
+                />
+              ))}
+            </Picker>
+          </View>
+
+          <View className="w-full mb-[20px] flex-row items-center mt-4 px-2">
+            <Text className="text-black dark:text-white">Is Military?</Text>
+            <Picker
+              numberOfLines={1}
+              mode="dropdown"
+              itemStyle={{
+                height: 60,
+                width: 180,
+                color: colorScheme === "dark" ? "white" : "black",
+                fontSize: 18,
+              }}
+              ref={pickerref}
+              selectedValue={form.is_military}
+              dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
+              selectionColor={colorScheme === "dark" ? "white" : "black"}
+              style={{
+                height: 53,
+                color: colorScheme === "dark" ? "white" : "black",
+                marginLeft: 10,
+                width: 150,
+              }}
+              onValueChange={(itemValue) => {
+                handleInputChange("is_military", itemValue);
               }}
             >
               <Picker.Item
@@ -161,295 +335,48 @@ export default function Signup() {
                   backgroundColor: colorScheme === "dark" ? "black" : "white",
                   color: colorScheme === "dark" ? "white" : "black",
                 }}
-                label="First Year"
-                value="1"
+                label="Civilian"
+                value={false}
               />
               <Picker.Item
                 style={{
                   backgroundColor: colorScheme === "dark" ? "black" : "white",
                   color: colorScheme === "dark" ? "white" : "black",
                 }}
-                label="Second Year"
-                value="2"
-              />
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="Third Year"
-                value="3"
-              />
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="Fourth Year"
-                value="4"
-              />
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="Fifth Year"
-                value="5"
-              />
-            </Picker>
-
-            <Picker
-              numberOfLines={1}
-              mode="dropdown"
-              dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
-              itemStyle={{
-                height: 50,
-
-                color: colorScheme === "dark" ? "white" : "black",
-                fontSize: 18,
-              }}
-              ref={pickerref}
-              selectedValue={form.semister}
-              style={{
-                height: 50,
-                marginVertical: 10,
-                marginTop: 10,
-                color: colorScheme === "dark" ? "white" : "black",
-                width: "30%",
-              }}
-              onValueChange={(itemValue) => {
-                handleInputChange("semister", itemValue);
-              }}
-            >
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="1"
-                value="1"
-              />
-              <Picker.Item
-                style={{
-                  backgroundColor: colorScheme === "dark" ? "black" : "white",
-                  color: colorScheme === "dark" ? "white" : "black",
-                }}
-                label="2"
-                value="2"
+                label="Military"
+                value={true}
               />
             </Picker>
           </View>
-        </View>
 
-        <View className="w-full flex-col mt-4  flex ">
-          <Text className="px-2  text-black dark:text-white">
-            choose Your Department
-          </Text>
-
-          <Picker
-            numberOfLines={1}
-            mode="dropdown"
-            itemStyle={{
-              height: 50,
-
-              color: colorScheme === "dark" ? "white" : "black",
-              fontSize: 18,
-            }}
-            ref={pickerref}
-            selectedValue={form.department}
-            dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
-            style={{
-              height: 50,
-              marginVertical: 10,
-              marginTop: 10,
-              width: "100%",
-              color: colorScheme === "dark" ? "white" : "black",
-            }}
-            onValueChange={(itemValue) => {
-              handleInputChange("department", itemValue);
-            }}
+          
+        </ScrollView>
+        
+      </MotiView>
+    <MotiView
+            from={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring' }}
+            className="w-full  pb-3 h-[55px] flex-col items-center"
           >
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Computer Science"
-              value="Computer Science"
-            />
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Electrical"
-              value="Electrical"
-            />
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Mechanical"
-              value="Mechanical"
-            />
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Civil"
-              value="civil"
-            />
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Chemical"
-              value="Chemical"
-            />
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="AeroNautical"
-              value="AeroNautical"
-            />
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Production"
-              value="Production"
-            />
-          </Picker>
-        </View>
-        <View className="w-full flex flex-col items-start mt-4 px-2">
-          <Text className=" text-black dark:text-white">Student ID</Text>
-          <View className="w-full h-[55px] flex flex-col items-start mt-4 ">
-            <Input
-              placeholder={"Enter Student ID"}
-              onchange={(e) => {
-                handleInputChange("student_id", e);
-              }}
-              value={form.student_id}
-            />
-            {errors.student_id && (
-              <Text className="text-red-500 text-sm">{errors.student_id}</Text>
-            )}
-          </View>
-        </View>
-        <View className="w-full flex flex-row items-center mt-4 px-2">
-          <Text className=" text-black dark:text-white">Gender:</Text>
-          <Picker
-            numberOfLines={1}
-            mode="dropdown"
-            itemStyle={{
-              height: 50,
-              width: "100%",
-
-              color: colorScheme === "dark" ? "white" : "black",
-              fontSize: 18,
-            }}
-            ref={pickerref}
-            selectedValue={form.gender}
-            dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
-            selectionColor={colorScheme === "dark" ? "white" : "black"}
-            style={{
-              height: 50,
-
-              color: colorScheme === "dark" ? "white" : "black",
-
-              marginLeft: 10,
-              width: "40%",
-            }}
-            onValueChange={(itemValue) => {
-              handleInputChange("gender", itemValue);
-            }}
-          >
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Male"
-              value={"Male"}
-            />
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Female"
-              value={"Female"}
-            />
-          </Picker>
-        </View>
-        <View className="w-full mb-[20px] flex flex-row items-center mt-4 px-2">
-          <Text className=" text-black dark:text-white">Is Military ?</Text>
-          <Picker
-            numberOfLines={1}
-            mode="dropdown"
-            itemStyle={{
-              height: 60,
-              width: 180,
-
-              color: colorScheme === "dark" ? "white" : "black",
-              fontSize: 18,
-            }}
-            ref={pickerref}
-            selectedValue={form.is_military}
-            dropdownIconColor={colorScheme === "dark" ? "white" : "black"}
-            selectionColor={colorScheme === "dark" ? "white" : "black"}
-            style={{
-              height: 53,
-
-              color: colorScheme === "dark" ? "white" : "black",
-
-              marginLeft: 10,
-
-              width: 150,
-            }}
-            onValueChange={(itemValue) => {
-              handleInputChange("is_military", itemValue);
-            }}
-          >
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Civilian"
-              value={false}
-            />
-            <Picker.Item
-              style={{
-                backgroundColor: colorScheme === "dark" ? "black" : "white",
-                color: colorScheme === "dark" ? "white" : "black",
-              }}
-              label="Military"
-              value={true}
-            />
-          </Picker>
-        </View>
-      </ScrollView>
-      <View className="w-[90%] h-[55px] flex flex-col items-start  ">
-        <Buttons onPress={() => handleSendRequest()} name={"Next"} />
-      </View>
-    </View>
+            <Buttons onPress={handleSendRequest} name="Next" />
+          </MotiView>
+        
+    </LinearGradient>
   );
 }
+
+const departments = [
+  "Computer Science",
+  "Electrical",
+  "Mechanical",
+  "Civil",
+  "Chemical",
+  "AeroNautical",
+  "Production"
+];
+
 const styles = StyleSheet.create({
-  pattern: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    top: 0,
-    right: 0,
-  },
   box: {
     position: "absolute",
     width: 50,

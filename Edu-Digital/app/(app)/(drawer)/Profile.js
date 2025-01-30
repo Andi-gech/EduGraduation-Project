@@ -1,7 +1,8 @@
 import { useColorScheme, View, Text } from "react-native";
 import { Image } from "expo-image";
 import React, { useState } from "react";
-
+import { MotiView, AnimatePresence } from "moti";
+import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as ImagePicker from "expo-image-picker";
@@ -11,7 +12,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UseFetchMyData from "../../../hooks/UseFetchMyData";
 import * as FileSystem from "expo-file-system";
 import Loading from "../../../Components/Loading";
-
 import Header from "../../../Components/Header";
 
 export default function Profile() {
@@ -19,8 +19,10 @@ export default function Profile() {
   const [visible, setVisible] = useState(false);
   const [sucess, setSucess] = useState(null);
   const [error, setError] = useState(null);
-
   const { data, isLoading } = UseFetchMyData();
+  const colorScheme = useColorScheme();
+  const accentColor = colorScheme === 'dark' ? '#f59e0b' : '#3b82f6';
+  const queryclient = useQueryClient();
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -35,11 +37,11 @@ export default function Profile() {
       setVisible(true);
     }
   };
-  const queryclient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: async (data) => {
       const response = await FileSystem.uploadAsync(
-        `https://eduapi.senaycreatives.com/user/updateProfilePic`,
+        `http://192.168.1.8:3000/user/updateProfilePic`,
         data,
         {
           fieldName: "profilePic",
@@ -56,17 +58,13 @@ export default function Profile() {
     onSuccess: () => {
       queryclient.invalidateQueries("me");
       setSucess("Profile Picture Updated");
-      setTimeout(() => {
-        setSucess(false);
-      }, 3000);
+      setTimeout(() => setSucess(false), 3000);
       setImage(null);
     },
     onError: () => {
       setImage(null);
-      setError("An error occured");
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
+      setError("Failed to update profile picture");
+      setTimeout(() => setError(false), 3000);
     },
     mutationKey: "updateProfilePic",
   });
@@ -76,51 +74,99 @@ export default function Profile() {
     mutation.mutate(image);
   };
 
-  const colorScheme = useColorScheme();
-
   return (
-    <View className="flex-1 items-center bg-white  dark:bg-black ">
-      {(mutation.isPending || isLoading) && <Loading />}
+    <LinearGradient
+      colors={
+        colorScheme === "dark" 
+          ? ["#09090b", "#18181b"] 
+          : ["#f8fafc", "#e2e8f0"]
+      }
+      className="flex-1 pt-[20px]"
+    >
+      <Header name="Profile Settings" accentColor={accentColor} />
 
-      <Header name="Profile Settings" />
-      {sucess && <Text className="text-green-500">{sucess}</Text>}
-      {error && <Text className="text-red-500">{error}</Text>}
+      <View className="flex-1 items-center px-4 pt-8">
+        {(mutation.isPending || isLoading) && <Loading />}
 
-      <View className="w-[99%]  flex-1  px-2    flex-row  justify-center  items-start   mt-2 flex ">
-        <View className="w-[150px] h-[150px] flex items-center justify-center bg-gray-200 border-2 border-emerald-400 rounded-full">
-          <Image
-            source={{
-              uri:
-                `https://eduapi.senaycreatives.com/${data?.data?.profilePic}` ||
-                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
-            }}
-            className="w-[150px] h-[150px] bg-zinc-50 dark:bg-zinc-600 rounded-full"
-          />
-
-          <View className="w-[40px] h-[40px] bg-zinc-100 dark:bg-zinc-800 rounded-full absolute top-0 right-0">
-            <TouchableOpacity
-              onPress={() => pickImage()}
-              className=" z-[30]   h-[40px] w-[40px] flex items-center justify-center bottom-0 right-0 bg-zinc-100 dark:bg-zinc-800 rounded-full"
+        <AnimatePresence>
+          {sucess && (
+            <MotiView
+              from={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="absolute top-20 z-50"
             >
-              <Feather
-                name="camera"
-                size={30}
-                color={colorScheme === "light" ? "black" : "white"}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+              <View className="bg-green-500/90 px-4 py-2 rounded-full flex-row items-center">
+                <Feather name="check" size={16} color="white" />
+                <Text className="text-white ml-2">{sucess}</Text>
+              </View>
+            </MotiView>
+          )}
 
-      <ImagePickerModal
-        onupdate={onSubmit}
-        onclose={() => {
-          setVisible(false);
-          setImage(null);
-        }}
-        visible={visible}
-        image={image}
-      />
-    </View>
+          {error && (
+            <MotiView
+              from={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="absolute top-20 z-50"
+            >
+              <View className="bg-red-500/90 px-4 py-2 rounded-full flex-row items-center">
+                <Feather name="alert-circle" size={16} color="white" />
+                <Text className="text-white ml-2">{error}</Text>
+              </View>
+            </MotiView>
+          )}
+        </AnimatePresence>
+
+        <MotiView
+          from={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="relative"
+        >
+          <View className="w-40 h-40 rounded-full border-4"
+            style={{ borderColor: accentColor + '30' }}>
+            <Image
+              source={{
+                uri: data?.data?.profilePic 
+                  ? `http://192.168.1.8:3000/${data.data.profilePic}`
+                  : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+              }}
+              className="w-full h-full rounded-full"
+            />
+            
+            <MotiView
+              from={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute bottom-1 right-1 bg-white dark:bg-zinc-800 p-2 rounded-full"
+              style={{
+                shadowColor: accentColor,
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 8,
+              }}
+            >
+              <TouchableOpacity onPress={pickImage}>
+                <Feather
+                  name="camera"
+                  size={24}
+                  color={accentColor}
+                />
+              </TouchableOpacity>
+            </MotiView>
+          </View>
+        </MotiView>
+
+        <ImagePickerModal
+          onupdate={onSubmit}
+          onclose={() => {
+            setVisible(false);
+            setImage(null);
+          }}
+          visible={visible}
+          image={image}
+          accentColor={accentColor}
+        />
+      </View>
+    </LinearGradient>
   );
 }
