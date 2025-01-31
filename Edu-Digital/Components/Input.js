@@ -28,7 +28,7 @@ export default function Input({
           ? [accentColor + '20', accentColor + '40'] 
           : ['transparent', 'transparent']}
         locations={[0.1, 0.9]}
-        className="w-full h-full rounded-xl p-[2px]"
+        className="w-full h-full  rounded-xl p-[2px]"
       >
         <MotiView
           className="w-full h-full bg-white/10 dark:bg-zinc-900/50 rounded-xl flex-row items-center px-4"
@@ -55,6 +55,7 @@ export default function Input({
             autoCorrect={false}
             autoComplete="on"
             value={value}
+            keyboardType={type === 'numeric' ? 'numeric' : 'default'}
             onChangeText={onchange}
             secureTextEntry={type === 'password' && showPassword}
             placeholder={placeholder}

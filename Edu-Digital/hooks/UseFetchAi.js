@@ -30,7 +30,7 @@ export default function UseFetchAi(promt) {
     });
     const jsonResult = await result.response.text();
     try {
-      console.log("jsonResult", jsonResult);
+     
       return JSON.parse(jsonResult);
     } catch (error) {
       throw new Error("The response is not JSON");

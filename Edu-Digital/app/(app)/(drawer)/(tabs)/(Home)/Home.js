@@ -8,6 +8,7 @@ import {
   useWindowDimensions,
   RefreshControl,
 } from "react-native";
+
 import React, { useState, useEffect, useMemo } from "react";
 import { Image } from "expo-image";
 import RoundButton from "../../../../../Components/RoundButton";
@@ -31,7 +32,7 @@ import { MotiView } from "moti";
 
 export default function Home() {
   const navigation = useNavigation();
-  const router = useRouter();
+
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const { data, isLoading, isError, error,refetch } = UseFetchMyData();
@@ -39,11 +40,10 @@ export default function Home() {
   const { height } = useWindowDimensions();
   const heightS = height > 700 ? 300 : 250;
   const [isModalVisible, setModalVisible] = useState(false);
-  const { width } = useWindowDimensions();
+  
   const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
 
-  const cardWidth = width > 400 ? 150 : 130;
-  const cardHeight = 80;
+
 
   useEffect(() => {
     Notifications.setNotificationHandler({
@@ -56,6 +56,7 @@ export default function Home() {
 
     const checkFirstTime = async () => {
       try {
+
         const firstTime = await AsyncStorage.getItem("firstTime");
         if (!firstTime) setModalVisible(true);
       } catch (error) {
@@ -81,7 +82,7 @@ export default function Home() {
   }, [data?.data]);
 
   const { data: cafestatus, isError: isCafeStatusError } = UseFetchCafeStatus();
-  const isFirstFiveDaysOfMonth = new Date().getDate() <= 30;
+  const isFirstFiveDaysOfMonth = new Date().getDate() <= 31;
   const isAlreadySubscribed = cafestatus?.data?.status;
   const blurhash = "L8Glk-009GQ+MvxoVDD$*J+uxu9E";
 
@@ -104,7 +105,7 @@ export default function Home() {
 
   const memoizedData = useMemo(() => data?.data, [data]);
   const profileImageUri = useMemo(
-    () => `http://192.168.1.8:3000/${memoizedData?.profilePic}`,
+    () => `https://eduapi.senaycreatives.com/${memoizedData?.profilePic}`,
     [memoizedData?.profilePic]
   );
 
@@ -202,26 +203,38 @@ export default function Home() {
             style={{ borderColor: accentColor }}
           >
             {isLoading ? (
-              <Skeleton radius="round" width={60} height={60} />
-            ) : (
-              <Image
-                source={{ uri: profileImageUri }}
-                placeholder={{ blurhash }}
-                className="w-[60px] h-[60px] rounded-full"
-              />
-            )}
+  <Skeleton radius="round" width={60} height={60} />
+) : memoizedData?.profilePic ? (
+  <Image
+    source={{ uri: profileImageUri }}
+    placeholder={{ blurhash }}
+    className="w-[60px] h-[60px] rounded-full"
+  />
+) : (
+  <View className="w-[60px] h-[60px] rounded-full bg-zinc-200 dark:bg-zinc-700 items-center justify-center">
+    <Ionicons name="person" size={50} color={accentColor} />
+  </View>
+)}
+
+
           </MotiView>
           <View className="ml-3">
   {isLoading ? (
-    <MotiView className="space-y-2">
+    <MotiView className="space-y-1 ">
+      <View className="mb-[5px]">
       <Skeleton 
         width={150} 
         height={24} 
+        colorMode={colorScheme}
+      
 
       />
+      </View>
       <Skeleton 
         width={120} 
         height={20} 
+        colorMode={colorScheme}
+    
 
       />
     </MotiView>
@@ -287,29 +300,20 @@ export default function Home() {
           }
          
         >
-          <View className="flex-row flex-wrap justify-center gap-3 px-2">
+          <View className="flex-row flex-wrap justify-center ">
             {isCafeSubscribeBtnActive && !isLoading && (
-              <MotiView from={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
-                <TouchableOpacity
-                  className="w-[160px] h-[100px] rounded-xl p-3 bg-gradient-to-r from-blue-500 to-purple-500"
-                  style={{
-                    shadowColor: accentColor,
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 10,
-                  }}
-                  onPress={() => navigation.navigate("Subscribe")}
-                >
-                  <Ionicons name="cash-outline" size={24} color="white" />
-                  <Text className="text-white mt-2 font-semibold">Cafe Subscription</Text>
-                  <Text className="text-yellow-200 absolute top-1 left-2 text-xs font-bold">
-                    {formattedTime}
-                  </Text>
-                </TouchableOpacity>
-              </MotiView>
+             <AppCard 
+                name="Cafe Subscription" 
+                icon="cafe" 
+                type="limited"
+                countDown={formattedTime}
+                onpress={() => navigation.navigate("Subscribe")} 
+                accentColor={accentColor}
+              />
             )}
 
             {[
+              { name: "Grade Calcualtor", icon: "calculator", screen: "GradeCalculator" ,type:"new" },
               { name: 'Permission', icon: 'people-outline', screen: 'Permission' },
               { name: 'Class', icon: 'school-outline', screen: '(class)' },
               { name: 'Complain', icon: 'megaphone-outline', screen: 'Complain' },
@@ -328,6 +332,7 @@ export default function Home() {
                   icon={card.icon}
                   onpress={() => navigation.navigate(card.screen)}
                   accentColor={accentColor}
+                  type={card.type}
                 />
               </MotiView>
             ))}
@@ -355,7 +360,9 @@ export default function Home() {
           <AntDesign name="qrcode" size={32} color={accentColor} />
         </TouchableOpacity>
       </MotiView>
-
+{
+  isModalVisible && (<TutorialModal onClose={handleCloseModal} />)
+}
       
     </LinearGradient>
   );

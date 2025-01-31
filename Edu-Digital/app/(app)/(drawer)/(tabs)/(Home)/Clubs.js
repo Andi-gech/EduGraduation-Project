@@ -81,7 +81,8 @@ export default function Clubs() {
                   </Text>
                 </LinearGradient>
 
-                {club.clubMembers.includes(datas?.userdata?._id) ? (
+                {club.clubMembers.some(member => member._id === datas?.userdata?._id)
+                ? (
                   <View className="absolute top-4 right-4 bg-emerald-500/90 px-3 py-1 rounded-full flex-row items-center">
                     <Ionicons name="checkmark" size={16} color="white" />
                     <Text className="text-white ml-1 text-sm">Member</Text>

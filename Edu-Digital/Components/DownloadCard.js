@@ -1,40 +1,94 @@
-import {
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
+// DownloadCard.js
+import { 
+  Linking, 
+  TouchableOpacity, 
+  View, 
+  Text, 
+  Animated 
 } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function DownloadCard({ item }) {
+export default function DownloadCard({ item, accentColor, colorScheme }) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
   const download = () => {
-    Linking.openURL(`http://192.168.1.8:3000/${item?.resource}`);
+    Linking.openURL(`https://eduapi.senaycreatives.com/${item?.resource}`);
   };
 
   return (
-    <View className="w-[90%] relative mx-[10px] mt-[10px] h-[70px] flex-row shadow-sm rounded-md  shadow-gray-300 dark:shadow-gray-900 bg-zinc-50 dark:bg-zinc-950 items-center px-2 justify-between">
-      <View className="flex flex-col justify-center items-center">
-        <Text className=" text-black dark:text-white font-semibold text-md">
+    <Animated.View
+      style={[
+        {
+          transform: [{ scale: scaleAnim }],
+          backgroundColor: colorScheme === 'dark' 
+            ? 'rgba(39, 39, 42, 0.5)' 
+            : 'rgba(255, 255, 255, 0.7)',
+          shadowColor: accentColor,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 16,
+        },
+        styles.card
+      ]}
+    >
+      <View className="flex-1">
+        <Text 
+          className="text-lg font-semibold mb-1"
+          style={{ color: colorScheme === 'dark' ? '#f4f4f5' : '#27272a' }}
+        >
           {item?.course?.Coursename}
         </Text>
+        <Text 
+          className="text-sm"
+          style={{ color: colorScheme === 'dark' ? '#a1a1aa' : '#52525b' }}
+        >
+          {item?.size} MB
+        </Text>
       </View>
-      <TouchableHighlight
+
+      <TouchableOpacity
         onPress={download}
-        className="h-[50px] bg-zinc-900 w-[50px] rounded-full border-2 flex items-center justify-center border-white"
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        activeOpacity={0.8}
+        style={{ 
+          backgroundColor: `${accentColor}20`,
+          borderRadius: 24,
+          padding: 12
+        }}
       >
         <MaterialCommunityIcons
           name="download-outline"
           size={24}
-          color="white"
+          color={accentColor}
         />
-      </TouchableHighlight>
-      <Text className=" text-black dark:text-white flex text-end py-1 px-1 absolute bottom-0 left-0 text-[10px]">
-        {item?.size} MB
-      </Text>
-    </View>
+      </TouchableOpacity>
+    </Animated.View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = {
+  card: {
+    marginBottom: 16,
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }
+};

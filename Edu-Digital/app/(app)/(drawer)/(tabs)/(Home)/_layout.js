@@ -80,6 +80,14 @@ export default function Layout() {
           presentation: "modal",
         }}
       />
+      <Stack.Screen
+      name="GradeCalculator"
+      options={{
+        headerShown: false,
+        animation: "slide_from_right",
+        animationDuration: 300,
+      }}
+    />
     </Stack>
   );
 }

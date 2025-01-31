@@ -106,7 +106,7 @@ export default function News() {
           </ScrollView>
         ) : (
           <ScrollView
-            className="w-full px-4"
+            className="w-full mb-[55px] px-4"
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
@@ -119,7 +119,7 @@ export default function News() {
           >
             <Suspense
               fallback={
-                <View className="w-full px-4">
+                <View className="w-full  px-4">
                   {[...Array(3)].map((_, index) => (
                     <SkeletonPost key={`skeleton-${index}`} />
                   ))}

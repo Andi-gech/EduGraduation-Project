@@ -58,9 +58,7 @@ const userSchema = new mongoose.Schema({
       "Aeronautical",
       "Production",
       "chemical",
-      "Motor Vehicles",
-      
-    ],
+      "Motor Vehicles"],
     nullable: true,
   },
   Enrollment: [

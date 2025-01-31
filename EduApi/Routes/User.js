@@ -123,9 +123,16 @@ Router.get("/GenerateQR", Authetication, async (req, res) => {
 
 Router.get("/getprofilepic/:id", Authetication, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id, { profilePic: 1 });
+    const user = await User.findById(req.params.id, "profilePic firstName lastName");
     if (!user) return res.status(400).send("User not found");
-    res.send(user.profilePic);
+    console.log({
+      profilePic: user.profilePic,
+      name: user.firstName + " " + user.lastName
+    });
+    res.send({
+      profilePic: user.profilePic,
+      name: user.firstName + " " + user.lastName,
+    });
   } catch (err) {
     res.status(500).send(err.message);
   }

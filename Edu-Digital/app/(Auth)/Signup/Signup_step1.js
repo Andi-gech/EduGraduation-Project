@@ -65,7 +65,6 @@ export default function Signup() {
       className="flex-1 items-center pt-[20px]"
     >
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-
       <MotiView
         from={{ rotate: '0deg' }}
         animate={{ rotate: '5deg' }}
@@ -93,20 +92,15 @@ export default function Signup() {
           ))
         )}
       </MotiView>
-
       <View className="w-full px-4 z-50">
         <Header name="Create Your Account" />
         <Text className="text-lg my-2 text-amber-400 font-semibold">
           (Step 1/3) Student Information
         </Text>
       </View>
-
-      Copy
-
-<MotiView
+      <MotiView
   className="w-[90%]  bg-white dark:bg-zinc-900 rounded-2xl p-4"
   style={{ 
- 
     maxHeight: '70%', 
     shadowColor: accentColor,
     shadowOffset: { width: 0, height: 4 },
@@ -115,10 +109,11 @@ export default function Signup() {
   }}
   from={{ opacity: 0, translateY: 20 }}
   animate={{ opacity: 1, translateY: 0 }}
-><ScrollView 
+>
+  <ScrollView 
     showsVerticalScrollIndicator={false}
     contentContainerStyle={{ paddingBottom: 20 }} // Add bottom padding
-  >       {[
+  >{[
             { label: "First Name", field: "first_name", icon: "person-outline" },
             { label: "Last Name", field: "last_name", icon: "person-outline" },
             { label: "Student ID", field: "student_id", icon: "id-card-outline" },
@@ -145,9 +140,7 @@ export default function Signup() {
               )}
             </View>
           ))}
-
-          {/* Year/Semester Picker Group */}
-          <View className="w-full flex-col mt-4 flex">
+<View className="w-full flex-col mt-4 flex">
             <Text className="px-2 text-black dark:text-white">
               Choose Your Year/Semester
             </Text>
@@ -186,7 +179,6 @@ export default function Signup() {
                   />
                 ))}
               </Picker>
-
               <Picker
                 numberOfLines={1}
                 mode="dropdown"
@@ -223,8 +215,6 @@ export default function Signup() {
               </Picker>
             </View>
           </View>
-
-          {/* Department Picker */}
           <View className="w-full flex-col mt-4 flex">
             <Text className="px-2 text-black dark:text-white">
               Choose Your Department
@@ -264,8 +254,6 @@ export default function Signup() {
               ))}
             </Picker>
           </View>
-
-          {/* Gender and Military Status */}
           <View className="w-full flex-row items-center mt-4 px-2">
             <Text className="text-black dark:text-white">Gender:</Text>
             <Picker
@@ -304,7 +292,6 @@ export default function Signup() {
               ))}
             </Picker>
           </View>
-
           <View className="w-full mb-[20px] flex-row items-center mt-4 px-2">
             <Text className="text-black dark:text-white">Is Military?</Text>
             <Picker
@@ -348,11 +335,8 @@ export default function Signup() {
               />
             </Picker>
           </View>
-
-          
-        </ScrollView>
-        
-      </MotiView>
+          </ScrollView>
+          </MotiView>
     <MotiView
             from={{ scale: 0.9 }}
             animate={{ scale: 1 }}
@@ -368,13 +352,14 @@ export default function Signup() {
 
 const departments = [
   "Computer Science",
-  "Electrical",
+  "electronics",
+  "civil",
   "Mechanical",
-  "Civil",
-  "Chemical",
-  "AeroNautical",
-  "Production"
-];
+  "Electrical",
+  "Aeronautical",
+  "Production",
+  "chemical",
+  "Motor Vehicles"]
 
 const styles = StyleSheet.create({
   box: {

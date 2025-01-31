@@ -3,183 +3,279 @@ import {
   View,
   Text,
   Modal,
-  Button,
   FlatList,
   TouchableOpacity,
   useColorScheme,
   useWindowDimensions,
   ActivityIndicator,
-  TouchableWithoutFeedback,
+  StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Buttons from "./Buttons";
-import { Image } from "expo-image";
-
 import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "expo-image";
 import { Asset } from "expo-asset";
 
 const TutorialModal = ({ onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [ispostImageLoaded, setispostImageLoaded] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const flatListRef = useRef(null);
+  const { width, height } = useWindowDimensions();
   const colorScheme = useColorScheme();
-  const width = useWindowDimensions().width;
-  useEffect(() => {
-    Asset.fromModule(tutorialSteps[0].image)
-      .downloadAsync()
-      .then(() => {
-        setispostImageLoaded(true);
-      });
-  }, [currentIndex]);
+
   const tutorialSteps = [
     {
       id: "1",
-      title: "Dec Gallery",
-      description: "Discover and share your favorite photos ",
-      image: require("../assets/post.png"), // Replace with actual image path
+      title: "Explore Dec Gallery",
+      description: "Discover and share stunning visual content with our community",
+      image: require("../assets/post.png"),
     },
     {
       id: "2",
-      title: "Digital ID",
-      description:
-        "Request and share your digital ID with anyone, anywhere, anytime.",
-      image: require("../assets/DigitalId.png"), // Replace with actual image path
+      title: "Digital Identity Made Easy",
+      description: "Securely manage and share your digital credentials instantly",
+      image: require("../assets/DigitalId.png"),
     },
     {
       id: "3",
-      title: "Pay Your Cafe Subscription",
-      description: "Pay your cafe subscription with a single tap.",
-      image: require("../assets/paychapa.png"), // Replace with actual image path
+      title: "Seamless Payments",
+      description: "Handle subscriptions and payments effortlessly in one tap",
+      image: require("../assets/paychapa.png"),
     },
     {
       id: "4",
-      title: "Dec Connect",
-      description: "Chat with friends and family in a secure environment.",
-      image: require("../assets/chatWithFriend.png"), // Replace with actual image path
+      title: "Connect & Chat",
+      description: "Communicate securely with end-to-end encrypted messaging",
+      image: require("../assets/chatWithFriend.png"),
     },
   ];
 
+  useEffect(() => {
+    Asset.fromModule(tutorialSteps[currentIndex].image)
+      .downloadAsync()
+      .then(() => setIsImageLoaded(true));
+  }, [currentIndex]);
+
   const renderItem = ({ item }) => (
-    <View
-      style={{ width: width }}
-      className="flex items-center justify-center  "
-    >
-      <Image
-        source={item.image}
-        style={{ width: "90%" }}
-        className=" h-[70%]  mb-5 rounded-md"
-        contentFit="contain"
-      />
-      <Text className="text-xl text-white font-bold mb-3">{item.title}</Text>
-      <Text className="text-base text-white text-center mb-5">
-        {item.description}
-      </Text>
+    <View style={[styles.slide, { width }]}>
+      <View style={styles.imageContainer}>
+        {!isImageLoaded && (
+          <ActivityIndicator size="large" color="#FFFFFF" style={styles.loader} />
+        )}
+        <Image
+          source={item.image}
+          style={styles.image}
+          contentFit="contain"
+          transition={300}
+          onLoad={() => setIsImageLoaded(true)}
+        />
+      </View>
+      
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.description}>{item.description}</Text>
     </View>
   );
 
-  const scrollToIndex = (index) => {
-    flatListRef.current.scrollToIndex({ animated: true, index });
-    setCurrentIndex(index);
-  };
+  const PaginationDots = () => (
+    <View style={styles.pagination}>
+      {tutorialSteps.map((_, index) => (
+        <View
+          key={index}
+          style={[
+            styles.dot,
+            index === currentIndex ? styles.activeDot : styles.inactiveDot
+          ]}
+        />
+      ))}
+    </View>
+  );
 
-  const nextStep = () => {
+  const handleNext = () => {
     if (currentIndex < tutorialSteps.length - 1) {
-      scrollToIndex(currentIndex + 1);
-      setispostImageLoaded(false);
+      setIsImageLoaded(false);
+      flatListRef.current.scrollToIndex({
+        index: currentIndex + 1,
+        animated: true,
+      });
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      onClose();
     }
   };
 
-  const prevStep = () => {
+  const handlePrev = () => {
     if (currentIndex > 0) {
-      scrollToIndex(currentIndex - 1);
-      setispostImageLoaded(false);
+      setIsImageLoaded(false);
+      flatListRef.current.scrollToIndex({
+        index: currentIndex - 1,
+        animated: true,
+      });
+      setCurrentIndex(prev => prev - 1);
     }
   };
 
   return (
-    <Modal transparent={true} onRequestClose={onClose}>
-      <View className="w-screen h-screen relative justify-center  items-center  bg-opacity-50">
+    <Modal transparent animationType="slide" onRequestClose={onClose}>
+      <View style={styles.overlay}>
         <LinearGradient
-          colors={
-            colorScheme === "dark"
-              ? ["#010101", "#262626"]
-              : ["#5b3f35", "#011B29"]
-          }
-          className=" dark:bg-black py-6 z-[1000]  rounded-t-[30px] absolute bottom-0  h-[90%] w-full flex  flex-col justify-between"
+          colors={["#1A1A2E", "#16213E"]}
+          style={styles.container}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
         >
-          {!ispostImageLoaded ? (
-            <View className=" ">
-              <ActivityIndicator size="large" color="#facc15" />
-            </View>
-          ) : (
-            <FlatList
-              ref={flatListRef}
-              horizontal
-              data={tutorialSteps}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id}
-              showsHorizontalScrollIndicator={false}
-              pagingEnabled
-              style="my-4"
-              scrollEnabled={false}
-              initialScrollIndex={currentIndex}
-              getItemLayout={(data, index) => ({
-                length: width, // width of each item (match `w-[300px]` in your renderItem)
-                offset: width * index, // position of each item
-                index,
-              })}
-            />
-          )}
+          <FlatList
+            ref={flatListRef}
+            horizontal
+            pagingEnabled
+            data={tutorialSteps}
+            renderItem={renderItem}
+            scrollEnabled={false}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id}
+            getItemLayout={(_, index) => ({
+              length: width,
+              offset: width * index,
+              index,
+            })}
+          />
 
-          <View className="items-center mt-4">
-            <Text className="text-base mb-3 text-white">
-              Step {currentIndex + 1} of {tutorialSteps.length}
-            </Text>
-            <View className="flex-row items-center mb-6">
-              <TouchableWithoutFeedback
-                onPress={prevStep}
-                disabled={currentIndex === 0}
-                className="mr-4"
-              >
-                <Ionicons
-                  name="chevron-back"
-                  size={30}
-                  color={currentIndex === 0 ? "gray" : "white"}
-                />
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={nextStep}
-                disabled={currentIndex === tutorialSteps.length - 1}
-                className="ml-4"
-              >
-                <Ionicons
-                  name="chevron-forward"
-                  size={30}
-                  color={
-                    currentIndex === tutorialSteps.length - 1 ? "gray" : "white"
-                  }
-                />
-              </TouchableWithoutFeedback>
-            </View>
-            <View className="w-[90%] h-[50px]">
-              <Buttons
-                name={
-                  currentIndex === tutorialSteps.length - 1 ? "Finish" : "Next"
-                }
-                onPress={() => {
-                  if (currentIndex === tutorialSteps.length - 1) {
-                    onClose();
-                  } else {
-                    nextStep();
-                  }
-                }}
+          <PaginationDots />
+
+          <View style={styles.controls}>
+            <TouchableOpacity
+              onPress={handlePrev}
+              disabled={currentIndex === 0}
+              style={[styles.navButton, currentIndex === 0 && styles.disabled]}
+            >
+              <Ionicons
+                name="chevron-back"
+                size={28}
+                color={currentIndex === 0 ? "#555" : "#FFF"}
               />
-            </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleNext}
+              style={styles.mainButton}
+            >
+              <LinearGradient
+                colors={["#4B6CB7", "#182848"]}
+                style={styles.buttonGradient}
+              >
+                <Text style={styles.buttonText}>
+                  {currentIndex === tutorialSteps.length - 1 ? "Get Started" : "Continue"}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         </LinearGradient>
       </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'flex-end',
+  },
+  container: {
+    height: '85%',
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    padding: 20,
+    paddingTop: 30,
+  },
+  slide: {
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  imageContainer: {
+    width: '100%',
+    height: 300,
+    justifyContent: 'center',
+    marginBottom: 30,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 20,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 20,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#FFF',
+    marginBottom: 15,
+    textAlign: 'center',
+    letterSpacing: 0.5,
+  },
+  description: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.9)',
+    textAlign: 'center',
+    lineHeight: 24,
+    paddingHorizontal: 25,
+  },
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 25,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    width: 25,
+    backgroundColor: '#FFF',
+  },
+  inactiveDot: {
+    backgroundColor: 'rgba(255,255,255,0.4)',
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  navButton: {
+    padding: 12,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  mainButton: {
+    flex: 1,
+    marginLeft: 20,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 5,
+  },
+  buttonGradient: {
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '600',
+    letterSpacing: 0.8,
+  },
+  loader: {
+    position: 'absolute',
+    alignSelf: 'center',
+  },
+});
 
 export default TutorialModal;

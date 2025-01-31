@@ -15,7 +15,7 @@ export default function About() {
   return (
     <LinearGradient
       colors={colorScheme === 'dark' ? ['#09090b', '#18181b'] : ['#f8fafc', '#e2e8f0']}
-      className="flex-1"
+      className="flex-1 pt-[20px]"
     >
       {/* Fixed Header Section */}
       <View className="px-4 pt-4">

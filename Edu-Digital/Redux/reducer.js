@@ -18,7 +18,9 @@ const userDataInitialState = {
   userdata: [], // Start with a default value (null)
 };
 const profileListInitialState = {
-  profileList: [], // Start with a default value (null)
+  profileList: [
+
+  ], // Start with a default value (null)
 };
 const apiUrlInitialState = {
   apiUrl: "http://localhost:3000", // Start with a default value (null)
@@ -69,7 +71,8 @@ const profileListReducer = (state = profileListInitialState, action) => {
             )
             .map((newProfile) => ({
               id: newProfile.id,
-              image: newProfile.image, // Ensure id and image are stored correctly
+              image: newProfile.image,
+              name: newProfile.name // Ensure id and image are stored correctly
             })),
         ],
       };

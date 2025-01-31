@@ -15,6 +15,7 @@ export default function UseFetchProfilepic(id) {
     return response.data; // Adjust according to your API response structure
   };
 
+
   // Fetch profile picture if not already in Redux
   const { data, isLoading, isError } = useQuery({
     queryKey: ["profilePic", id],
@@ -24,6 +25,7 @@ export default function UseFetchProfilepic(id) {
     staleTime: 5 * 60 * 1000, // Set data to stale after 5 minutes
     cacheTime: 10 * 60 * 1000, // Keep cached data for 10 minutes
   });
+ 
 
   // Add profile to Redux state when data is successfully fetched
   useEffect(() => {
@@ -33,7 +35,8 @@ export default function UseFetchProfilepic(id) {
         payload: [
           {
             id: id,
-            image: data,
+            image: data.profilePic,
+            name: data.name,
           },
         ],
       });
@@ -42,7 +45,7 @@ export default function UseFetchProfilepic(id) {
 
   // Memoize the profile to return
   const profile = useMemo(() => {
-    return existingProfile || (data ? { id, image: data } : null);
+    return existingProfile || (data ? { id, image: data.profilePic,name: data.name} : null);
   }, [existingProfile, data, id]);
 
   return { profile, isLoading, isError };

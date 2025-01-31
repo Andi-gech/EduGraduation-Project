@@ -33,7 +33,7 @@ export default function Enroll() {
   };
 
   return (
-    <View className="flex-1  bg-white dark:bg-black flex items-center   flex-col">
+    <View className="flex-1 pt-[20px]  bg-white dark:bg-black flex items-center   flex-col">
       {(isLoading || loading || mutation?.isPending) && <Loading />}
       <Header name="Enroll" />
       <ScrollView className="w-[99%]    mb-[50px]  mt-2 flex    px-3">

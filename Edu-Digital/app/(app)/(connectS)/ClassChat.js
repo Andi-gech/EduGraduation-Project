@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   TextInput,
-  TouchableHighlight,
   KeyboardAvoidingView,
   StyleSheet,
   Keyboard,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { LinearGradient } from "expo-linear-gradient";
+import { MotiView, AnimatePresence } from "moti";
 import ChatBox from "../../../Components/ChatBox";
 import Header from "../../../Components/Header";
 import User from "../../../Components/User";
@@ -22,6 +22,7 @@ export default function ClassChat() {
   const [message, setMessage] = useState();
   const data = useSelector((state) => state.userData);
   const { data: recentChats, isLoading } = UseFetchChat(data.userdata.class);
+  const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
 
   const [chats, setChats] = useState([]);
   const [showUsers, setShowUsers] = useState(false);
@@ -36,19 +37,22 @@ export default function ClassChat() {
     }
   }, [recentChats]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.emit("joinRoom", data.userdata.class);
-      socket.on("message", (data) => {
-        setChats((prevChats) => [...prevChats, data]);
-      });
-    }
-
-    // Cleanup on component unmount
-    return () => {
-      socket?.off("message");
-    };
-  }, [socket]);
+ 
+   useEffect(() => {
+      if (socket) {
+        socket.emit("joinRoom", data.userdata.class);
+        socket.on("message", (data) => {
+          setChats((prevChats) => [
+            ...prevChats,
+            { sender: data.sender, message: data.message, date: data.date },
+          ]);
+        });
+      }
+  
+      return () => {
+        socket?.off("message");
+      };
+    }, [socket]);
 
   const sendMessage = () => {
     if (message.trim()) {
@@ -63,48 +67,96 @@ export default function ClassChat() {
   };
 
   return (
-    <KeyboardAvoidingView behavior="padding" className="flex-1">
-      <View className="flex-1 bg-white dark:bg-black">
+    <KeyboardAvoidingView 
+      behavior="padding" 
+      className="flex-1 pt-[20px]"
+   
+    >
+      <LinearGradient
+        colors={
+          colorScheme === "dark" 
+            ? ["#09090b", "#18181b"] 
+            : ["#f8fafc", "#e2e8f0"]
+        }
+        className="flex-1"
+      >
         {isLoading && <Loading />}
-        {showUsers && <User onclose={() => setShowUsers(false)} />}
-        <View className="relative">
-          <Header
-            name={`Year ${data.userdata.yearLevel} ${data.userdata.department}`}
-          />
-          <TouchableOpacity
-            onPress={() => setShowUsers(true)}
-            className="absolute top-[40px] right-[10px]"
-          >
-            <FontAwesome5
-              name="users"
-              size={24}
-              color={colorScheme === "light" ? "black" : "white"}
+
+        <Header 
+          name="Ask Chat" 
+          rightIcon="people-outline"
+          onRightPress={() => setShowUsers(true)}
+          accentColor={accentColor}
+        />
+
+        <ChatBox chats={chats} />
+
+        <LinearGradient
+          colors={
+            colorScheme === "dark" 
+              ? ["#18181b", "#262626"] 
+              : ["#ffffff", "#f8fafc"]
+          }
+          className="mx-4 mb-4 p-2 rounded-2xl shadow-lg"
+          style={{
+            shadowColor: accentColor,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.1,
+            shadowRadius: 12,
+          }}
+        >
+          <View className="flex-row items-center space-x-2">
+            <TextInput
+              value={message}
+              onChangeText={setMessage}
+              className="flex-1 h-12 px-4 text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-800 rounded-xl"
+              placeholder="Type your message..."
+              placeholderTextColor="#71717a"
+              multiline
             />
-          </TouchableOpacity>
-        </View>
+            <MotiView
+              animate={{ scale: message ? 1.1 : 1 }}
+              transition={{ type: 'timing' }}
+            >
+              <TouchableOpacity
+                onPress={sendMessage}
+                disabled={!message}
+                className="w-12 h-12 bg-emerald-500 items-center justify-center rounded-xl"
+                style={{ 
+                  opacity: message ? 1 : 0.5,
+                  backgroundColor: accentColor
+                }}
+              >
+                <Ionicons 
+                  name="send" 
+                  size={24} 
+                  color="white" 
+                />
+              </TouchableOpacity>
+            </MotiView>
+          </View>
+        </LinearGradient>
 
-        <View className="flex-1 mb-5">
-          <ChatBox chats={chats} />
-        </View>
-
-        <View className="w-full mb-3 h-[60px] flex-row justify-between items-center px-[5px]">
-          <TextInput
-            value={message}
-            onChangeText={setMessage}
-            className="h-[50px] flex-1 mx-[10px] bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white rounded-md px-2"
-            placeholder="Enter Message"
-            placeholderTextColor={"gray"}
-          />
-          <TouchableHighlight
-            onPress={sendMessage}
-            className="w-[50px] h-[50px] bg-yellow-400 rounded-full flex items-center justify-center"
-          >
-            <Ionicons name="send-outline" color={"black"} size={28} />
-          </TouchableHighlight>
-        </View>
-      </View>
+        <AnimatePresence>
+          {showUsers && (
+            <MotiView
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute top-0 left-0 right-0 bottom-0 bg-black/30"
+            >
+              <User 
+                onClose={() => setShowUsers(false)} 
+                accentColor={accentColor}
+              />
+            </MotiView>
+          )}
+        </AnimatePresence>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  // Add any specific styles if needed
+});

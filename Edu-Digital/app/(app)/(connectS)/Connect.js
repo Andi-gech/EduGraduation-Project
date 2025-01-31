@@ -28,7 +28,7 @@ export default function Connect() {
     },
     {
       title: `Year ${data?.userdata?.yearLevel} (${data?.userdata?.department}) Chat`,
-      icon: "chatbubble-outline",
+      icon: "chat-outline",
       navigateTo: "ClassChat",
       color: "#10b981",
     },

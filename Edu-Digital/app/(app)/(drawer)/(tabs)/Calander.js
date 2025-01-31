@@ -69,7 +69,7 @@ export default function Calendar() {
       const endDate = new Date(event.EndDate).toISOString().split('T')[0];
       return day.dateString >= startDate && day.dateString <= endDate;
     });
-console.log(event)
+
     if (event) {
       setSelectedEvent(event.name);
       Animated.spring(fadeAnim, {

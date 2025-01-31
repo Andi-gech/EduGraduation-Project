@@ -70,7 +70,7 @@ export default function AddPost() {
 
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch("http://192.168.1.8:3000/post", {
+      const response = await fetch("https://eduapi.senaycreatives.com/post", {
         method: "POST",
         headers: {
           Authorization: token,

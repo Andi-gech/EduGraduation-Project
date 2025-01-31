@@ -32,7 +32,7 @@ export default function Login() {
   const mutation = useMutation({
     mutationFn: async (credentials) => {
       return await axios.post(
-        "http://192.168.1.8:3000/auth/login",
+        "https://eduapi.senaycreatives.com/auth/login",
         credentials
       );
     },
@@ -110,10 +110,10 @@ export default function Login() {
       <MotiView
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
-        className="w-[90%] mt-4 bg-white/10 dark:bg-black/20 p-6 rounded-2xl"
+        className="w-[90%] mt-4 bg-white/90 dark:bg-black/20 p-6 rounded-2xl"
         style={{ shadowColor: accentColor, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 10 }}
       >
-        <Text className="text-3xl font-bold text-center text-white mb-8">
+        <Text className="text-3xl font-bold text-center text-black dark:text-white mb-8">
           Welcome Back
         </Text>
 
@@ -159,14 +159,14 @@ export default function Login() {
 
         <View className="mt-6 flex-row justify-between">
           <TouchableOpacity onPress={() => router.push("/(Auth)/Signup")}>
-            <Text className="text-white">
-              New here? <Text className="text-yellow-400 font-semibold">Sign Up</Text>
+            <Text className=" text-black dark:text-white">
+              New here? <Text className="text-orange-400 font-semibold">Sign Up</Text>
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => router.push("/(Auth)/ResetPassword")}>
-            <Text className="text-white">
-              Forgot Password? <Text className="text-yellow-400 font-semibold">Reset</Text>
+            <Text className="text-black dark:text-white">
+              Forgot Password? <Text className="text-orange-400 font-semibold">Reset</Text>
             </Text>
           </TouchableOpacity>
         </View>

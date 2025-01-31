@@ -88,63 +88,10 @@ export default function Layout() {
           }}
         />
 
-        <Drawer.Screen
-          name="Notifications"
-          options={{
-            title: "Notifications",
-            drawerIcon: ({ focused, size }) => (
-              <MotiView
-                animate={{ scale: focused ? 1.1 : 1 }}
-                transition={{ type: 'timing' }}
-              >
-                <Ionicons
-                  name={focused ? 'notifications' : 'notifications-outline'}
-                  size={size}
-                  color={focused ? accentColor : textColor}
-                />
-              </MotiView>
-            ),
-          }}
-        />
+        
+       
 
-        <Drawer.Screen
-          name="Settings"
-          options={{
-            title: "Settings",
-            drawerIcon: ({ focused, size }) => (
-              <MotiView
-                animate={{ scale: focused ? 1.1 : 1 }}
-                transition={{ type: 'timing' }}
-              >
-                <Ionicons
-                  name={focused ? 'settings' : 'settings-outline'}
-                  size={size}
-                  color={focused ? accentColor : textColor}
-                />
-              </MotiView>
-            ),
-          }}
-        />
-
-        <Drawer.Screen
-          name="Academic"
-          options={{
-            title: "Academic",
-            drawerIcon: ({ focused, size }) => (
-              <MotiView
-                animate={{ scale: focused ? 1.1 : 1 }}
-                transition={{ type: 'timing' }}
-              >
-                <MaterialCommunityIcons
-                  name={focused ? 'book-open' : 'book-open-outline'}
-                  size={size}
-                  className="px-2"
-                  color={focused ? accentColor : textColor}
-                />
-              </MotiView>
-            ),
-          }}
-        />
+        
       </Drawer>
     </GestureHandlerRootView>
   );

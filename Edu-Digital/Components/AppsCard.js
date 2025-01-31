@@ -3,7 +3,7 @@ import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function AppsCard({ name, icon, onpress }) {
+export default function AppsCard({ name, icon, onpress,type,countDown }) {
   const colorScheme = useColorScheme();
   const { width } = useWindowDimensions();
 
@@ -30,6 +30,41 @@ export default function AppsCard({ name, icon, onpress }) {
         marginHorizontal: 8,
       }}
     >
+      {
+        type === "new" && (
+          <Text
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              backgroundColor: "red",
+              color: "white",
+              padding: 4,
+              borderRadius: 4,
+            }}
+          >
+            New
+          </Text>
+        )
+      }
+      {
+        type === "limited" && (
+          <Text
+            style={{
+              position: "absolute",
+              zIndex: 1,
+              top: 2,
+              right: 8,
+              backgroundColor: "orange",
+              color: "white",
+              padding: 4,
+              borderRadius: 4,
+            }}
+          >
+            Limited
+          </Text>
+        )
+      }
       <Ionicons
         name={icon}
         size={24}
@@ -43,6 +78,21 @@ export default function AppsCard({ name, icon, onpress }) {
       >
         {name}
       </Text>
+      {
+        countDown && (
+          <Text
+            style={{
+              position: "absolute",
+              bottom: 2,
+              left: 0,
+              fontSize: 10,
+              color: "red",
+            }}
+          >
+            {countDown}
+          </Text>
+        )
+      }
     </TouchableOpacity>
   );
 }

@@ -83,7 +83,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
           transition={{ type: 'spring' }}
         >
           <Image
-            source={{ uri: `http://192.168.1.8:3000/${user?.profilePic}` }}
+            source={{ uri: `https://eduapi.senaycreatives.com/${user?.profilePic}` }}
             className="w-10 h-10 rounded-full"
             cachePolicy="memory-disk"
           />
@@ -114,7 +114,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
           className="bg-zinc-100 dark:bg-zinc-900"
         >
           <Image
-            source={{ uri: `http://192.168.1.8:3000/${image}` }}
+            source={{ uri: `https://eduapi.senaycreatives.com/${image}` }}
             className="w-full aspect-square"
             contentFit="cover"
             transition={300}

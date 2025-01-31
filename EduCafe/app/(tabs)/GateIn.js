@@ -23,7 +23,7 @@ export default function GateIn() {
 //cafe/check/meal/
   const mutation = useMutation({
     mutationFn: async (qrdata) => {
-      return await axios.put("http://192.168.1.8:3000/gate/scanIn", {
+      return await axios.put("https://eduapi.senaycreatives.com/gate/scanIn", {
         qrurl: qrdata,
       });
     },

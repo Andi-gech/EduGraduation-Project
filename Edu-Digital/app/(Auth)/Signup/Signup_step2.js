@@ -26,7 +26,7 @@ export default function Signup_step2() {
   const mutation = useMutation({
     mutationKey: ["signup"],
     mutationFn: (data) =>
-      axios.post("http://192.168.1.8:3000/auth/register", data),
+      axios.post("https://eduapi.senaycreatives.com/auth/register", data),
     onSuccess: async () => router.push("/(Auth)/login"),
     onError: (error) => {
       setError(error.response?.data || "An error occurred");

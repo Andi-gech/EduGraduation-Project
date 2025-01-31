@@ -34,7 +34,7 @@ export default function ResetPassword2() {
   const mutation = useMutation({
     mutationKey: ["changepassword"],
     mutationFn: (data) =>
-      axios.post("http://192.168.1.8:3000/auth/changepassword", data, {
+      axios.post("https://eduapi.senaycreatives.com/auth/changepassword", data, {
         headers: { Authorization: `${params.token}` },
       }),
     onSuccess: async (response) => {
