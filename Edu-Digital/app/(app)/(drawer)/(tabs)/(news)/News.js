@@ -7,12 +7,12 @@ import {
   ScrollView,
   useColorScheme,
 } from "react-native";
-import { MotiView } from "moti";
+
 import { Skeleton } from "moti/skeleton";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Image } from "expo-image";
+
 import UseFetchPosts from "../../../../../hooks/UseFetchPosts";
 
 const Posts = lazy(() => import("../../../../../Components/Posts"));
@@ -20,7 +20,7 @@ const Posts = lazy(() => import("../../../../../Components/Posts"));
 const SkeletonPost = () => {
   const colorScheme = useColorScheme();
   return (
-    <MotiView
+    <View
       className="w-full p-4 mb-4 bg-zinc-100 dark:bg-zinc-900 rounded-2xl"
       from={{ opacity: 0, translateY: 20 }}
       animate={{ opacity: 1, translateY: 0 }}
@@ -53,7 +53,7 @@ const SkeletonPost = () => {
         <Skeleton colorMode={colorScheme} width={60} height={24} radius={20} />
         <Skeleton colorMode={colorScheme} width={60} height={24} radius={20} />
       </View>
-    </MotiView>
+    </View>
   );
 };
 
@@ -75,10 +75,9 @@ export default function News() {
       className="flex-1"
     >
       {/* Header */}
-      <MotiView
+      <View
         className="w-full px-6 pt-8 pb-4"
-        from={{ opacity: 0, translateY: -20 }}
-        animate={{ opacity: 1, translateY: 0 }}
+        
       >
         <View className="flex-row items-center justify-between">
           <Text className="text-2xl font-bold text-white">DEC Gallery</Text>
@@ -89,10 +88,10 @@ export default function News() {
             <Ionicons name="add" size={24} color={accentColor} />
           </TouchableOpacity>
         </View>
-      </MotiView>
+      </View>
 
       {/* Content */}
-      <MotiView
+      <View
         className="flex-1 bg-white dark:bg-zinc-900 rounded-t-[40px] pt-6"
         from={{ translateY: 50 }}
         animate={{ translateY: 0 }}
@@ -140,7 +139,7 @@ export default function News() {
 
               {/* Empty State */}
               {data?.data?.length === 0 && (
-                <MotiView
+                <View
                   className="items-center justify-center min-h-[300px]"
                   from={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -157,7 +156,7 @@ export default function News() {
                   <Text className="text-zinc-500 dark:text-zinc-400 text-center">
                     Be the first to share something!
                   </Text>
-                  <MotiView
+                  <View
                     className="mt-4"
                     from={{ translateY: 0 }}
                     animate={{ translateY: 10 }}
@@ -168,13 +167,13 @@ export default function News() {
                       size={32}
                       color={accentColor}
                     />
-                  </MotiView>
-                </MotiView>
+                  </View>
+                </View>
               )}
             </Suspense>
           </ScrollView>
         )}
-      </MotiView>
+      </View>
     </LinearGradient>
   );
 }

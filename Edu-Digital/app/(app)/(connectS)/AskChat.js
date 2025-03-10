@@ -11,7 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { LinearGradient } from "expo-linear-gradient";
-import { MotiView, AnimatePresence } from "moti";
+import {  AnimatePresence } from "moti";
 import ChatBox from "../../../Components/ChatBox";
 import Header from "../../../Components/Header";
 import User from "../../../Components/User";
@@ -74,7 +74,7 @@ export default function AskChat() {
             ? ["#09090b", "#18181b"] 
             : ["#f8fafc", "#e2e8f0"]
         }
-        className="flex-1"
+        className="flex-1 pt-[20px]"
       >
         {isLoading && <Loading />}
 
@@ -110,7 +110,7 @@ export default function AskChat() {
               placeholderTextColor="#71717a"
               multiline
             />
-            <MotiView
+            <View
               animate={{ scale: message ? 1.1 : 1 }}
               transition={{ type: 'timing' }}
             >
@@ -129,13 +129,13 @@ export default function AskChat() {
                   color="white" 
                 />
               </TouchableOpacity>
-            </MotiView>
+            </View>
           </View>
         </LinearGradient>
 
         <AnimatePresence>
           {showUsers && (
-            <MotiView
+            <View
               from={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -145,7 +145,7 @@ export default function AskChat() {
                 onClose={() => setShowUsers(false)} 
                 accentColor={accentColor}
               />
-            </MotiView>
+            </View>
           )}
         </AnimatePresence>
       </LinearGradient>

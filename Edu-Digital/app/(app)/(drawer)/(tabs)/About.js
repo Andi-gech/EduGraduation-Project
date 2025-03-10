@@ -1,4 +1,4 @@
-import { MotiView } from 'moti';
+
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import React from 'react';
@@ -26,7 +26,7 @@ export default function About() {
           className="mb-4"
         />
 
-        <MotiView
+        <View
           from={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="items-center mb-8"
@@ -41,7 +41,7 @@ export default function About() {
           <Text className="text-2xl font-bold text-black dark:text-white mt-4">
             About Dec Hub
           </Text>
-        </MotiView>
+        </View>
       </View>
 
       {/* Scrollable White Content Area */}
@@ -49,7 +49,7 @@ export default function About() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <MotiView
+        <View
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           className="bg-white dark:bg-zinc-900 rounded-2xl p-6 space-y-6 mx-4"
@@ -111,11 +111,11 @@ export default function About() {
               within a modern digital environment.
             </Text>
           </View>
-        </MotiView>
+        </View>
       </ScrollView>
 
       {/* Floating Decorative Elements (fixed position) */}
-      <MotiView
+      <View
         from={{ rotate: '0deg' }}
         animate={{ rotate: '25deg' }}
         transition={{ loop: true, duration: 25000 }}
@@ -125,7 +125,7 @@ export default function About() {
           colors={['#3b82f6', '#2563eb']}
           className="w-40 h-40 rounded-3xl"
         />
-      </MotiView>
+      </View>
     </LinearGradient>
   );
 }

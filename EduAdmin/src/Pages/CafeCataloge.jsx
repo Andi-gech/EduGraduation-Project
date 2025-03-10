@@ -8,18 +8,28 @@ import {
 } from "@mui/material";
 import { FiAlignLeft } from 'react-icons/fi';
 import { FaBars, FaBell } from 'react-icons/fa';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GrCafeteria } from "react-icons/gr";
 
 import Cafe from "../Components/Cafe";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddCafeSubscription from "../Components/AddCafeSubscription";
 import CafeDashboard from "../Components/CafeDashboard";
 import CafeSub from "../Components/CafeSub";
 import CafeController from "../Components/CafeController";
 import Transactions from "./Transactions";
 
+import EnrollmentTransactions from "./EnrollmentTransactions";
+
+
 export default function CafeCataloge() {
+  const {type}=useParams();
+
+  useEffect(() => {
+    if(type){
+      setSelected(type)
+    }
+  }, [type])
   const navigate = useNavigate();
   const [Selected, setSelected] = useState("Dashboard");
   const [open, setOpen] = useState(false);
@@ -37,6 +47,8 @@ export default function CafeCataloge() {
         return <CafeDashboard />
       case "Transactions":
         return <Transactions />;
+      case "Enrollment":
+        return <EnrollmentTransactions/>;
 
 
      
@@ -98,6 +110,12 @@ export default function CafeCataloge() {
                       ()=>setSelected("CafeRule")
                     } className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
                     <p className="text-lg font-normal text-gray-800">CafeRule</p>
+
+                    </div>
+                    <div onClick={
+                      ()=>setSelected("Enrollment")
+                    } className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                    <p className="text-lg font-normal text-gray-800">Student Enrollment</p>
 
                     </div>
                     </div>

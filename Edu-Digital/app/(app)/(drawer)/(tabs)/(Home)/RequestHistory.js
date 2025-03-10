@@ -1,7 +1,6 @@
-// RequestHistory.js
-import { StyleSheet, Text, View, ScrollView, RefreshControl } from "react-native";
+
+import {  Text, View, ScrollView, RefreshControl } from "react-native";
 import React from "react";
-import { MotiView } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import RequestCard from "../../../../../Components/RequestCard";
 import Header from "../../../../../Components/Header";
@@ -43,7 +42,7 @@ export default function RequestHistory() {
           }
         >
           {data?.data?.map((item, index) => (
-            <MotiView
+            <View
               key={index}
               from={{ opacity: 0, translateY: 20 }}
               animate={{ opacity: 1, translateY: 0 }}
@@ -55,7 +54,7 @@ export default function RequestHistory() {
                 status={item.status}
                 reason={item.reason}
               />
-            </MotiView>
+            </View>
           ))}
         </ScrollView>
       )}

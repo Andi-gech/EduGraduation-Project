@@ -48,7 +48,7 @@ export default function App() {
     <LinearGradient
       colors={gradientColors}
       locations={[0.1, 0.9]}
-      className="flex-1"
+      className="flex-1 pt-[20px]"
     >
       <StatusBar style={effectiveTheme === "dark" ? "light" : "dark"} />
 

@@ -14,6 +14,15 @@ export default function Layout() {
         index
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="Pay"
+        options={{
+          headerShown: false,
+          animation: "slide_from_bottom",
+          animationDuration: 200,
+          presentation: "modal",
+        }}
+      />
     </Stack>
   );
 }

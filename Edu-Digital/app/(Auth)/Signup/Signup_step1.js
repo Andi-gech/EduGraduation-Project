@@ -6,10 +6,10 @@ import {
   StyleSheet,
 } from "react-native";
 import React, { useRef, useState } from "react";
-import { MotiView } from "moti";
+
 import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from "@react-native-picker/picker";
-import { Ionicons } from "@expo/vector-icons";
+
 import { StatusBar } from "expo-status-bar";
 import Input from "../../../Components/Input";
 import Buttons from "../../../Components/Buttons";
@@ -65,7 +65,7 @@ export default function Signup() {
       className="flex-1 items-center pt-[20px]"
     >
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-      <MotiView
+      <View
         from={{ rotate: '0deg' }}
         animate={{ rotate: '5deg' }}
         transition={{ loop: true, duration: 30000 }}
@@ -73,7 +73,7 @@ export default function Signup() {
       >
         {[...Array(4)].map((_, rowIndex) =>
           [...Array(3)].map((_, colIndex) => (
-            <MotiView
+            <View
               key={`${rowIndex}-${colIndex}`}
               style={[
                 styles.box,
@@ -91,14 +91,14 @@ export default function Signup() {
             />
           ))
         )}
-      </MotiView>
+      </View>
       <View className="w-full px-4 z-50">
         <Header name="Create Your Account" />
         <Text className="text-lg my-2 text-amber-400 font-semibold">
           (Step 1/3) Student Information
         </Text>
       </View>
-      <MotiView
+      <View
   className="w-[90%]  bg-white dark:bg-zinc-900 rounded-2xl p-4"
   style={{ 
     maxHeight: '70%', 
@@ -130,13 +130,13 @@ export default function Signup() {
                 accentColor={accentColor}
               />
               {errors[field] && (
-                <MotiView
+                <View
                   from={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="text-red-400 text-xs mt-1"
                 >
                   <Text className="text-red-400">{errors[field]}</Text>
-                </MotiView>
+                </View>
               )}
             </View>
           ))}
@@ -336,21 +336,21 @@ export default function Signup() {
             </Picker>
           </View>
           </ScrollView>
-          </MotiView>
-    <MotiView
+          </View>
+    <View
             from={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring' }}
             className="w-full  pb-3 h-[55px] flex-col items-center"
           >
             <Buttons onPress={handleSendRequest} name="Next" />
-          </MotiView>
+          </View>
         
     </LinearGradient>
   );
 }
 
-const departments = [
+const departments =  [
   "Computer Science",
   "electronics",
   "civil",

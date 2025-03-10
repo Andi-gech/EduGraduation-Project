@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, Text, View,TouchableOpacity } from "react-native";
 import React from "react";
-import { MotiView } from "moti";
+
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
@@ -48,7 +48,7 @@ export default function Clubs() {
       <ScrollView className="px-4" showsVerticalScrollIndicator={false}>
         <View className="pb-24">
           {data?.data?.map((club, index) => (
-            <MotiView
+            <View
               key={club._id}
               from={{ opacity: 0, translateY: 50 }}
               animate={{ opacity: 1, translateY: 0 }}
@@ -105,7 +105,7 @@ export default function Clubs() {
                   </TouchableOpacity>
                 )}
               </View>
-            </MotiView>
+            </View>
           ))}
         </View>
       </ScrollView>

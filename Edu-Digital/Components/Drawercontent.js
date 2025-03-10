@@ -11,7 +11,7 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { MotiView } from "moti";
+
 import { Feather, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
@@ -44,7 +44,7 @@ const CustomDrawerContent = (props) => {
       >
       
         {/* Theme Toggle */}
-        <MotiView
+        <View
           from={{ opacity: 0, translateX: -20 }}
           animate={{ opacity: 1, translateX: 0 }}
         >
@@ -71,10 +71,10 @@ const CustomDrawerContent = (props) => {
               {colorScheme === "dark" ? "Light Theme" : "Dark Theme"}
             </Text>
           </TouchableOpacity>
-        </MotiView>
+        </View>
 
         {/* Drawer Items */}
-        <MotiView
+        <View
           from={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 200 }}
@@ -96,10 +96,10 @@ const CustomDrawerContent = (props) => {
             activeTintColor={accentColor}
             inactiveTintColor={colorScheme === "dark" ? "#a1a1aa" : "#71717a"}
           />
-        </MotiView>
+        </View>
 
         {/* Logout Button */}
-        <MotiView
+        <View
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           className="mt-auto px-6 py-4"
@@ -117,7 +117,7 @@ const CustomDrawerContent = (props) => {
               Log Out
             </Text>
           </TouchableOpacity>
-        </MotiView>
+        </View>
       </DrawerContentScrollView>
     </LinearGradient>
   );

@@ -1,6 +1,19 @@
 const mongoose = require("mongoose");
 const joi = require("joi");
-
+const scheduleItemSchema = new mongoose.Schema({
+  day: {
+    type: String,
+  
+  },
+  Start: {
+    type: String, // Use Date if storing actual timestamps
+   
+  },
+  End: {
+    type: String, // Use Date if storing actual timestamps
+   
+  },
+});
 const CourseOfferingSchema = new mongoose.Schema({
   courses: [
     {
@@ -11,33 +24,9 @@ const CourseOfferingSchema = new mongoose.Schema({
       },
       teacher: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Teacher",
+        ref: "User",
       },
-      Schedule: {
-        type: [
-          {
-            day: {
-              type: String,
-              enum: [
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-              ],
-            },
-            Start: {
-              type: String,
-              required: true,
-            },
-            End: {
-              type: String,
-              required: true,
-            },
-          },
-        ],
-      },
+      Schedule: [scheduleItemSchema],
     },
   ],
   yearLevel: {

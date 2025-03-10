@@ -9,29 +9,31 @@ import React, { useState } from "react";
 import {  AnimatePresence } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
-import Header from "../../../../../Components/Header";
-import chapa from "../../../../../assets/chapa.png";
-import UseFetchChapaInitialize from "../../../../../hooks/UseFechChapaInitialize";
-import Loading from "../../../../../Components/Loading";
+import Header from "../../../Components/Header";
+import chapa from "../../../assets/chapa.png";
+import UseFetchChapaInitialize from "../../../hooks/UseFechChapaInitialize";
+import Loading from "../../../Components/Loading";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect } from "react";
-import UseFetchCafeStatus from "../../../../../hooks/UseFetchCafeStatus";
+import UseFetchCafeStatus from "../../../hooks/UseFetchCafeStatus";
 import * as Linking from "expo-linking";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRouter } from "expo-router";
 import { useColorScheme } from "react-native";
+import UseFetchEnrollInitialize from "../../../hooks/UseFechEnrollInitialize";
+import UseCheckEnrollment from "../../../hooks/UseCheckEnrollment";
 
-export default function Subscribe() {
+export default function Pay() {
   const redirecturl = Linking.createURL("app/drawer/tabs/Home/Subscribe",{
 success: true,
   });
-  const { data, isLoading, refetch } = UseFetchChapaInitialize(redirecturl);
+  const { data, isLoading, refetch,error } = UseFetchEnrollInitialize(redirecturl);
   const navigate = useRouter();
   const {
     data: cafestatus,
     refetch: checkstatus,
     isFetching,
-  } = UseFetchCafeStatus();
+  } = UseCheckEnrollment();
   const [ success, setsucess] = useState(false);
   const accentColor = colorScheme === "dark" ? "#10b981" : "#059669";
   useEffect(() => {
@@ -138,7 +140,7 @@ success: true,
 
             <View className="items-center mb-8">
               <Text className="text-white text-lg font-medium">
-                Monthly Cafe Subscription
+                Enrollment Subscription
               </Text>
               <Text className="text-white text-4xl font-bold mt-2">
                 {data.data.price} ETB
@@ -192,6 +194,13 @@ success: true,
       )}
 
       {(isLoading || isFetching) && <Loading />}
+      {
+        error?.response?.data && (
+          <Text className="text-red-500 text-center mt-4">
+            {error.response.data.message}
+          </Text>
+        )
+      }
     </LinearGradient>
   );
 }

@@ -4,7 +4,8 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import CustomDrawerContent from "../../../Components/Drawercontent";
 import { useColorScheme } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
-import { MotiView } from 'moti';
+import { View } from "react-native";
+
 import { useCallback } from 'react';
 
 export default function Layout() {
@@ -55,7 +56,7 @@ export default function Layout() {
           options={{
             title: "Home",
             drawerIcon: ({ focused, size }) => (
-              <MotiView
+              <View
                 animate={{ scale: focused ? 1.1 : 1 }}
                 transition={{ type: 'timing' }}
               >
@@ -64,7 +65,7 @@ export default function Layout() {
                   size={size}
                   color={focused ? accentColor : textColor}
                 />
-              </MotiView>
+              </View>
             ),
           }}
         />
@@ -74,7 +75,7 @@ export default function Layout() {
           options={{
             title: "Profile",
             drawerIcon: ({ focused, size }) => (
-              <MotiView
+              <View
                 animate={{ scale: focused ? 1.1 : 1 }}
                 transition={{ type: 'timing' }}
               >
@@ -83,7 +84,7 @@ export default function Layout() {
                   size={size}
                   color={focused ? accentColor : textColor}
                 />
-              </MotiView>
+              </View>
             ),
           }}
         />

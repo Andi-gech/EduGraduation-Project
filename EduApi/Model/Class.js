@@ -9,7 +9,7 @@ const classSchema = new mongoose.Schema({
   },
   department: {
     type: String,
-    enum: [
+    enum:  [
       "Computer Science",
       "electronics",
       "civil",
@@ -18,8 +18,7 @@ const classSchema = new mongoose.Schema({
       "Aeronautical",
       "Production",
       "chemical",
-      "Motor Vehicles",
-    ],
+      "Motor Vehicles"],
   },
   semister: {
     type: String,
@@ -39,15 +38,16 @@ const joischema = joi.object({
   department: joi
     .string()
     .valid(
-      "Computer Science",
-      "electronics",
-      "civil",
-      "Mechanical",
-      "Electrical",
-      "Aeronautical",
-      "Production",
-      "chemical",
-      "Motor Vehicles"
+      
+        "Computer Science",
+        "electronics",
+        "civil",
+        "Mechanical",
+        "Electrical",
+        "Aeronautical",
+        "Production",
+        "chemical",
+        "Motor Vehicles"
     ),
   semister: joi.string().required().valid("1", "2"),
 });

@@ -4,7 +4,7 @@ function calculateRemainingTime(setTimeRemaining) {
       const endOfFirstFiveDays = new Date(
         now.getFullYear(),
         now.getMonth(),
-        5,
+        15,
         23,
         59,
         59,

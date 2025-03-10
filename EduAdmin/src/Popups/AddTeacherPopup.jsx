@@ -11,12 +11,17 @@ const initialteacherData = {
   gender: "",
   isMilitary: false,
   department: "",
+  semester: "",
+  yearLevel: "",
   profilePic: "",
   auth: "",
+  Enrollment: [],
+  incomponund: false,
   date: new Date().toISOString(),
   email: "",
   password: "",
   agreeToPrivacy: false,
+  studentId: "",
 };
 
 export default function AddteacherForm() {
@@ -25,34 +30,41 @@ export default function AddteacherForm() {
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
 
+  
   const transformteacherDataForBackend = (teacherData) => ({
-   
+    user: {
       firstName: teacherData.firstName,
       lastName: teacherData.lastName,
       gender: teacherData.gender,
       isMilitary: teacherData.isMilitary,
-      department: teacherData.department,
-   
+      studentid: teacherData.studentId,
+    },
+    auth: {
       email: teacherData.email,
-      
-  
+      password: teacherData.password,
+      Role: "teacher",
+    },
+    class: {
+      department: teacherData.department,
+      yearLevel: String(teacherData.yearLevel),
+      semester: String(teacherData.semester),
+    },
   });
 
   const steps = ["Basic Details", "Authentication Details"];
-  const departments = [
+  const departments =  [
     "Computer Science",
-    "Electronics",
-    "Civil",
+    "electronics",
+    "civil",
     "Mechanical",
     "Electrical",
     "Aeronautical",
     "Production",
-    "Chemical",
-    "Motor Vehicles",
-  ];
+    "chemical",
+    "Motor Vehicles"];
 
   const mutation = useMutation((newteacher) =>
-    Api.post("/auth/createTeacher", newteacher)
+    Api.post("/auth/register", newteacher)
   );
 
   const handleNext = () => {

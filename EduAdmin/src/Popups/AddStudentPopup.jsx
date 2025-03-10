@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import svg from "../assets/student.svg";
 import Api from "../utils/Api";
-
+import { Snackbar,Alert } from "@mui/material";
 const initialStudentData = {
   firstName: "",
   lastName: "",
@@ -26,6 +26,9 @@ const initialStudentData = {
 export default function AddStudentForm() {
   const [activeStep, setActiveStep] = useState(0);
   const [studentData, setStudentData] = useState(initialStudentData);
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
+
 
   const transformStudentDataForBackend = (studentData) => ({
     user: {
@@ -33,7 +36,7 @@ export default function AddStudentForm() {
       lastName: studentData.lastName,
       gender: studentData.gender,
       isMilitary: studentData.isMilitary,
-      studentid: studentData.studentId,
+      studentid: String(studentData.studentId),
     },
     auth: {
       email: studentData.email,
@@ -43,7 +46,7 @@ export default function AddStudentForm() {
     class: {
       department: studentData.department,
       yearLevel: String(studentData.yearLevel),
-      semester: String(studentData.semester),
+      semister: String(studentData.semester),
     },
   });
 
@@ -76,10 +79,23 @@ export default function AddStudentForm() {
       const formattedData = transformStudentDataForBackend(studentData);
       mutation.mutate(formattedData, {
         onSuccess: () => {
-          console.log("Student data submitted successfully!");
+          console.log("teacher data submitted successfully!");
+          setSuccess("student added successfully",
+            setTimeout(() => {
+              setSuccess(null);
+            }, 3000)
+          );
+          setActiveStep(0);
+          setteacherData(initialteacherData);
         },
         onError: (error) => {
-          console.error("Failed to submit student data", error);
+          setError(error.response.data|| "An error occurred");
+          setTimeout(() => {
+            setError(null);
+          }, 3000);
+         
+          console.error("Failed to submit teacher data", error);
+        
         },
       });
     }
@@ -110,7 +126,26 @@ export default function AddStudentForm() {
      <div className="flex justify-between items-center">
         
         
-    
+        <Snackbar
+        open={!!success}
+        autoHideDuration={3000}
+        onClose={() => setSuccess(null)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert severity="success" onClose={() => setSuccess(null)}>
+          {success}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={!!error}
+        autoHideDuration={3000}
+        onClose={() => setError(null)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert severity="error" onClose={() => setError(null)}>
+          {error}
+        </Alert>
+      </Snackbar>
           
          
     <div className="max-w-[350px] mx-auto p-6 bg-gradient-to-r from-purple-200 to-purple-100 shadow-lg rounded-lg">

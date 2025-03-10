@@ -25,7 +25,7 @@ const Index = () => {
   }, [isLoggedIn, segments, navigationState?.key]);
 
   return (
-    <View>
+    <View style="w-screen h-screen flex flex-1">
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       <Loading />
     </View>

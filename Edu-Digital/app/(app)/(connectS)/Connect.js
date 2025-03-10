@@ -6,7 +6,6 @@ import {
   useColorScheme,
 } from "react-native";
 import React from "react";
-import { MotiView } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
@@ -45,14 +44,14 @@ export default function Connect() {
     >
       <Header name="Connect" accentColor={accentColor} />
       
-      <MotiView
+      <View
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 300 }}
         className="flex-1 items-center px-4 pt-8 space-y-4"
       >
         {chatOptions.map((option, index) => (
-          <MotiView
+          <View
             key={index}
             from={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -99,9 +98,9 @@ export default function Connect() {
                 color={colorScheme === "dark" ? "#a1a1aa" : "#71717a"}
               />
             </TouchableOpacity>
-          </MotiView>
+          </View>
         ))}
-      </MotiView>
+      </View>
     </LinearGradient>
   );
 }

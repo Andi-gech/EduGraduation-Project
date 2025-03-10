@@ -18,7 +18,7 @@ export default function Layout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ThemeProvider  value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
         <Provider store={store}>
           <Stack screenOptions={{ headerShown: false }} />

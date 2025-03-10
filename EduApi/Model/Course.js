@@ -13,7 +13,16 @@ const CourseSchema=new mongoose.Schema({
 
     department: {
         type: String,
-        enum:["Computer Science","electronics","civil","Mechanical","Electrical","Aeronautical","Production","chemical","Motor Vehicles"]
+        enum: [
+            "Computer Science",
+            "electronics",
+            "civil",
+            "Mechanical",
+            "Electrical",
+            "Aeronautical",
+            "Production",
+            "chemical",
+            "Motor Vehicles"]
     },
     creaditHrs: {
         type: Number,

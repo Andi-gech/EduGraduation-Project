@@ -18,7 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "../../Components/Loading";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
-import { MotiView } from "moti";
+
 
 
 export default function Login() {
@@ -65,7 +65,7 @@ export default function Login() {
     >
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
-      <MotiView
+      <View
         from={{ rotate: '0deg' }}
         animate={{ rotate: '5deg' }}
         transition={{ loop: true, duration: 30000 }}
@@ -73,7 +73,7 @@ export default function Login() {
       >
         {[...Array(4)].map((_, rowIndex) =>
           [...Array(3)].map((_, colIndex) => (
-            <MotiView
+            <View
               key={`${rowIndex}-${colIndex}`}
               style={[
                 styles.box,
@@ -91,7 +91,7 @@ export default function Login() {
             />
           ))
         )}
-      </MotiView>
+      </View>
 
       <View className="w-full px-6 pt-12 flex-row justify-between items-center">
         <Logo />
@@ -107,7 +107,7 @@ export default function Login() {
         </TouchableOpacity>
       </View>
 
-      <MotiView
+      <View
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
         className="w-[90%] mt-4 bg-white/90 dark:bg-black/20 p-6 rounded-2xl"
@@ -118,13 +118,13 @@ export default function Login() {
         </Text>
 
         {error && (
-          <MotiView
+          <View
             from={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mb-4 p-3 bg-red-100 rounded-lg"
           >
             <Text className="text-red-600 text-center">{error}</Text>
-          </MotiView>
+          </View>
         )}
 
         <Input
@@ -170,7 +170,7 @@ export default function Login() {
             </Text>
           </TouchableOpacity>
         </View>
-      </MotiView>
+      </View>
 
       {mutation.isPending && <Loading />}
     </LinearGradient>

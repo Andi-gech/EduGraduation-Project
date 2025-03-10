@@ -2,7 +2,7 @@ import {  LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View ,ScrollView} from "react-native";
 import React, { useState } from "react";
 import { useColorScheme } from "react-native";
-import { MotiView } from "moti";
+
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -72,7 +72,7 @@ export default function Signup_step2() {
         </Text>
       </View>
 
-      <MotiView
+      <View
         className="w-[90%] my-4 bg-white dark:bg-zinc-900 rounded-2xl p-4"
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
@@ -85,7 +85,7 @@ export default function Signup_step2() {
       >
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Email Input */}
-          <MotiView from={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4">
+          <View from={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4">
             <Text className="text-sm text-zinc-600 dark:text-zinc-300 mb-1">
               Email
             </Text>
@@ -96,10 +96,10 @@ export default function Signup_step2() {
               value={email}
               accentColor={accentColor}
             />
-          </MotiView>
+          </View>
 
           {/* Password Input */}
-          <MotiView from={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
+          <View from={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
             <Text className="text-sm text-zinc-600 dark:text-zinc-300 mb-1">
               Password
             </Text>
@@ -111,10 +111,10 @@ export default function Signup_step2() {
               value={password}
               accentColor={accentColor}
             />
-          </MotiView>
+          </View>
 
           {/* Info Message */}
-          <MotiView
+          <View
             className="flex-row items-center p-3 bg-amber-100/20 dark:bg-zinc-800 rounded-lg"
             from={{ scale: 0.9 }}
             animate={{ scale: 1 }}
@@ -123,23 +123,23 @@ export default function Signup_step2() {
             <Text className="text-xs ml-2 text-zinc-600 dark:text-zinc-300 flex-1">
               Your account must be approved by the department before you can login
             </Text>
-          </MotiView>
+          </View>
 
           {/* Error Message */}
           {error && (
-            <MotiView
+            <View
               className="mt-4 p-2 bg-red-100/30 rounded-lg"
               from={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
               <Text className="text-red-400 text-sm text-center">{error}</Text>
-            </MotiView>
+            </View>
           )}
         </ScrollView>
-      </MotiView>
+      </View>
 
       {/* Register Button */}
-      <MotiView
+      <View
         className="w-[100%] flex items-center mb-4"
         from={{ scale: 0.9 }}
         animate={{ scale: 1 }}
@@ -151,7 +151,7 @@ export default function Signup_step2() {
           icon="person-add-outline"
           disabled={mutation.isPending}
         />
-      </MotiView>
+      </View>
     </LinearGradient>
   );
 }

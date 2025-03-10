@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { MotiView } from "moti";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
@@ -102,11 +101,11 @@ export default function AddPost() {
       <LinearGradient
         colors={gradientColors}
         locations={[0.1, 0.9]}
-        className="flex-1"
+        className="flex-1 "
       >
         <View className="flex-1 px-4 pt-8">
           {/* Header Section */}
-          <MotiView
+          <View
             className="flex-row items-center justify-between mb-6"
             from={{ opacity: 0, translateY: -20 }}
             animate={{ opacity: 1, translateY: 0 }}
@@ -118,10 +117,10 @@ export default function AddPost() {
             >
               <Ionicons name="close" size={28} color={accentColor} />
             </TouchableOpacity>
-          </MotiView>
+          </View>
 
           {/* Main Content Card */}
-          <MotiView
+          <View
             className="rounded-3xl p-6 mb-4"
             style={[styles.card, { backgroundColor: cardBg }]}
             from={{ scale: 0.9, opacity: 0 }}
@@ -129,7 +128,7 @@ export default function AddPost() {
             transition={{ type: 'spring' }}
           >
             {/* Image Upload Section */}
-            <MotiView
+            <View
               from={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 200 }}
@@ -163,10 +162,10 @@ export default function AddPost() {
                   Please select an image
                 </Text>
               )}
-            </MotiView>
+            </View>
 
             {/* Content Input */}
-            <MotiView
+            <View
               from={{ opacity: 0, translateY: 10 }}
               animate={{ opacity: 1, translateY: 0 }}
               transition={{ delay: 100 }}
@@ -189,10 +188,10 @@ export default function AddPost() {
                 returnKeyType="done"
                 onSubmitEditing={Keyboard.dismiss}
               />
-            </MotiView>
+            </View>
 
             {/* Submit Button */}
-            <MotiView
+            <View
               className="mt-6"
               from={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -213,8 +212,8 @@ export default function AddPost() {
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
-            </MotiView>
-          </MotiView>
+            </View>
+          </View>
 
           {/* Status Indicators */}
           {Loadings && <Loading />}

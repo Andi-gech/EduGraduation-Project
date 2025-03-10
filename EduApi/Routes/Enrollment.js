@@ -6,63 +6,39 @@ const { Course, ValidateCourse } = require("../Model/Course");
 const Router = express.Router();
 const Authetication = require("../MiddleWare/AuthMiddleware");
 const { Class } = require("../Model/Class");
+const { EnrollTransaction } = require("../Model/EnrollTransaction");
+const Chapa = require("chapa");
+let myChapa = new Chapa("CHASECK_TEST-gFVzUEvX8t2gMphMHXxf4v75KOnyHIPE");
 
-/**
- * @swagger
- * /enrollment/currentEnrollment:
- *   get:
- *     summary: Get current enrollment information for the user
- *     description: Retrieves the user's current course enrollments based on their class year level and semester.
- *     tags: [Enrollments]
- *     security:
- *       - tokenAuth: []
- *     responses:
- *       200:
- *         description: User's current course enrollments.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   _id:
- *                     type: string
- *                     description: Enrollment ID
- *                     example: "60a8e3622f8b9a3a4c8b9f13"
- *                   user:
- *                     type: string
- *                     description: User ID
- *                     example: "60a8e3b4f7c8e835d9b8c834"
- *                   currentYear:
- *                     type: integer
- *                     description: Year level of the user's class.
- *                     example: 3
- *                   currentSemester:
- *                     type: integer
- *                     description: Semester of the user's class.
- *                     example: 2
- *                   course:
- *                     type: object
- *                     description: Course details
- *                     properties:
- *                       _id:
- *                         type: string
- *                         description: Course ID
- *                         example: "60a8e41df7c8e835d9b8c835"
- *                       name:
- *                         type: string
- *                         description: Name of the course
- *                         example: "Introduction to Programming"
- *                       credits:
- *                         type: integer
- *                         description: Number of credits for the course
- *                         example: 3
- *       400:
- *         description: Invalid user or no enrollments found for the semester.
- *       500:
- *         description: Internal server error.
- */
+Router.get("/checkEnrollment", Authetication, async (req, res) => {
+  const user = await User.find({
+    auth: req.user._id,
+  }).populate({
+    path: "Class",
+    model: "Class",
+  });
+  const checkEnrollment=await EnrollTransaction.find({
+    studentId:user[0]._id,
+    yearLevel:user[0].Class.yearLevel,
+    department:user[0].Class.department,
+    semister:user[0].Class.semister
+  })
+  if(checkEnrollment.length==0){
+    return res.status(400).send("please pay your  Semister Registration fees first");
+  }
+  res.send({
+    status:true,
+  });
+}
+)
+Router.get("/getEnrollmentTransaction",  async (req, res) => {
+  const enrollments=await EnrollTransaction.find().populate({
+    path: "studentId",
+    model: "User",
+  })
+  res.send(enrollments);
+});
+
 
 Router.get("/currentEnrollment", Authetication, async (req, res) => {
   const user = await User.find({
@@ -71,6 +47,15 @@ Router.get("/currentEnrollment", Authetication, async (req, res) => {
     path: "Class",
     model: "Class",
   });
+  const checkEnrollment=await EnrollTransaction.find({
+    studentId:user[0]._id,
+    yearLevel:user[0].Class.yearLevel,
+    department:user[0].Class.department,
+    semister:user[0].Class.semister
+  })
+  if(checkEnrollment.length==0){
+    return res.status(400).send("please pay your  Semister Registration fees first");
+  }
   if (!user) return res.status(400).send("Invalid user");
   const enroll = await EnrollCourse.find({
     user: user[0]._id,
@@ -82,62 +67,10 @@ Router.get("/currentEnrollment", Authetication, async (req, res) => {
   });
 
   if (!enroll || enroll.length == 0)
-    return res.status(400).send("You Have Not Registerd for this semister");
+    return res.status(400).send("No course enrolled");
   res.send(enroll);
 });
-/**
- * @swagger
- * /enrollment/enroll:
- *   post:
- *     summary: Enroll a user in a course
- *     description: Allows an authenticated user to enroll in a course for the current year and semester.
- *     tags: [Enrollments]
- *     security:
- *       - tokenAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               course:
- *                 type: string
- *                 description: ID of the course to enroll in.
- *                 example: "60a8e41df7c8e835d9b8c835"
- *     responses:
- *       200:
- *         description: User successfully enrolled in the course.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                   description: Enrollment ID
- *                   example: "60a8e3622f8b9a3a4c8b9f13"
- *                 user:
- *                   type: string
- *                   description: User ID
- *                   example: "60a8e3b4f7c8e835d9b8c834"
- *                 currentYear:
- *                   type: integer
- *                   description: Year level of the user's class.
- *                   example: 3
- *                 currentSemester:
- *                   type: integer
- *                   description: Semester of the user's class.
- *                   example: 2
- *                 course:
- *                   type: string
- *                   description: ID of the enrolled course.
- *                   example: "60a8e41df7c8e835d9b8c835"
- *       400:
- *         description: Invalid user, course validation error, or already enrolled in the course.
- *       500:
- *         description: Internal server error.
- */
+
 Router.post("/enroll", Authetication, async (req, res) => {
   const { error } = ValidateEnrollCourse;
   if (error) return res.status(400).send(error.details[0].message);
@@ -149,6 +82,15 @@ Router.post("/enroll", Authetication, async (req, res) => {
   });
 
   if (!user) return res.status(400).send("Invalid user");
+  const checkEnrollment=await EnrollTransaction.find({
+    studentId:user[0]._id,
+    yearLevel:user[0].Class.yearLevel,
+    department:user[0].Class.department,
+    semister:user[0].Class.semister
+  })
+  if(checkEnrollment.length==0){
+    return res.status(400).send("please pay your  Semister Registration fees first");
+  }
 
   const isAlreadyEnroll = await EnrollCourse.findOne({
     user: user[0]._id,
@@ -170,107 +112,16 @@ Router.post("/enroll", Authetication, async (req, res) => {
 
   return res.send(Enrolled);
 });
-/**
- * @swagger
- * /enrollment/GetAllClass:
- *   get:
- *     summary: Retrieve all class information
- *     description: Returns all class information
- *     tags:
- *       - Class
- *     responses:
- *       200:
- *         description: Successfully retrieved class information.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                   description: Class ID
- *                   example: "60a8e3622f8b9a3a4c8b9f13"
- *                 yearLevel:
- *                   type: integer
- *                   description: Year level of the class
- *                   example: 3
- *                 department:
- *                   type: string
- *                   description: Department of the class
- *                   example: "Computer Science"
- *                 semester:
- *                   type: integer
- *                   description: Semester of the class
- *                   example: 2
- *                 date:
- *                   type: string
- *                   description: Date of the class
- *                   example: "2021-05-21T00:00:00.000Z"
- *       400:
- *         description: No class information found.
- *       500:
- *         description: Internal server error.
- */
+
 
 Router.get("/GetAllClass", async (req, res) => {
   const classs = await Class.find();
   res.send(classs);
 });
-/**
- * @swagger
- * /enrollment/GetMyoffering:
- *   get:
- *     summary: Retrieve course offerings for the current user
- *     description: Returns the available course offerings based on the user's class information.
- *     tags: [Course Offerings]
- *     security:
- *       - tokenAuth: []
- *     responses:
- *       200:
- *         description: Successfully retrieved course offerings.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                   description: Course offering ID
- *                   example: "60a8e3622f8b9a3a4c8b9f13"
- *                 department:
- *                   type: string
- *                   description: Department of the course offering
- *                   example: "Computer Science"
- *                 yearLevel:
- *                   type: integer
- *                   description: Year level for the course offering
- *                   example: 3
- *                 semister:
- *                   type: integer
- *                   description: Semester for the course offering
- *                   example: 2
- *                 courses:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       course:
- *                         type: string
- *                         description: ID of the course
- *                         example: "60a8e41df7c8e835d9b8c835"
- *                       courseName:
- *                         type: string
- *                         description: Name of the course
- *                         example: "Introduction to Programming"
- *       400:
- *         description: Invalid user or no offerings found for the user.
- *       500:
- *         description: Internal server error.
- */
 
 Router.get("/GetMyoffering", Authetication, async (req, res) => {
   try {
-    console.log("offering");
+    
     const user = await User.find({
       auth: req.user._id,
     }).populate({
@@ -278,10 +129,16 @@ Router.get("/GetMyoffering", Authetication, async (req, res) => {
       model: "Class",
     });
     if (!user) return res.status(400).send("Invalid user");
-    console.log(user[0].Class.department);
-    console.log(user[0].Class.yearLevel);
-    console.log(user[0].Class.semister);
-
+    const checkEnrollment=await EnrollTransaction.find({
+      studentId:user[0]._id,
+      yearLevel:user[0].Class.yearLevel,
+      department:user[0].Class.department,
+      semister:user[0].Class.semister
+    })
+    if(checkEnrollment.length==0){
+      return res.status(400).send("please pay your  Semister Registration fees first");
+    }
+  
     const offerdCourse = await CourseOffering.findOne({
       department: user[0].Class.department,
       yearLevel: user[0].Class.yearLevel,
@@ -290,93 +147,57 @@ Router.get("/GetMyoffering", Authetication, async (req, res) => {
       path: "courses.course",
       model: "Course",
     });
-    console.log(offerdCourse);
-
+   
     return res.send(offerdCourse);
   } catch (err) {
     console.log(err);
     res.send(err.message);
   }
 });
-/**
- * @swagger
- * /enrollment/Getoffering:
- *   get:
- *     summary: Retrieve course offerings
- *     description: Get the list of course offerings based on the specified department, year level, and semester.
- *     tags: [Course Offering]
- *     parameters:
- *       - in: query
- *         name: department
- *         required: true
- *         schema:
- *           type: string
- *         description: The department to filter course offerings.
- *       - in: query
- *         name: yearLevel
- *         required: true
- *         schema:
- *           type: string
- *         description: The year level to filter course offerings.
- *       - in: query
- *         name: semister
- *         required: true
- *         schema:
- *           type: string
- *         description: The semester to filter course offerings (e.g., "1" for Fall, "2" for Spring).
- *     responses:
- *       200:
- *         description: A course offering object containing the details of the courses offered.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 department:
- *                   type: string
- *                   example: "Computer Science"
- *                 yearLevel:
- *                   type: string
- *                   example: "2"
- *                 semister:
- *                   type: string
- *                   example: "1"
- *                 courses:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       course:
- *                         type: string
- *                         description: The course ID or name.
- *                       title:
- *                         type: string
- *                         description: The title of the course.
- *                       teacher:
- *                         type: string
- *                         description: The teacher's ID associated with the course.
- *                       Schedule:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             day:
- *                               type: string
- *                               enum: [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
- *                               description: Day of the schedule.
- *                             time:
- *                               type: string
- *                               description: The time slot for the course on that day.
- *       400:
- *         description: Bad request. Invalid input.
- *       401:
- *         description: Unauthorized. Authentication is required.
- *       404:
- *         description: Not found. No offerings found for the provided criteria.
- *       500:
- *         description: Internal server error. An error occurred while processing the request.
- */
 
+Router.get("/vetifyPayment", async (req, res) => {
+  try {
+    const response=await myChapa.verify(req.body.trx_ref )
+  
+
+ 
+   
+    if (response.data.status !== "success") {
+      return res.status(400).send("Payment verification failed");
+    }
+    
+    const user=await User.findById(response.data.meta.reference).populate({
+      path: "Class",
+      model: "Class",
+    })
+    if (req.body.status === "success") {
+    const enroll = new EnrollTransaction({
+      studentId:user._id,
+      yearLevel:user?.Class.yearLevel,
+      department:user?.Class.department,
+      semister:user?.Class.semister,
+      amount:response.data.amount,
+      paymentMethod:response.data.method,
+      mobile:response.data.phone_number,
+      status:"Success",
+      transactionId:response.data.tx_ref,
+      transactionDate:response.data.created_at
+    });
+    await enroll.save();
+ 
+    return res.send(enroll);
+  }
+  else{
+   
+    return res.status(400).send("Payment Failed");
+  }
+
+  }
+  catch (err) {
+    console.log(err);
+    res.status(500).send({ message: err.message });
+  }}
+);
 Router.get("/Getoffering", async (req, res) => {
   try {
     const { department, yearLevel, semister } = req.query;
@@ -401,10 +222,9 @@ Router.get("/Getoffering", async (req, res) => {
         path: "courses.teacher", // Path to the teacher field
         select: "firstName lastName", // Fields to select from the Teacher model
       });
-    console.log(offeredCourse);
-
+  
     if (!offeredCourse) {
-      console.log("offering");
+     
       offeredCourse = new CourseOffering({
         department: department,
         yearLevel: yearLevel,
@@ -413,49 +233,98 @@ Router.get("/Getoffering", async (req, res) => {
       });
       await offeredCourse.save();
     }
-    console.log(offeredCourse);
+   
     return res.send(offeredCourse);
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
 });
 
-/**
- * @swagger
- * /enrollment/GetSchedule:
- *   get:
- *     summary: Retrieve the class schedule for the current user
- *     description: Returns the schedule for courses offered to the user based on their class information, grouped by day.
- *     tags: [Schedule]
- *     security:
- *       - tokenAuth: []
- *     responses:
- *       200:
- *         description: Successfully retrieved the schedule.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               additionalProperties:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     courseName:
- *                       type: string
- *                       description: Name of the course.
- *                       example: "Introduction to Programming"
- *                     time:
- *                       type: string
- *                       description: Scheduled time for the course.
- *                       example: "10:00 AM - 11:30 AM"
- *       400:
- *         description: Invalid user or no course offerings found.
- *       404:
- *         description: No course offering found.
- *       500:
- *         description: Internal server error.
- */
+
+const calculatePrice = (offering) => {
+  let price = 0;
+
+  offering?.courses?.forEach((course) => {
+
+    price += course?.course?.creaditHrs * 150;
+  });
+  price += 2500;
+  return price;
+};
+
+const handleChapaPayment = async (user, price, res) => {
+  const CALLBACK_URL = "https://65lm38sq-3000.uks1.devtunnels.ms/enrollment/vetifyPayment";
+  const customerInfo = {
+    amount: price,
+    currency: "ETB",
+    email: user.auth.email,
+    first_name: user.firstName,
+    last_name: user.lastName,
+    callback_url: CALLBACK_URL ,
+    customization: { title: "Test Title", description: "Test Description" },
+    meta: { reference: user._id },
+  };
+
+  try {
+    const response = await myChapa.initialize(customerInfo, { autoRef: true });
+    return res.send({
+      response,
+      email: user.auth.email,
+      price: price,
+      StartDate: new Date(),
+      EndDate: new Date(new Date().setDate(new Date().getDate() + 30)),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error initializing payment");
+  }
+};
+Router.get("/initiateChapa", Authetication, async (req, res) => {
+  try {
+    const { redirecturl } = req.query;
+    
+    if (!redirecturl) return res.status(400).send("Missing redirect URL");
+
+    const user = await User.findById(req.user.userid)
+      .select("-password")
+      .populate("auth").populate({
+        path: "Class",
+        model: "Class",
+      });
+    
+      const checkEnrollment=await EnrollTransaction.find({
+        studentId:user._id,
+        yearLevel:user?.Class.yearLevel,
+        department:user?.Class.department,
+        semister:user?.Class.semister
+      })
+      if(checkEnrollment.length>0){
+        return res.status(400).send("You have already paid your Semister Registration fees");
+      }
+
+      const offerdCourse = await CourseOffering.findOne({
+        department: user.Class.department,
+        yearLevel: user.Class.yearLevel,
+        semister: user.Class.semister,
+      }).populate({
+        path: "courses?.course",
+        model: "Course",
+      });
+    if(offerdCourse.courses.length > 0){
+      const price=calculatePrice(offerdCourse);
+
+ 
+    await handleChapaPayment(user, price, res, redirecturl);
+    }
+    else {
+      return res.status(400).send("No course offering found")
+    }
+
+  } catch (err) {
+    console.log("error",err)
+    res.status(500).send(err.message || "Something went wrong");
+  }
+});
 
 Router.get("/GetSchedule", Authetication, async (req, res) => {
   try {
@@ -475,6 +344,9 @@ Router.get("/GetSchedule", Authetication, async (req, res) => {
     }).populate({
       path: "courses.course",
       model: "Course", // Assuming 'Course' is your course model
+    }).populate({
+      path: "courses.teacher",
+      model: "User", // Assuming 'Teacher' is your teacher model
     });
 
     if (!offeredCourse) return res.status(404).send("No course offering found");
@@ -488,7 +360,9 @@ Router.get("/GetSchedule", Authetication, async (req, res) => {
 
       courseObj.Schedule.forEach((schedule) => {
         const day = schedule.day;
-        const time = schedule.time;
+        const Start = schedule.Start;
+        const End = schedule.End;
+
 
         // Initialize the day in the result if it doesn't exist
         if (!scheduleByDay[day]) {
@@ -498,7 +372,9 @@ Router.get("/GetSchedule", Authetication, async (req, res) => {
         // Add course and its schedule to the corresponding day
         scheduleByDay[day].push({
           courseName: course.Coursename, // Assuming 'name' is the course name
-          time: time,
+        Start,
+        End,
+        teacher: `${courseObj.teacher.firstName} ${courseObj.teacher.lastName}`, // Assuming 'name' is the teacher name
         });
       });
     });
@@ -755,7 +631,7 @@ Router.get("/GetAllCourses", async (req, res) => {
 Router.put("/update/teacher/:offeringId", async (req, res) => {
   const { offeringId } = req.params;
   const { courseId, teacherId } = req.body;
-  console.log(req.body);
+ 
   if (!courseId || !teacherId) {
     return res.status(400).send("Course ID and Teacher ID are required.");
   }
@@ -966,7 +842,7 @@ Router.put("/add/course/:offeringId", async (req, res) => {
   const { offeringId } = req.params;
   const { courseId, teacherId, Schedule } = req.body;
 
-  console.log(req.body);
+ 
   if (!courseId || !teacherId || !Schedule) {
     return res
       .status(400)
@@ -986,19 +862,25 @@ Router.put("/add/course/:offeringId", async (req, res) => {
       return res.status(400).send("Course already exists in this offering.");
     }
 
+const formattedSchedule = Schedule.map((s) => ({
+  day: s.day,
+  Start: s.Start || s.start,  // Ensure correct capitalization
+  End: s.End || s.end,
+}));
     // Create a new course object to add
     const newCourse = {
       course: courseId,
       teacher: teacherId,
-      Schedule: Schedule,
+      Schedule: formattedSchedule,
     };
-
-    // Push the new course to the courses array
+  
     courseOffering.courses.push(newCourse);
 
     await courseOffering.save();
+
     res.send(courseOffering);
   } catch (err) {
+    console.log(err.message)
     res.status(500).send("Server error: " + err.message);
   }
 });
@@ -1026,8 +908,7 @@ Router.put("/remove/course/:offeringId", async (req, res) => {
     const existingCourse = courseOffering.courses.find(
       (c) => c._id.toString() === courseId
     );
-    console.log(existingCourse);
-    console.log(courseId)
+    
     if (!existingCourse) {
    
       return res.status(400).send("Course does not exists in this offering.");
@@ -1035,7 +916,7 @@ Router.put("/remove/course/:offeringId", async (req, res) => {
 
    
     courseOffering.courses.pull(existingCourse);
-    console.log(courseOffering,"updated");
+    
 
     await courseOffering.save();
     res.send(courseOffering);

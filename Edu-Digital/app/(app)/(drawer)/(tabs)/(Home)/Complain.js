@@ -8,7 +8,6 @@ import {
   useColorScheme,
 } from "react-native";
 import React, { useRef, useState } from "react";
-import { MotiView } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -61,7 +60,7 @@ export default function Complain() {
           <SucessPopup visible={sucess} />
           <ErrorPopup message={errormessage} visible={error} />
 
-          <MotiView
+          <View
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
             className="mt-6 space-y-6"
@@ -103,6 +102,7 @@ export default function Complain() {
                       setShowPicker(false);
                     }}
                     dropdownIconColor={accentColor}
+                    
                     style={{
                       backgroundColor: colorScheme === "dark" ? "#262626" : "white",
                     }}
@@ -132,7 +132,7 @@ export default function Complain() {
                 Describe the Issue
               </Text>
               
-              <MotiView
+              <View
                 animate={{
                   borderColor: complain ? accentColor : "#e5e7eb",
                   borderWidth: 1.5
@@ -149,11 +149,11 @@ export default function Complain() {
                   className="text-zinc-900 dark:text-zinc-100 text-base h-32"
                   onChangeText={setComplain}
                 />
-              </MotiView>
+              </View>
             </View>
 
             {/* Submit Button */}
-            <MotiView
+            <View
               animate={{ scale: complain ? 1.05 : 1 }}
               transition={{ type: 'timing' }}
             >
@@ -175,8 +175,8 @@ export default function Complain() {
                   Submit Report
                 </Text>
               </TouchableOpacity>
-            </MotiView>
-          </MotiView>
+            </View>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </LinearGradient>

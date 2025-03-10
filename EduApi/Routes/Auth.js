@@ -17,6 +17,7 @@ const AuthMiddleware = require("../MiddleWare/AuthMiddleware");
 
 Router.post("/register", async (req, res) => {
   const session = await mongoose.startSession();
+  console.log("req.body", req.body);
   session.startTransaction();
 
   try {
@@ -27,13 +28,21 @@ Router.post("/register", async (req, res) => {
       return res.status(400).send(authError.details[0].message);
     }
 
-   
+   if(req.body.auth.Role==="teacher"){
+    const { error: teacherError } = validateTeacher(req.body.teacher);
+    if (teacherError) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).send(teacherError.details[0].message);
+    }
+   }else {
     const { error: userError } = validateUser(req.body.user);
     if (userError) {
       await session.abortTransaction();
       session.endSession();
       return res.status(400).send(userError.details[0].message);
     }
+  }
 
     // Check if email already exists
     let auth = await Auth.findOne({ email: req.body.auth.email }).session(
@@ -56,28 +65,31 @@ Router.post("/register", async (req, res) => {
       emailToken: emailToken,
     });
     await auth.save({ session });
-
+    let classRoom;
+if(req.body.auth.Role==="student"){
     const { error: classError } = validateClass(req.body.class);
     if (classError) {
       await session.abortTransaction();
       session.endSession();
       return res.status(400).send(classError.details[0].message);
     }
-
-    let classRoom = await Class.findOne(req.body.class).session(session);
+  
+     classRoom = await Class.findOne(req.body.class).session(session);
 
     if (!classRoom) {
       classRoom = new Class(req.body.class);
       await classRoom.save({ session });
     }
+  }
 
     // Create new User document
     const user = new User({
       firstName: req.body.user.firstName,
       lastName: req.body.user.lastName,
       auth: auth._id,
-      Class: classRoom._id,
+      Class: req.body.auth.Role==="student"?classRoom?._id:null,
       studentid: req.body.user.studentid,
+      department: req.body.user.department,
 
       gender: req.body.user.gender,
 

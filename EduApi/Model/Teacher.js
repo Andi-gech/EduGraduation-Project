@@ -30,18 +30,16 @@ const teacherSchema = new mongoose.Schema({
     },
     department: {
         type: String,
-        enum: [
-          "Computer Science",
-          "electronics",
-          "civil",
-          "Mechanical",
-          "Electrical",
-          "Aeronautical",
-          "Production",
-          "chemical",
-          "Motor Vehicles",
-          
-        ],
+        enum:  [
+            "Computer Science",
+            "electronics",
+            "civil",
+            "Mechanical",
+            "Electrical",
+            "Aeronautical",
+            "Production",
+            "chemical",
+            "Motor Vehicles"],
         nullable: true,
       }
 });
@@ -55,7 +53,16 @@ const validateTeacher = (teacher) => {
         email: Joi.string().email().required(),
          gender: Joi.string().valid("Male", "Female").required(),
         isMilitary: Joi.boolean(),
-        department: Joi.string().valid("Computer Science", "electronics", "civil", "Mechanical", "Electrical", "Aeronautical", "Production", "chemical", "Motor Vehicles"),
+        department: Joi.string().valid( 
+            "Computer Science",
+            "electronics",
+            "civil",
+            "Mechanical",
+            "Electrical",
+            "Aeronautical",
+            "Production",
+            "chemical",
+            "Motor Vehicles"),
     });
     return schema.validate(teacher);
 }

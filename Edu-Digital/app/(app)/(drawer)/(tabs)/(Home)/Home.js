@@ -22,13 +22,13 @@ import calculateRemainingTime from "../../../../../utils/calculateRemainingTime"
 import formatDuration from "../../../../../utils/formatDuration";
 import AppCard from "../../../../../Components/AppsCard";
 import Marque from "../../../../../Components/Marque";
-import TutorialModal from "../../../../../Components/TutorialModal";
+
 import { useDispatch } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import { setUserData } from "../../../../../Redux/actions";
 import * as Notifications from "expo-notifications";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MotiView } from "moti";
+
+
 
 export default function Home() {
   const navigation = useNavigation();
@@ -39,8 +39,7 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const { height } = useWindowDimensions();
   const heightS = height > 700 ? 300 : 250;
-  const [isModalVisible, setModalVisible] = useState(false);
-  
+
   const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
 
 
@@ -54,17 +53,7 @@ export default function Home() {
       }),
     });
 
-    const checkFirstTime = async () => {
-      try {
-
-        const firstTime = await AsyncStorage.getItem("firstTime");
-        if (!firstTime) setModalVisible(true);
-      } catch (error) {
-        console.error("Error checking first time:", error);
-      }
-    };
-    
-    checkFirstTime();
+   
   }, []);
 
   useEffect(() => {
@@ -109,14 +98,7 @@ export default function Home() {
     [memoizedData?.profilePic]
   );
 
-  const handleCloseModal = async () => {
-    try {
-      await AsyncStorage.setItem("firstTime", "true");
-      setModalVisible(false);
-    } catch (error) {
-      console.error("Error setting first time:", error);
-    }
-  };
+
 
   if (isError || isCafeStatusError) {
     return (
@@ -135,11 +117,11 @@ export default function Home() {
         colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#4f46e5", "#0891b2"]
       }
       locations={[0.1, 0.9]}
-      className="flex-1 items-center  pt-[20px] z-10 flex-col"
+      className="flex-1 items-center   pt-[20px] z-10 flex-col"
     >
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
-      <MotiView
+      <View
         from={{ opacity: 0, translateY: -20 }}
         animate={{ opacity: 1, translateY: 0 }}
         className="w-[98%] rounded-lg mt-2 px-2"
@@ -151,7 +133,7 @@ export default function Home() {
           shadowRadius: 10,
         }}
       >
-        <MotiView 
+        <View 
           className="absolute top-0 -right-10 w-[200px] h-full"
           from={{ rotate: '0deg' }}
           animate={{ rotate: '5deg' }}
@@ -159,7 +141,7 @@ export default function Home() {
         >
           {[...Array(4)].map((_, rowIndex) =>
             [...Array(3)].map((_, colIndex) => (
-              <MotiView
+              <View
                 key={`${rowIndex}-${colIndex}`}
                 style={[
                   styles.box,
@@ -177,7 +159,7 @@ export default function Home() {
               />
             ))
           )}
-        </MotiView>
+        </View>
 
         <View className="w-full flex-row justify-between items-center z-50 px-1 mb-4">
           <RoundButton
@@ -195,7 +177,7 @@ export default function Home() {
         </View>
 
         <View className="w-full z-50 h-[65px] flex-row items-center px-2">
-          <MotiView
+          <View
             from={{ borderWidth: 0 }}
             animate={{ borderWidth: 2 }}
             transition={{ type: 'timing', duration: 1000, loop: true }}
@@ -203,7 +185,7 @@ export default function Home() {
             style={{ borderColor: accentColor }}
           >
             {isLoading ? (
-  <Skeleton radius="round" width={60} height={60} />
+  <Skeleton radius="round" width={60} height={60} colorMode={colorScheme} />
 ) : memoizedData?.profilePic ? (
   <Image
     source={{ uri: profileImageUri }}
@@ -217,10 +199,10 @@ export default function Home() {
 )}
 
 
-          </MotiView>
+          </View>
           <View className="ml-3">
   {isLoading ? (
-    <MotiView className="space-y-1 ">
+    <View className="space-y-1 ">
       <View className="mb-[5px]">
       <Skeleton 
         width={150} 
@@ -237,7 +219,7 @@ export default function Home() {
     
 
       />
-    </MotiView>
+    </View>
   ) : (
     <>
       <Text className="text-white text-xl font-extrabold tracking-wide">
@@ -276,7 +258,7 @@ export default function Home() {
           />
           <Marque />
         </View>
-      </MotiView>
+      </View>
 
       <View className="w-[98%] pb-[64px] flex-1 pt-6 bg-white dark:bg-zinc-900 rounded-t-[40px] shadow-2xl">
         <Text className="text-center text-2xl font-bold text-black dark:text-white mb-6">
@@ -321,7 +303,7 @@ export default function Home() {
               { name: 'Resource', icon: 'document-text-outline', screen: '(resource)' },
               { name: 'Clubs And Socials', icon: 'share-social-outline', screen: 'Clubs' },
             ].map((card, index) => (
-              <MotiView
+              <View
                 key={card.name}
                 from={{ opacity: 0, translateY: 20 }}
                 animate={{ opacity: 1, translateY: 0 }}
@@ -334,13 +316,13 @@ export default function Home() {
                   accentColor={accentColor}
                   type={card.type}
                 />
-              </MotiView>
+              </View>
             ))}
           </View>
         </ScrollView>
       </View>
 
-      <MotiView
+      <View
         from={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring' }}
@@ -359,10 +341,8 @@ export default function Home() {
         >
           <AntDesign name="qrcode" size={32} color={accentColor} />
         </TouchableOpacity>
-      </MotiView>
-{
-  isModalVisible && (<TutorialModal onClose={handleCloseModal} />)
-}
+      </View>
+
       
     </LinearGradient>
   );

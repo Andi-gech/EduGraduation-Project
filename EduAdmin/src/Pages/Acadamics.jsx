@@ -1,20 +1,14 @@
 
 import { HiOutlineAcademicCap } from "react-icons/hi";
 
-import { FaBars } from "react-icons/fa";
 import { useState } from "react";
 import AcadamicClass from "../Components/AcadamicClass";
 import { GoGear } from "react-icons/go";
 import { useMutation } from "@tanstack/react-query";
 import Api from "../utils/Api";
-import { Alert } from "@mui/material";
-
 
 
 export default function Academics() {
-
-
-  const [Selected, setSelected] = useState("Dashboard");
   const [sucess, setSucess] = useState(false);
   const [error, setError] = useState(false);
   const [alertpopup, setAlertpopup] = useState(false);
@@ -42,6 +36,8 @@ export default function Academics() {
     }
   }
   )
+  
+  
 
   return (
 <div className="min-h-screen  bg-white w-screen m-6  ">

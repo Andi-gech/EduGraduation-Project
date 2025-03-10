@@ -69,12 +69,15 @@ const checkValidSubscription = async (userId) => {
 };
 
 const handleChapaPayment = async (user, price, res) => {
+  const CALLBACK_URL = "https://65lm38sq-3000.uks1.devtunnels.ms/cafe/cafeinfo/verify";
+ 
   const customerInfo = {
     amount: price,
     currency: "ETB",
     email: user.auth.email,
     first_name: user.firstName,
     last_name: user.lastName,
+    callback_url: CALLBACK_URL,
     customization: { title: "Test Title", description: "Test Description" },
     meta: { reference: user._id },
   };
@@ -175,17 +178,26 @@ Router.get("/MealTimes", async (req, res) => {
 );
 
 
-Router.post("/cafeinfo/verify", async (req, res) => {
+Router.get("/cafeinfo/verify", async (req, res) => {
   try {
-    const { reference } = req.body.meta;
-    const transaction = await Transaction.findOneAndUpdate(
-      { transactionId: req.body.tx_ref },
+
+console.log(req.body)
+   const response=await myChapa.verify(req.body.trx_ref )
+   console.log(response.data)
+
+ 
+   
+    if (response.data.status !== "success") {
+      return res.status(400).send("Payment verification failed");
+    }
+  await Transaction.findOneAndUpdate(
+      { transactionId: response.data.tx_ref },
       { $set: { status: "Success" ,
-        user: reference,
-      transactionDate: req.body.created_at,
-      amount:req.body.amount,
-      mobile:req.body.mobile,
-      paymentMethod:req.body.payment_method,
+        user: response.data.meta.reference,
+      transactionDate: response.data.created_at,
+      amount:response.data.amount,
+      mobile:response.data.mobile,
+      paymentMethod:response.data.method,
       } },
       { new: true, upsert: true }
     );
@@ -194,11 +206,12 @@ Router.post("/cafeinfo/verify", async (req, res) => {
 
     const cafe = new Cafe({
       location: "JIJIGA",
-      user: reference,
+      user: response.data.meta.reference,
     });
     await cafe.save();
     return res.send(cafe);
   } catch (err) {
+    console.log(err)
     res.status(500).send("Error verifying cafe info");
   }
 });

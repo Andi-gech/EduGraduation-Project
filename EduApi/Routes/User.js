@@ -302,7 +302,11 @@ Router.get("/", async (req, res) => {
 });
 Router.get("/get/teachers", async (req, res) => {
   try {
-    const teachers = await Teacher.find()
+    console.log("getting teachers");
+    const teachers = await User.find({
+      auth: { $in: await Auth.find({ Role: "teacher" }) },
+
+    })
 
     res.send(teachers);
   } catch (err) {

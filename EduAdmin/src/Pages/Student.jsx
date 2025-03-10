@@ -2,7 +2,7 @@
 import { PiStudentLight } from "react-icons/pi";
 
 import AddStudentPopup from "../Popups/AddStudentPopup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { FaBars } from "react-icons/fa";
 
@@ -10,11 +10,19 @@ import StudentList from "../Components/StudentList";
 import DigitalIdCards from "../Components/DigitalIdCards";
 import Verification from "./Verification";
 import AddteacherForm from "../Popups/AddTeacherPopup";
+import { useParams } from "react-router-dom";
+
 
 
 export default function Student() {
 
+  const {type}=useParams();
 
+  useEffect(() => {
+    if(type){
+      setSelected(type)
+    }
+  }, [type])
   const [Selected, setSelected] = useState("Dashboard");
   const [open, setOpen] = useState(false);
 

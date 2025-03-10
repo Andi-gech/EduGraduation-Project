@@ -1,7 +1,7 @@
 import { TextInput, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { MotiView } from "moti";
+
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function Input({ 
@@ -17,10 +17,8 @@ export default function Input({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <MotiView
-      from={{ scale: 0.95, opacity: 0.8 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ type: 'timing', duration: 300 }}
+    <View
+   
       className={`w-full h-14 ${containerStyle}`}
     >
       <LinearGradient
@@ -30,16 +28,15 @@ export default function Input({
         locations={[0.1, 0.9]}
         className="w-full h-full  rounded-xl p-[2px]"
       >
-        <MotiView
+        <View
           className="w-full h-full bg-white/10 dark:bg-zinc-900/50 rounded-xl flex-row items-center px-4"
           animate={{ borderColor: isFocused ? accentColor : 'transparent' }}
           transition={{ type: 'timing', duration: 200 }}
           style={{ borderWidth: 1 }}
         >
           {icon && (
-            <MotiView 
-              from={{ scale: 0.8 }} 
-              animate={{ scale: 1 }}
+            <View 
+              
               className="mr-3"
             >
               <Ionicons 
@@ -47,7 +44,7 @@ export default function Input({
                 size={20} 
                 color={isFocused ? accentColor : 'gray'} 
               />
-            </MotiView>
+            </View>
           )}
 
           <TextInput
@@ -67,7 +64,7 @@ export default function Input({
           />
 
           {type === "password" && (
-            <MotiView
+            <View
               animate={{ rotate: showPassword ? '0deg' : '45deg' }}
               transition={{ type: 'spring' }}
             >
@@ -81,10 +78,10 @@ export default function Input({
                   color={isFocused ? accentColor : 'gray'}
                 />
               </TouchableOpacity>
-            </MotiView>
+            </View>
           )}
-        </MotiView>
+        </View>
       </LinearGradient>
-    </MotiView>
+    </View>
   );
 }

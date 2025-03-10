@@ -2,7 +2,6 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import RoundButton from "./RoundButton";
 import { useNavigation } from "expo-router";
-import { MotiView } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColorScheme } from "nativewind";
 
@@ -12,7 +11,7 @@ export default function Header({ name }) {
   const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
 
   return (
-    <MotiView
+    <View
       from={{ opacity: 0, translateY: -20 }}
       animate={{ opacity: 1, translateY: 0 }}
       className="w-full h-16 mb-4"
@@ -44,7 +43,7 @@ export default function Header({ name }) {
         {/* Spacer to balance the back button */}
         <View className="w-8" />
       </LinearGradient>
-    </MotiView>
+    </View>
   );
 }
 

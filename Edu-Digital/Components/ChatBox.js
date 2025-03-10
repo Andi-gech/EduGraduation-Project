@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { FlatList, View, StyleSheet, useColorScheme, Text } from "react-native";
-import { MotiView, AnimatePresence } from "moti";
+import {  AnimatePresence } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome6 } from "@expo/vector-icons";
 import ChatMessage from "./ChatMessage";
@@ -37,7 +37,7 @@ export default function ChatBox({ chats }) {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingVertical: 16 }}
           renderItem={({ item, index }) => (
-            <MotiView
+            <View
               from={{ opacity: 0, translateX: item.sender === "me" ? 50 : -50 }}
               animate={{ opacity: 1, translateX: 0 }}
               transition={{ type: 'timing', duration: 300 }}
@@ -47,10 +47,10 @@ export default function ChatBox({ chats }) {
                 sender={item.sender}
                 date={item.date}
               />
-            </MotiView>
+            </View>
           )}
           ListEmptyComponent={
-            <MotiView
+            <View
               from={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="flex-1 items-center justify-center p-4"
@@ -58,19 +58,19 @@ export default function ChatBox({ chats }) {
               <Text className="text-zinc-500 dark:text-zinc-400 text-lg">
                 Start the conversation...
               </Text>
-            </MotiView>
+            </View>
           }
         />
       </AnimatePresence>
 
       {/* Scroll Indicator */}
-      <MotiView
+      <View
         animate={{ opacity: chats.length > 5 ? 1 : 0 }}
         className="absolute bottom-4 right-4 w-8 h-8 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800"
         style={styles.scrollIndicator}
       >
         <FontAwesome6 name="chevron-down" size={14} color={accentColor} />
-      </MotiView>
+      </View>
     </LinearGradient>
   );
 }

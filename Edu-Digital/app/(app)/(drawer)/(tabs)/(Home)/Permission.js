@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useState } from "react";
-import { MotiView, AnimatePresence } from "moti";
+import {  AnimatePresence } from "moti";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import SucessPopup from "../../../../../Components/SucessPopup";
 import Loading from "../../../../../Components/Loading";
@@ -70,7 +70,7 @@ export default function Permission() {
       colors={
         colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#f8fafc", "#e2e8f0"]
       }
-      className="flex-1"
+      className="flex-1 pt-[20px]"
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
@@ -82,21 +82,21 @@ export default function Permission() {
           {/* Success/Error Indicators */}
           <AnimatePresence>
             {success && (
-              <MotiView
+              <View
                 from={{ translateY: -50, opacity: 0 }}
                 animate={{ translateY: 0, opacity: 1 }}
                 exit={{ translateY: -50, opacity: 0 }}
                 className="absolute top-4 w-full z-50"
               >
                 <SucessPopup visible={success} />
-              </MotiView>
+              </View>
             )}
           </AnimatePresence>
 
           <ErrorPopup message={errormessage} visible={error} />
 
           {/* Main Content */}
-          <MotiView
+          <View
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
             className="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-lg"
@@ -112,7 +112,7 @@ export default function Permission() {
               <Text className="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-3">
                 Reason for Permission
               </Text>
-              <MotiView
+              <View
                 animate={{
                   borderColor: isFocused
                     ? accentColor
@@ -132,7 +132,7 @@ export default function Permission() {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                 />
-              </MotiView>
+              </View>
             </View>
 
             {/* Date Picker */}
@@ -171,7 +171,7 @@ export default function Permission() {
             </View>
 
             {/* Submit Button */}
-            <MotiView
+            <View
               animate={{ scale: mutation.isPending ? 0.95 : 1 }}
               transition={{ type: "timing" }}
             >
@@ -195,7 +195,7 @@ export default function Permission() {
                   </Text>
                 )}
               </TouchableOpacity>
-            </MotiView>
+            </View>
 
             {/* Request History Link */}
             <TouchableOpacity
@@ -211,7 +211,7 @@ export default function Permission() {
                 color={colorScheme === "dark" ? "#f59e0b" : "#3b82f6"}
               />
             </TouchableOpacity>
-          </MotiView>
+          </View>
         </ScrollView>
       </TouchableWithoutFeedback>
     </LinearGradient>

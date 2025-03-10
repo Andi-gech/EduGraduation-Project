@@ -17,10 +17,12 @@ export default function Layout() {
           flexDirection: "row",
 
           left: 0,
+          bottom:0,
 
           borderTopWidth: 0.3,
           borderTopColor: colorScheme === "dark" ? "#3C3C3C" : "#E0E0DF",
           height: 55,
+          width:"100%",
           overflow: "hidden", // To ensure rounded corners work
         },
         tabBarShowLabel: false,
@@ -32,8 +34,8 @@ export default function Layout() {
                 ? ["white", "white"]
                 : ["#262626", "#010101"]
             }
-            locations={[0.0, 0.8]}
-            style={{ flex: 1 }}
+            locations={[0.0, 0.999]}
+            className="w-full h-full"
           />
         ),
       })}

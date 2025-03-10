@@ -2,7 +2,7 @@ import { Stack } from "expo-router/stack";
 
 export default function Layout() {
   return (
-    <Stack initialRouteName="Home">
+    <Stack  initialRouteName="Home">
       <Stack.Screen
         name="Home"
         index

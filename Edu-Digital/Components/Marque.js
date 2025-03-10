@@ -10,7 +10,7 @@ export default function Marque() {
     Animated.loop(
       Animated.sequence([
         Animated.timing(animation, {
-          toValue: -width * 1.49, // Adjust this if needed
+          toValue: -width * 2.49, // Adjust this if needed
           duration: 13900, // Duration for the scroll
           useNativeDriver: true,
         }),

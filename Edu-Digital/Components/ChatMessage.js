@@ -5,7 +5,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { MotiView } from "moti";
 import { useColorScheme } from "react-native";
 import UseFetchProfilepic from "../hooks/UseFetchProfilepic";
 
@@ -56,17 +55,17 @@ const ChatMessage = ({ message, sender, date }) => {
   };
 
   return (
-    <MotiView
+    <View
       from={{ opacity: 0, translateY: 20 }}
       animate={{ opacity: 1, translateY: 0 }}
       className="w-full my-1.5"
     >
       <View className={`flex ${isSender ? "flex-row-reverse" : "flex-row"} items-end`}>
         {!isSender && (
-          <MotiView
+          <View
             from={{ scale: 0.9 }}
             animate={{ scale: 1 }}
-            className="mr-2 mb-1"
+            className="mx-1 mb-1"
           >
             {profile?.image ? (
               <Image
@@ -81,7 +80,7 @@ const ChatMessage = ({ message, sender, date }) => {
                 <Ionicons name="person" size={20} color={accentColor} />
               </View>
             )}
-          </MotiView>
+          </View>
         )}
 
         <LinearGradient
@@ -130,7 +129,7 @@ const ChatMessage = ({ message, sender, date }) => {
           </Text>
         </LinearGradient>
       </View>
-    </MotiView>
+    </View>
   );
 };
 

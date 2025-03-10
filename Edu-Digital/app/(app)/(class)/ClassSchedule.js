@@ -1,16 +1,14 @@
 import { ScrollView, Text, View } from "react-native";
 import React from "react";
-import { MotiView } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColorScheme } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "../../../Components/Header";
 import UseFetchSchedule from "../../../hooks/UseFetchSchedule";
 import Loading from "../../../Components/Loading";
-import { useNavigation } from "@react-navigation/native";
 
 export default function ClassSchedule() {
-  const navigation = useNavigation();
+ 
   const { data, isLoading } = UseFetchSchedule();
   const colorScheme = useColorScheme();
   const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
@@ -37,7 +35,7 @@ console.log(data?.data)
           showsVerticalScrollIndicator={false}
         >
           {week.map((day, index) => (
-            <MotiView
+            <View
               key={day}
               from={{ opacity: 0, translateY: 20 }}
               animate={{ opacity: 1, translateY: 0 }}
@@ -69,7 +67,7 @@ console.log(data?.data)
 
                 {data?.data[day]?.length > 0 ? (
                   data.data[day].map((schedule, idx) => (
-                    <MotiView
+                    <View
                       key={schedule.time}
                       from={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -89,7 +87,7 @@ console.log(data?.data)
                               className="mr-2"
                             />
                             <Text className="text-zinc-600 dark:text-zinc-300">
-                              {schedule.time}
+                              {schedule.Start} - {schedule.End} {`->`} {schedule.teacher}
                             </Text>
                           </View>
                         </View>
@@ -99,7 +97,7 @@ console.log(data?.data)
                           color={accentColor} 
                         />
                       </View>
-                    </MotiView>
+                    </View>
                   ))
                 ) : (
                   <View className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 items-center">
@@ -109,7 +107,7 @@ console.log(data?.data)
                   </View>
                 )}
               </LinearGradient>
-            </MotiView>
+            </View>
           ))}
         </ScrollView>
       )}

@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { MotiView } from 'moti';
+
 import React, { useState } from 'react';
 import {
   Animated,
@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   UIManager,
   useColorScheme,
+
   View,
 } from 'react-native';
 import { CalendarList } from 'react-native-calendars';
@@ -87,13 +88,15 @@ export default function Calendar() {
       });
     }
   };
-
+  const gradientColors = colorScheme === "dark" 
+  ? ["#09090b", "#18181b"] 
+  : ["#4f46e5", "#0891b2"];
   return (
     <LinearGradient
-      colors={isDark ? ['#09090b', '#18181b'] : ['#f8fafc', '#e2e8f0']}
-      className="flex-1"
+colors={gradientColors}
+      className="flex-1 pt-[20px]"
     >
-      <MotiView
+      <View
         from={{ translateY: -20, opacity: 0 }}
         animate={{ translateY: 0, opacity: 1 }}
         className="px-4 pt-2 pb-4"
@@ -107,13 +110,13 @@ export default function Calendar() {
             Academic Calendar
           </Text>
         </LinearGradient>
-      </MotiView>
+      </View>
 
       {isLoading ? (
         <IsLoading />
       ) : (
-        <PanGestureHandler>
-          <MotiView
+        
+          <View
             from={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex-1 px-2"
@@ -168,8 +171,8 @@ export default function Calendar() {
                 </TouchableWithoutFeedback>
               )}
             />
-          </MotiView>
-        </PanGestureHandler>
+          </View>
+       
       )}
 
 

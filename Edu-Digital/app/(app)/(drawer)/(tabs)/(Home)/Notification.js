@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { MotiView } from "moti";
+
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "../../../../../Components/Header";
@@ -14,7 +14,7 @@ const NotificationSection = ({ title, icon, items }) => {
   const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
 
   return (
-    <MotiView
+    <View
       from={{ opacity: 0, translateY: 20 }}
       animate={{ opacity: 1, translateY: 0 }}
       className="mb-6"
@@ -29,14 +29,14 @@ const NotificationSection = ({ title, icon, items }) => {
 
       {items.length > 0 ? (
         items.map((item, index) => (
-          <MotiView
+          <View
             key={item._id}
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ delay: index * 50 }}
           >
             <NotificationCard data={item} />
-          </MotiView>
+          </View>
         ))
       ) : (
         <View className="items-center py-4 rounded-xl bg-zinc-100 dark:bg-zinc-800">
@@ -50,7 +50,7 @@ const NotificationSection = ({ title, icon, items }) => {
           </Text>
         </View>
       )}
-    </MotiView>
+    </View>
   );
 };
 
@@ -72,7 +72,7 @@ export default function Notification() {
           ? ["#09090b", "#18181b"]
           : ["#f8fafc", "#e2e8f0"]
       }
-      className="flex-1"
+      className="flex-1 pt-[20px]"
     >
       <Header name="Notifications" accentColor={accentColor} showBack />
 

@@ -6,7 +6,6 @@ import {
 } from "react-native";
 import { Image } from "expo-image";
 import React, { useState } from "react";
-import { MotiView } from "moti";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import api from "../utils/api";
@@ -61,7 +60,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
   const handleLike = () => toggleLike();
 
   return (
-    <MotiView
+    <View
       from={{ opacity: 0, translateY: 20 }}
       animate={{ opacity: 1, translateY: 0 }}
       className="mb-4 mx-4"
@@ -77,7 +76,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
     >
       {/* User Header */}
       <View className="flex-row items-center p-4">
-        <MotiView
+        <View
           from={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring' }}
@@ -87,7 +86,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
             className="w-10 h-10 rounded-full"
             cachePolicy="memory-disk"
           />
-        </MotiView>
+        </View>
         
         <View className="ml-3 flex-1">
           <Text className="font-semibold text-base" style={{ color: textColor }}>
@@ -108,7 +107,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
 
       {/* Post Image */}
       {image && (
-        <MotiView
+        <View
           from={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           className="bg-zinc-100 dark:bg-zinc-900"
@@ -119,7 +118,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
             contentFit="cover"
             transition={300}
           />
-        </MotiView>
+        </View>
       )}
 
       {/* Actions */}
@@ -128,7 +127,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
           onPress={handleLike}
           className="flex-row items-center mr-6"
         >
-          <MotiView
+          <View
             animate={{ scale: liked ? [1, 0.8, 1.1, 1] : 1 }}
             transition={{ type: 'spring' }}
           >
@@ -137,7 +136,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
               size={24}
               color={liked ? "#ef4444" : accentColor}
             />
-          </MotiView>
+          </View>
           <Text className="ml-2 font-medium" style={{ color: textColor }}>
             {likeCount}
           </Text>
@@ -170,6 +169,6 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
           </Text>
         ))}
       </View>
-    </MotiView>
+    </View>
   );
 }

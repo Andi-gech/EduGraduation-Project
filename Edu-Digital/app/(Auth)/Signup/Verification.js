@@ -1,5 +1,4 @@
 
-import { MotiView } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -109,7 +108,7 @@ export default function Verification() {
         <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
         {(mutation.isPending || resendCode.isPending) && <Loading />}
 
-        <MotiView
+        <View
           className="w-[90%] bg-white dark:bg-zinc-900 rounded-2xl py-6"
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
@@ -121,7 +120,7 @@ export default function Verification() {
           }}
         >
           <View className="items-center mb-6">
-            <MotiView
+            <View
               from={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring' }}
@@ -132,7 +131,7 @@ export default function Verification() {
                 color={accentColor}
                 className="mb-4"
               />
-            </MotiView>
+            </View>
             
             <Text className="text-2xl font-bold text-black dark:text-white mb-2">
               Verify Your Email
@@ -143,13 +142,13 @@ export default function Verification() {
           </View>
 
           <View className="items-center mb-6">
-            <MotiView
+            <View
               className="flex-row justify-between w-full"
               from={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
               {code.map((digit, index) => (
-                <MotiView
+                <View
                   key={index}
                   from={{ scale: 0.9 }}
                   animate={{ scale: 1 }}
@@ -169,12 +168,12 @@ export default function Verification() {
                     onKeyPress={(e) => handleKeyPress(e, index)}
                     ref={(ref) => (inputRefs.current[index] = ref)}
                   />
-                </MotiView>
+                </View>
               ))}
-            </MotiView>
+            </View>
 
             {(error || success) && (
-              <MotiView
+              <View
                 className="mt-4 p-3 rounded-lg"
                 style={{
                   backgroundColor: error ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)",
@@ -189,11 +188,11 @@ export default function Verification() {
                 >
                   {error || success}
                 </Text>
-              </MotiView>
+              </View>
             )}
           </View>
 
-          <MotiView className="w-full flex items-center" from={{ scale: 0.9 }} animate={{ scale: 1 }}>
+          <View className="w-full flex items-center" from={{ scale: 0.9 }} animate={{ scale: 1 }}>
             <Buttons
               name="Verify"
               icon="checkmark-circle"
@@ -202,9 +201,9 @@ export default function Verification() {
                 code: code.join("")
               })}
             />
-          </MotiView>
+          </View>
 
-          <MotiView
+          <View
             className="mt-4 items-center"
             from={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -223,8 +222,8 @@ export default function Verification() {
                 Resend Code {resendCooldown > 0 && `(${resendCooldown}s)`}
               </Text>
             </TouchableOpacity>
-          </MotiView>
-        </MotiView>
+          </View>
+        </View>
       </LinearGradient>
     );
   }
@@ -239,19 +238,19 @@ export default function Verification() {
     >
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       
-      <MotiView
+      <View
         className="w-[90%] bg-white dark:bg-zinc-900 rounded-2xl p-6"
         from={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
       >
         <View className="items-center mb-8">
-          <MotiView
+          <View
             from={{ rotate: "0deg" }}
             animate={{ rotate: "360deg" }}
             transition={{ loop: true, duration: 2000 }}
           >
             <PendingSvg width={100} height={100} fill={accentColor} />
-          </MotiView>
+          </View>
 
           <Text className="text-2xl font-bold text-black dark:text-white mt-4">
             Approval Pending
@@ -263,7 +262,7 @@ export default function Verification() {
             { label: "Email Verification", icon: "checkmark-circle", status: "complete" },
             { label: "Academic Officer Approval", icon: "time", status: "pending" },
           ].map((item, index) => (
-            <MotiView
+            <View
               key={index}
               className="flex-row items-center p-3 bg-white/5 rounded-lg"
               from={{ opacity: 0, translateX: -20 }}
@@ -279,19 +278,19 @@ export default function Verification() {
               <Text className="flex-1 text-zinc-600 dark:text-zinc-300">
                 {item.label}
               </Text>
-            </MotiView>
+            </View>
           ))}
         </View>
 
-        <MotiView className="mt-8" from={{ scale: 0.9 }} animate={{ scale: 1 }}>
+        <View className="mt-8" from={{ scale: 0.9 }} animate={{ scale: 1 }}>
           <Buttons
             name="Back to Login"
             icon="log-in"
             onPress={() => router.replace("/(Auth)/login")}
           />
-        </MotiView>
+        </View>
 
-        <MotiView
+        <View
           className="mt-6 flex-row items-center p-3 bg-amber-100/20 dark:bg-zinc-800 rounded-lg"
           from={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -300,8 +299,8 @@ export default function Verification() {
           <Text className="ml-2 text-sm text-zinc-600 dark:text-zinc-300 flex-1">
             Verification may take up to 24 hours to complete
           </Text>
-        </MotiView>
-      </MotiView>
+        </View>
+      </View>
     </LinearGradient>
   );
 }

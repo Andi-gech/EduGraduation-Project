@@ -14,10 +14,10 @@ import { useNavigation } from "expo-router";
 import ViewShot from "react-native-view-shot";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
-import { MotiView } from "moti";
+
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 
-import pattern from "../../../../../assets/Pattern (1).png";
+
 import logo from "../../../../../assets/logo.png";
 import ethiopia from "../../../../../assets/th (2).jpeg";
 import UseFetchQrCode from "../../../../../hooks/UseFetchQrcode";
@@ -31,7 +31,6 @@ export default function Id() {
   const backShotRef = useRef(null);
   const colorScheme = useColorScheme();
   const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
-  const cardBg = colorScheme === "dark" ? "rgba(24, 24, 27, 0.9)" : "rgba(255, 255, 255, 0.9)";
 
   const handleCapture = async () => {
     try {
@@ -63,12 +62,12 @@ export default function Id() {
   return (
     <LinearGradient
       colors={colorScheme === "dark" ? ["#09090b", "#18181b"] : ["#f8fafc", "#e2e8f0"]}
-      className="flex-1"
+      className="flex-1 pt-[20px]"
     >
       <Header name={"Digital ID Card"} />
       
       {isError && (
-        <MotiView
+        <View
           from={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className="flex-1 items-center justify-center p-8"
@@ -80,7 +79,7 @@ export default function Id() {
             className="mb-6"
           />
           <ErrorMessage type={"notice"} content={error.response.data} />
-        </MotiView>
+        </View>
       )}
 
       {isLoading && <Loading />}
@@ -88,7 +87,7 @@ export default function Id() {
       {data?.data && (
         <ScrollView className="flex-1 p-4" contentContainerStyle={{ paddingBottom: 100 }}>
           {/* Front ID Card */}
-          <MotiView
+          <View
             from={{ translateY: 50, opacity: 0 }}
             animate={{ translateY: 0, opacity: 1 }}
             transition={{ type: 'spring' }}
@@ -125,10 +124,7 @@ export default function Id() {
                       source={{ uri: `https://eduapi.senaycreatives.com/${data?.data?.Photo}` }}
                       className="w-28 h-36 rounded-lg border-2 border-orange-500"
                     />
-                    <ImageBackground
-                      source={pattern}
-                      className="absolute w-full h-full opacity-10"
-                    />
+                   
                   </View>
 
                   <View className="flex-1 ml-4">
@@ -180,10 +176,10 @@ export default function Id() {
                 </View>
               </View>
             </ViewShot>
-          </MotiView>
+          </View>
 
           {/* Back ID Card */}
-          <MotiView
+          <View
             from={{ translateY: 50, opacity: 0 }}
             animate={{ translateY: 0, opacity: 1 }}
             transition={{ type: 'spring', delay: 100 }}
@@ -208,10 +204,10 @@ export default function Id() {
                 </Text>
               </View>
             </ViewShot>
-          </MotiView>
+          </View>
 
           {/* Share Button */}
-          <MotiView
+          <View
             from={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 200 }}
@@ -226,7 +222,7 @@ export default function Id() {
                 Share ID Card
               </Text>
             </TouchableOpacity>
-          </MotiView>
+          </View>
         </ScrollView>
       )}
     </LinearGradient>

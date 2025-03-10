@@ -1,7 +1,7 @@
 import { useColorScheme, View, Text } from "react-native";
 import { Image } from "expo-image";
 import React, { useState } from "react";
-import { MotiView, AnimatePresence } from "moti";
+import {  AnimatePresence } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -90,7 +90,7 @@ export default function Profile() {
 
         <AnimatePresence>
           {sucess && (
-            <MotiView
+            <View
               from={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
@@ -100,11 +100,11 @@ export default function Profile() {
                 <Feather name="check" size={16} color="white" />
                 <Text className="text-white ml-2">{sucess}</Text>
               </View>
-            </MotiView>
+            </View>
           )}
 
           {error && (
-            <MotiView
+            <View
               from={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
@@ -114,11 +114,11 @@ export default function Profile() {
                 <Feather name="alert-circle" size={16} color="white" />
                 <Text className="text-white ml-2">{error}</Text>
               </View>
-            </MotiView>
+            </View>
           )}
         </AnimatePresence>
 
-        <MotiView
+        <View
           from={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="relative"
@@ -134,7 +134,7 @@ export default function Profile() {
               className="w-full h-full rounded-full"
             />
             
-            <MotiView
+            <View
               from={{ scale: 0 }}
               animate={{ scale: 1 }}
               className="absolute bottom-1 right-1 bg-white dark:bg-zinc-800 p-2 rounded-full"
@@ -152,9 +152,9 @@ export default function Profile() {
                   color={accentColor}
                 />
               </TouchableOpacity>
-            </MotiView>
+            </View>
           </View>
-        </MotiView>
+        </View>
 
         <ImagePickerModal
           onupdate={onSubmit}

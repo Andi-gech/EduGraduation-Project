@@ -22,7 +22,7 @@ export default function Loading() {
         from={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'timing', duration: 300 }}
-        className="p-8 rounded-2xl"
+        className=" rounded-2xl"
         style={{
           shadowColor: accentColor,
           shadowOffset: { width: 0, height: 4 },

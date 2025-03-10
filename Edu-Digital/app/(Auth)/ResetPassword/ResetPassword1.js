@@ -1,5 +1,5 @@
 
-import { MotiView } from "moti";
+
 import { LinearGradient } from "expo-linear-gradient";
 import {
   StyleSheet,
@@ -103,7 +103,7 @@ export default function ResetPassword1() {
         <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
         {(mutation.isPending || resendCode.isPending) && <Loading />}
 
-        <MotiView
+        <View
           className="w-[90%] bg-white dark:bg-zinc-900 rounded-2xl py-6 px-3"
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
@@ -122,13 +122,13 @@ export default function ResetPassword1() {
           />
 
           <View className="items-center mb-6">
-            <MotiView
+            <View
               from={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring' }}
             >
               <Ionicons name="mail" size={48} color={accentColor} />
-            </MotiView>
+            </View>
             
             <Text className="text-2xl font-bold text-black dark:text-white mt-4">
               Password Reset
@@ -138,7 +138,7 @@ export default function ResetPassword1() {
             </Text>
           </View>
 
-          <MotiView from={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <View from={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <Input
               placeholder="Enter Your Email"
               icon="mail-outline"
@@ -148,10 +148,10 @@ export default function ResetPassword1() {
               accentColor={accentColor}
               className="mb-4"
             />
-          </MotiView>
+          </View>
 
           {onsend && (
-            <MotiView
+            <View
               className="mb-6"
               from={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -161,7 +161,7 @@ export default function ResetPassword1() {
               </Text>
               <View className="flex-row justify-between">
                 {code.map((digit, index) => (
-                  <MotiView
+                  <View
                     key={index}
                     from={{ scale: 0.9 }}
                     animate={{ scale: 1 }}
@@ -181,14 +181,14 @@ export default function ResetPassword1() {
                       onKeyPress={(e) => handleKeyPress(e, index)}
                       ref={(ref) => (inputRefs.current[index] = ref)}
                     />
-                  </MotiView>
+                  </View>
                 ))}
               </View>
-            </MotiView>
+            </View>
           )}
 
           {(error || success) && (
-            <MotiView
+            <View
               className="mb-4 p-3 rounded-lg"
               style={{
                 backgroundColor: error ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)",
@@ -203,10 +203,10 @@ export default function ResetPassword1() {
               >
                 {error || success}
               </Text>
-            </MotiView>
+            </View>
           )}
 
-          <MotiView from={{ scale: 0.9 }} animate={{ scale: 1 }}>
+          <View from={{ scale: 0.9 }} animate={{ scale: 1 }}>
             <Buttons
               name={onsend ? "Verify Code" : "Send Code"}
               icon={onsend ? "checkmark-circle" : "send"}
@@ -221,9 +221,9 @@ export default function ResetPassword1() {
                 }
               }}
             />
-          </MotiView>
+          </View>
 
-          <MotiView
+          <View
             className="mt-4 items-center"
             from={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -242,8 +242,8 @@ export default function ResetPassword1() {
                 Resend Code {resendCooldown > 0 && `(${resendCooldown}s)`}
               </Text>
             </TouchableOpacity>
-          </MotiView>
-        </MotiView>
+          </View>
+        </View>
       </LinearGradient>
     </TouchableWithoutFeedback>
   );

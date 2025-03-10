@@ -20,6 +20,7 @@ import UseFetchCourses from "../../hooks/UseFechCourses";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import IsLoading from "../Components/IsLoading";
 import Api from "../utils/Api";
+import UseFetchTeacher from "../../hooks/UseFetchTeacher";
 
 const AddCoursePopup = ({ onClose, offeringid }) => {
   const [newCourse, setNewCourse] = useState({
@@ -31,12 +32,13 @@ const AddCoursePopup = ({ onClose, offeringid }) => {
   const [selectedStartTime, setSelectedStartTime] = useState("");
   const [selectedEndTime, setSelectedEndTime] = useState("");
 
-  const { data: teachersData, isLoading: isLoadingTeachers } = UseFetchUser();
+  const { data: teachersData, isLoading: isLoadingTeachers } = UseFetchTeacher();
   const { data: coursesData, isLoading: isLoadingCourses } = UseFetchCourses();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: (data) =>
+     
       Api.put(
         `/enrollment/add/course/${offeringid}`,
         data
@@ -73,6 +75,7 @@ const AddCoursePopup = ({ onClose, offeringid }) => {
   };
 
   const handleSave = () => {
+    console.log("data", newCourse);
     mutation.mutate(newCourse);
   };
 

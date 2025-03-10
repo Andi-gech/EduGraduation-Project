@@ -1,6 +1,6 @@
-import { ScrollView, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
-import { MotiView, AnimatePresence } from "moti";
+import { ScrollView, Text, View, TouchableOpacity, RefreshControl } from "react-native";
+import React, { useEffect } from "react";
+import { AnimatePresence } from "moti";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColorScheme } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,15 +10,27 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import UseFetchMyCourse from "../../../hooks/UseFetchMyCourse";
 import Header from "../../../Components/Header";
 import { useSelector } from "react-redux";
+import UseCheckEnrollment from "../../../hooks/UseCheckEnrollment";
 
 
 export default function Class() {
   const params = useLocalSearchParams();
   const userdata = useSelector((state) => state.userData);
   const router = useRouter();
-  const { data, error, isLoading } = UseFetchMyCourse();
+  const { data, error, isLoading,refetch } = UseFetchMyCourse();
+   const {data:Enrollment,refetch:reloading}=UseCheckEnrollment();
+   
+
   const colorScheme = useColorScheme();
   const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
+  useEffect(
+    ()=>{
+      refetch()
+      reloading()
+    }
+  )
+console.log(Enrollment?.data?.status)
+
 
   if (!params) {
     return (
@@ -43,12 +55,12 @@ export default function Class() {
           ? ["#09090b", "#18181b"]
           : ["#f8fafc", "#e2e8f0"]
       }
-      className="flex-1 pt-[20px]"
+      className="flex-1 h-screen pt-[20px]"
     >
       <Header name="My Classes" accentColor={accentColor} showBack />
 
       <View className="flex-1 px-4">
-        <MotiView
+        <View
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           className="mt-4 p-6 rounded-2xl"
@@ -97,36 +109,56 @@ export default function Class() {
             <Ionicons name="calendar" size={20} color="white" />
             <Text className="text-white font-semibold ml-2">View Schedule</Text>
           </TouchableOpacity>
-        </MotiView>
-
-        <Text className="text-xl font-bold mt-6 text-zinc-900 dark:text-zinc-100">
-          Current Courses
-        </Text>
-
-        {data?.data ? (
-          <ScrollView 
+        </View>
+        <ScrollView 
+          refreshControl={
+            
+            <RefreshControl 
+            refreshing={isLoading}
+            onRefresh={
+              () => {
+                refetch();
+                reloading();
+               
+              }
+            }
+            colors={[accentColor]}
+          />
+          }
             className="mt-4 flex-1"
             contentContainerStyle={{ paddingBottom: 120 }}
             showsVerticalScrollIndicator={false}
           >
+        <Text className="text-xl font-bold mt-6 text-zinc-900 dark:text-zinc-100">
+          Current Courses
+        </Text>
+{Enrollment?.data?.status ?<>
+        {data?.data ? (
+        
             <AnimatePresence>
               {data.data.map((item, index) => (
-                <MotiView
+                <View
                   key={item._id}
                   from={{ opacity: 0, translateY: 20 }}
                   animate={{ opacity: 1, translateY: 0 }}
                   transition={{ delay: index * 50 }}
                 >
                   <CoursesCard item={item} accentColor={accentColor} />
-                </MotiView>
+                </View>
               ))}
             </AnimatePresence>
-          </ScrollView>
+         
         ) : (
           <Text className="text-center mt-8 text-zinc-500 dark:text-zinc-400">
             No courses enrolled yet
           </Text>
         )}
+        </>: <Text className="text-center mt-8 text-zinc-500 dark:text-zinc-400">
+         Enroll To Get Your Course
+          </Text>
+        
+      }
+      </ScrollView>
 
         {/* Fixed Bottom Container */}
         <View className="absolute bottom-0 left-0 right-0 px-4 pb-6 bg-transparent">
@@ -159,7 +191,7 @@ export default function Class() {
         </View>
       </View>
 
-      {isLoading && <Loading />}
+     
     </LinearGradient>
   );
 }

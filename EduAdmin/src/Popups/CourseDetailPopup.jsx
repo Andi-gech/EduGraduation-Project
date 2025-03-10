@@ -5,6 +5,7 @@ import UseFetchUser from "../../hooks/UseFetchUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import IsLoading from "../Components/IsLoading";
 import Api from "../utils/Api";
+import UseFetchTeacher from "../../hooks/UseFetchTeacher";
 
 const CourseDetailPopup = ({ onClose, course }) => {
   const [editedCourse, setEditedCourse] = useState({
@@ -15,7 +16,7 @@ const CourseDetailPopup = ({ onClose, course }) => {
     instructor: "",
     creditHours: "",
   });
-  const { data, isLoading } = UseFetchUser();
+  const { data, isLoading } = UseFetchTeacher();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (data) =>

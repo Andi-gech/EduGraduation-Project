@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { MotiView, MotiText } from 'moti';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CalculateGpa } from '../../../../../utils/GradeCalculator';
 import Header from '../../../../../Components/Header';
@@ -72,13 +71,13 @@ export default function GradeCalculator() {
       >
      <Header name="Grade Calculator" accentColor={accentColor} />
         
-        <MotiText 
+        <Text 
           from={{ opacity: 0, translateY: 10 }}
           animate={{ opacity: 1, translateY: 0 }}
           className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 text-center mt-4 mb-6"
         >
           Enter your course details
-        </MotiText>
+        </Text>
 
         <View className="space-y-4">
           <Input
@@ -103,7 +102,7 @@ export default function GradeCalculator() {
             }}
           />
 
-          <MotiView
+          <View
             from={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring' }}
@@ -124,10 +123,10 @@ export default function GradeCalculator() {
                 Add Course
               </Text>
             </TouchableOpacity>
-          </MotiView>
+          </View>
         </View>
 
-        <MotiView 
+        <View 
           className="my-4 p-4 rounded-2xl"
           style={{
             backgroundColor: colorScheme === 'dark' ? 'rgba(39, 39, 42, 0.5)' : 'rgba(255, 255, 255, 0.7)',
@@ -154,13 +153,13 @@ export default function GradeCalculator() {
               <Text className="font-semibold" style={{ color: accentColor }}>Clear All</Text>
             </TouchableOpacity>
           </View>
-        </MotiView>
+        </View>
         <FlatList
           data={courses}
           keyExtractor={(_, index) => index.toString()}
           className='mb-[60px] overflow-hidden'
           renderItem={({ item, index }) => (
-            <MotiView
+            <View
               from={{ opacity: 0, translateY: 20 }}
               animate={{ opacity: 1, translateY: 0 }}
               className="mb-2 p-4 rounded-xl"
@@ -190,7 +189,7 @@ export default function GradeCalculator() {
                   </Text>
                 </View>
               </View>
-            </MotiView>
+            </View>
           )}
         />
       </LinearGradient>
