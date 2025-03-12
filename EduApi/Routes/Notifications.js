@@ -6,10 +6,10 @@ const Authetication = require("../MiddleWare/AuthMiddleware");
 const {
   sendPushNotification,
   sendPushNotificationToAll,
+  sendPushNotificationToClass,
 } = require("../utils/sendPushNotification");
-
-
-Router.get("/all", async (req, res) => {
+const {Class} = require("../Model/Class");
+Router.get("/all", async (req, res) => { 
   try {
     const notifications = await Notifications.find({
       user: null,
@@ -75,6 +75,25 @@ Router.post("/all", async (req, res) => {
     res.status(500).send(err.message || "Something went wrong");
   }
 });
+Router.post("/class",async (req,res)=>{
+  try{
+  const {department,year,semester,newNotification} = req.body;
+  const cls=await Class.findOne({department:department,yearLevel:year,semister:semester});
+
+  if(!cls) return res.status(404).send("Class not found");
+ console.log(newNotification);
+
+const tickets = await sendPushNotificationToClass(
+  cls._id,
+  
+  newNotification.notification
+)
+res.status(201).send(tickets);
+  }catch(err){
+    console.error("Internal server error:", err);
+    res.status(500).send(err.message || "Something went wrong");
+  }
+})
 Router.delete("/:id", async (req, res) => {
   try {
     const notification = await Notifications.findByIdAndDelete(req.params.id);

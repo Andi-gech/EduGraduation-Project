@@ -35,9 +35,10 @@ const Sidebar = () => {
       ];
     default:
       return [
-        { name: 'Dashboard', path: '/teacher/dashboard' },
-        { name: 'Courses', path: '/teacher/course' },
-        { name: 'Notify Student', path: '/teacher/notify' },
+        { name: 'Dashboard', path: '/' },
+        { name: 'Courses', path: '/class' },
+        { name: 'Notify Student', path: '/notify' },
+        { name: 'Calendar', path: '/calendar' },
       ];
     }
   }
@@ -64,7 +65,7 @@ const Sidebar = () => {
            />
         </div>
         <h2 className="text-sm font-semibold text-gray-800">{auth.email}</h2>
-        <p className="text-sm text-gray-500">Admin</p>
+        <p className="text-sm text-gray-500">{auth.role}</p>
 
       </div>
 

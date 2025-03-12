@@ -7,6 +7,7 @@ const upload = require("../utils/multerConfig");
 const { User } = require("../Model/User");
 const { Course } = require("../Model/Course");
 const { CourseOffering } = require("../Model/CourseOffering");
+const { Class } = require("../Model/Class");
 
 /**
  * @swagger
@@ -183,7 +184,7 @@ Router.get("/", Authetication, async (req, res) => {
  */
 Router.post(
   "/:courseid",
-  Authetication,
+ 
   upload.single("resource"),
   async (req, res) => {
     try {
@@ -194,18 +195,65 @@ Router.post(
       req.body.type = uploadedFile.mimetype;
       req.body.resource = uploadedFile.path;
       req.body.size = uploadedFile.size;
+      console.log("uploading")
+      const cls=await Class.findOneAndUpdate(
+        {
+          department: req.body.department,
+          yearLevel: req.body.year,
+          semister: req.body.semester
+        },
+        { $setOnInsert: { 
+          department: req.body.department,
+          yearLevel: req.body.year,
+          semister: req.body.semester
+        }},
+        { 
+          upsert: true,
+          new: true
+        }
+      );
+      console.log(cls,"class")
       const resource = new CourseResource({
         course: req.params.courseid,
         resource: req.body.resource,
-        class: req.body.class,
+        class: cls._id,
         type: req.body.type,
         size: req.body.size,
       });
+      console.log("uplo",resource)
       await resource.save();
       res.send(resource);
     } catch (err) {
+      console.log(err);
       res.status(500).send(err.message || "Something went wrong");
     }
   }
 );
+Router.get("/:courseid",  async (req, res) => {
+  try {
+    const cls=await Class.findOneAndUpdate(
+      {
+        department: req.query.department,
+        yearLevel: req.query.year,
+        semister: req.query.semester
+      },
+      { $setOnInsert: { 
+        department: req.query.department,
+        yearLevel: req.query.year,
+        semister: req.query.semester
+      }},
+      { 
+        upsert: true,
+        new: true
+      }
+    );
+    const resources = await CourseResource.find({
+      course: req.params.courseid,
+      class:cls._id
+    }).populate("course");
+    res.send(resources);
+  } catch (err) {
+    res.status(500).send(err.message || "Something went wrong");
+  }
+});
 module.exports = Router;

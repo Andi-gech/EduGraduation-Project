@@ -262,7 +262,7 @@ Router.post("/login", async (req, res) => {
   try {
     const { error } = validateAuth(req.body);
     console.log(error);
-
+console.log("req.body",req.body)
     if (error) return res.status(400).send(error.details[0].message);
     const user = await Auth.findOne({ email: req.body.email });
     if (!user) return res.status(400).send("Invalid email or password");
@@ -302,18 +302,25 @@ Router.post("/adminlogin", async (req, res) => {
 
     if (error) return res.status(400).send(error.details[0].message);
     const user = await Auth.findOne(
-      { email : req.body.email, Role: "systemadmin" }
+      { email : req.body.email, Role: { $in: ["teacher", "systemadmin"] } },
     )
+
     if (!user) return res.status(400).send("Invalid email or password");
+    
     const validPassword = comparePassword(req.body.password, user.password);
     if (!validPassword)
       return res.status(400).send("Invalid email or password");
-  
+    
+    const Profile = await User.findOne({
+      auth: user._id,
+    });
     const token = generateAuthToken({
       _id: user._id,
       email: user.email,
       Role: user.Role,
+      userid: Profile?._id,
     });
+    console.log('loginSucess')
     res.send({
       token: token,
       user: {
@@ -324,7 +331,7 @@ Router.post("/adminlogin", async (req, res) => {
       },
     });
   } catch (err) {
-    res.send(err.message);
+    res.status(500).send(err.message);
   }
 });
 Router.put("/approve/:id", async (req, res) => {

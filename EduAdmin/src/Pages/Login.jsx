@@ -19,7 +19,7 @@ export default function Login() {
     },
     onSuccess: (data) => {
 
-      console.log('Login successful:', data);
+      console.log('Login successful:',data);
       if(signIn({
         auth: {
             token: data.token,
@@ -27,12 +27,13 @@ export default function Login() {
         },
       
         userState: {
-            email: data.user.email,
-            uid: data.user.id,
-            role: data.user.Role
+            email: data.user?.email,
+            uid: data.user?.id,
+            role: data.user?.Role
         }
     })){
-        navigation('/')
+      navigation('/') 
+        
     }else {
         //Throw error
     }

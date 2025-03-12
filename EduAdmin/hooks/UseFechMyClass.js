@@ -1,18 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-
 import useApi from "../src/utils/UseApi";
 
 
-export default function UseFetchClasses() {
+export default function UseFetchMyClass() {
     const Api = useApi();
-    
-  const Fetchqr = async () => {
+  const Fetchuser = async () => {
     return await Api.get(`/enrollment/getmyassigned`);
   };
 
   return useQuery({
-    queryKey: ["fechclass"],
-    queryFn: Fetchqr,
+    queryKey: ["fechMyClass"],
+    queryFn: Fetchuser,
     refetchOnWindowFocus: false,
   });
 }

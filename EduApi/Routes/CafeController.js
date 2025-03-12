@@ -69,7 +69,7 @@ const checkValidSubscription = async (userId) => {
 };
 
 const handleChapaPayment = async (user, price, res) => {
-  const CALLBACK_URL = "https://65lm38sq-3000.uks1.devtunnels.ms/cafe/cafeinfo/verify";
+  const CALLBACK_URL = "https://d0h0c4d7-3000.uks1.devtunnels.ms/cafe/cafeinfo/verify";
  
   const customerInfo = {
     amount: price,
@@ -79,6 +79,7 @@ const handleChapaPayment = async (user, price, res) => {
     last_name: user.lastName,
     callback_url: CALLBACK_URL,
     customization: { title: "Test Title", description: "Test Description" },
+
     meta: { reference: user._id },
   };
 

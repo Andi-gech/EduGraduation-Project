@@ -193,11 +193,11 @@ success: true,
         </View>
       )}
 
-      {(isLoading || isFetching) && <Loading />}
+      {(isLoading ) && <Loading />}
       {
-        error?.response?.data && (
+        error && (
           <Text className="text-red-500 text-center mt-4">
-            {error.response.data.message}
+            {error.response.data}
           </Text>
         )
       }

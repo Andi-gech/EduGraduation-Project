@@ -8,6 +8,7 @@ const Authetication = require("../MiddleWare/AuthMiddleware");
 const { Class } = require("../Model/Class");
 const { EnrollTransaction } = require("../Model/EnrollTransaction");
 const Chapa = require("chapa");
+const mongoose= require("mongoose")
 let myChapa = new Chapa("CHASECK_TEST-gFVzUEvX8t2gMphMHXxf4v75KOnyHIPE");
 
 Router.get("/checkEnrollment", Authetication, async (req, res) => {
@@ -184,7 +185,7 @@ Router.get("/vetifyPayment", async (req, res) => {
       transactionDate:response.data.created_at
     });
     await enroll.save();
- 
+ console.log("payment verified")
     return res.send(enroll);
   }
   else{
@@ -198,6 +199,53 @@ Router.get("/vetifyPayment", async (req, res) => {
     res.status(500).send({ message: err.message });
   }}
 );
+Router.get("/getmyassigned",Authetication, async (req,res) => {
+  try {
+    console.log(req.user.userid,"ss")
+    const teacherId= req.user.userid
+    const offerings = await CourseOffering.aggregate([
+      { 
+        $unwind: '$courses'  // Flatten the 'courses' array so each course is handled individually
+      },
+      {
+        $match: {
+          'courses.teacher': new mongoose.Types.ObjectId(teacherId),  // Match by teacher's ObjectId
+        },
+      },
+      {
+        $lookup: {
+          from: 'courses',  // Lookup in the 'courses' collection to fetch course details
+          localField: 'courses.course',  // Match 'course' field from 'courses' in CourseOffering
+          foreignField: '_id',  // Match against the '_id' field in the 'courses' collection
+          as: 'courseDetails',  // This will store the details of the course
+        },
+      },
+      { 
+        $unwind: '$courseDetails'  // Unwind the populated courseDetails array to get each course separately
+      },
+      {
+        $project: {
+          yearLevel: 1,  // Include the year level
+          semister: 1,   // Include the semester
+          department: 1,  // Include the department
+          course: '$courseDetails.Coursename',
+          courseid:'$courseDetails._id',
+          coursecode:'$courseDetails.Coursecode',  // Assuming the 'name' field contains the course name
+          schedule: '$courses.Schedule',  // Include the schedule for the course
+        },
+      },
+    ]);
+
+
+    res.send(offerings);
+    
+  } catch (error) {
+    console.error(error);
+   
+  }
+})
+
+
 Router.get("/Getoffering", async (req, res) => {
   try {
     const { department, yearLevel, semister } = req.query;
@@ -253,7 +301,7 @@ const calculatePrice = (offering) => {
 };
 
 const handleChapaPayment = async (user, price, res) => {
-  const CALLBACK_URL = "https://65lm38sq-3000.uks1.devtunnels.ms/enrollment/vetifyPayment";
+  const CALLBACK_URL = "https://d0h0c4d7-3000.uks1.devtunnels.ms/enrollment/vetifyPayment";
   const customerInfo = {
     amount: price,
     currency: "ETB",
@@ -307,10 +355,10 @@ Router.get("/initiateChapa", Authetication, async (req, res) => {
         yearLevel: user.Class.yearLevel,
         semister: user.Class.semister,
       }).populate({
-        path: "courses?.course",
+        path: "courses.course",
         model: "Course",
       });
-    if(offerdCourse.courses.length > 0){
+    if(offerdCourse?.courses?.length > 0){
       const price=calculatePrice(offerdCourse);
 
  

@@ -112,9 +112,64 @@ async function sendPushNotificationToAll(notificationData) {
     throw error;
   }
 }
+async function sendPushNotificationToClass(classid,notificationData) {
+  try {
+    const users = await User.find({ Class: classid, PushToken: { $exists: true } }); // Get all users with push tokens
+    if (!users.length) throw new Error("No users found with push tokens");
+
+    const groupedMessages = {}; 
+    const invalidTokens = [];
+    
+
+    for (const user of users) {
+      const pushToken = user.PushToken;
+      if (Expo.isExpoPushToken(pushToken)) {
+        const experienceId = pushToken.split("[")[1].split("]")[0]; // Extract experienceId from token
+        if (!groupedMessages[experienceId]) {
+          groupedMessages[experienceId] = [];
+        }
+        groupedMessages[experienceId].push({
+          to: pushToken,
+          sound: "default",
+
+          body: notificationData,
+          data: { withSome: "data" },
+        });
+      } else {
+        invalidTokens.push(pushToken);
+      }
+    }
+
+    const tickets = [];
+
+    for (const [experienceId, messages] of Object.entries(groupedMessages)) {
+      console.log(`Sending notifications for project: ${experienceId}`);
+      const chunks = expo.chunkPushNotifications(messages);
+
+      for (const chunk of chunks) {
+        try {
+          const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error(
+            `Error sending push notification chunk for ${experienceId}:`,
+            error
+          );
+        }
+      }
+    }
+
+    return { notificationData, tickets, invalidTokens };
+  } catch (error) {
+    console.error("Error sending push notification to all:", error);
+    throw error;
+  }
+  
+}
 
 module.exports = {
   sendPushNotification,
   sendPushNotificationToAll,
   sendtoadmin,
+  sendPushNotificationToClass
 };
