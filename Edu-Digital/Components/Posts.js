@@ -20,6 +20,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
   const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
   const cardBg = colorScheme === "dark" ? "#18181b" : "#ffffff";
   const textColor = colorScheme === "dark" ? "#f4f4f5" : "#18181b";
+  console.log(image)
   const compare_Ago_date = (date) => {
     let currentDate = new Date();
     let previousDate = new Date(date);
@@ -82,7 +83,7 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
           transition={{ type: 'spring' }}
         >
           <Image
-            source={{ uri: `https://eduapi.senaycreatives.com/${user?.profilePic}` }}
+            source={{ uri: `http://192.168.1.9:3000/${user?.profilePic}` }}
             className="w-10 h-10 rounded-full"
             cachePolicy="memory-disk"
           />
@@ -112,8 +113,10 @@ export default function Posts({ content, image, id, time, likedBy, user }) {
           animate={{ scale: 1 }}
           className="bg-zinc-100 dark:bg-zinc-900"
         >
+          {console.log(`http://192.168.1.9:3000/${image}`)}
+     
           <Image
-            source={{ uri: `https://eduapi.senaycreatives.com/${image}` }}
+            source={{ uri: `http://192.168.1.9:3000/${image}` }}
             className="w-full aspect-square"
             contentFit="cover"
             transition={300}

@@ -48,7 +48,7 @@ export default function Permission() {
     mutationFn: async (data) => await api.post(`/permissions/`, data),
     mutationKey: ["askpermission"],
     onSuccess: async (response) => {
-      console.log(response.data);
+   
       setSucess(true);
       setTimeout(() => {
         setSucess(false);

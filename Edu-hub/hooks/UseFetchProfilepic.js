@@ -23,7 +23,7 @@ export default function UseFetchProfilepic(id) {
     cacheTime: 10 * 60 * 1000, // Keep cached data for 10 minutes
   });
   if (isSuccess) {
-    console.log(data);
+ 
     if (!profileExists) {
       // If the profile wasn't already in the list, add it
       dispatch({
@@ -35,7 +35,7 @@ export default function UseFetchProfilepic(id) {
           },
         ],
       });
-      console.log("profie dispached");
+   
     }
   }
 

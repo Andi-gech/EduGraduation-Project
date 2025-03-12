@@ -121,7 +121,7 @@ export default function Id() {
                 <View className="flex-row p-4 bg-white/90 dark:bg-zinc-800/90">
                   <View className="relative">
                     <Image
-                      source={{ uri: `https://eduapi.senaycreatives.com/${data?.data?.Photo}` }}
+                      source={{ uri: `http://192.168.1.9:3000/${data?.data?.Photo}` }}
                       className="w-28 h-36 rounded-lg border-2 border-orange-500"
                     />
                    

@@ -63,7 +63,7 @@ export default function Verification() {
   const mutation = useMutation({
     mutationKey: ["verification"],
     mutationFn: (data) =>
-      axios.post("https://eduapi.senaycreatives.com/auth/verify", data),
+      axios.post("http://192.168.1.9:3000/auth/verify", data),
     onSuccess: async (response) => {
       setIsVerified(true);
     },
@@ -79,7 +79,7 @@ export default function Verification() {
   const resendCode = useMutation({
     mutationKey: ["resendCode"],
     mutationFn: (data) =>
-      axios.post("https://eduapi.senaycreatives.com/auth/resendCode", data),
+      axios.post("http://192.168.1.9:3000/auth/resendCode", data),
     onSuccess: async (response) => {
       setSucess("Code sent successfully");
       setResendCooldown(60);

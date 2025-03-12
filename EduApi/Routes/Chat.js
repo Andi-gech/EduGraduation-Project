@@ -97,7 +97,7 @@ const handleAIQuery = async (socket, userQuery, userId, room) => {
     const aiResponse =
       (await result.response.text()) ||
       "Sorry, I couldn't understand the question.";
-    console.log("AI Response:", aiResponse);
+ 
 
 
     const aiChat = new Chat({

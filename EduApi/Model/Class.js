@@ -20,6 +20,7 @@ const classSchema = new mongoose.Schema({
       "chemical",
       "Motor Vehicles"],
   },
+  
   semister: {
     type: String,
     required: true,

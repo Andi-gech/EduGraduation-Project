@@ -182,9 +182,9 @@ Router.get("/MealTimes", async (req, res) => {
 Router.get("/cafeinfo/verify", async (req, res) => {
   try {
 
-console.log(req.body)
+
    const response=await myChapa.verify(req.body.trx_ref )
-   console.log(response.data)
+
 
  
    

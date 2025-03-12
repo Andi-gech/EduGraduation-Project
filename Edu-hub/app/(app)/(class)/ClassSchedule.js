@@ -19,7 +19,7 @@ export default function ClassSchedule() {
     "Friday",
     "Saturday",
   ];
-  console.log("data", data?.data["Friday"]);
+ 
   return (
     <LinearGradient
       colors={["#010101", "#262626"]}

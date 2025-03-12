@@ -18,6 +18,7 @@ export default function Class() {
   const userdata = useSelector((state) => state.userData);
   const router = useRouter();
   const { data, error, isLoading,refetch } = UseFetchMyCourse();
+  
    const {data:Enrollment,refetch:reloading}=UseCheckEnrollment();
    
 
@@ -29,7 +30,6 @@ export default function Class() {
       reloading()
     }
   )
-console.log(Enrollment?.data?.status)
 
 
   if (!params) {
@@ -136,7 +136,7 @@ console.log(Enrollment?.data?.status)
         {data?.data ? (
         
             <AnimatePresence>
-              {data.data.map((item, index) => (
+              {data?.data.map((item, index) => (
                 <View
                   key={item._id}
                   from={{ opacity: 0, translateY: 20 }}

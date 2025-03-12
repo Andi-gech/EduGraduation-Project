@@ -48,6 +48,7 @@ Router.get("/currentEnrollment", Authetication, async (req, res) => {
     path: "Class",
     model: "Class",
   });
+
   const checkEnrollment=await EnrollTransaction.find({
     studentId:user[0]._id,
     yearLevel:user[0].Class.yearLevel,
@@ -55,6 +56,7 @@ Router.get("/currentEnrollment", Authetication, async (req, res) => {
     semister:user[0].Class.semister
   })
   if(checkEnrollment.length==0){
+
     return res.status(400).send("please pay your  Semister Registration fees first");
   }
   if (!user) return res.status(400).send("Invalid user");
@@ -66,6 +68,7 @@ Router.get("/currentEnrollment", Authetication, async (req, res) => {
     path: "course",
     model: "Course",
   });
+  
 
   if (!enroll || enroll.length == 0)
     return res.status(400).send("No course enrolled");
@@ -185,7 +188,7 @@ Router.get("/vetifyPayment", async (req, res) => {
       transactionDate:response.data.created_at
     });
     await enroll.save();
- console.log("payment verified")
+
     return res.send(enroll);
   }
   else{
@@ -201,7 +204,7 @@ Router.get("/vetifyPayment", async (req, res) => {
 );
 Router.get("/getmyassigned",Authetication, async (req,res) => {
   try {
-    console.log(req.user.userid,"ss")
+
     const teacherId= req.user.userid
     const offerings = await CourseOffering.aggregate([
       { 

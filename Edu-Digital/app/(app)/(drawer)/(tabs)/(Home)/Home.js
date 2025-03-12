@@ -94,10 +94,9 @@ export default function Home() {
 
   const memoizedData = useMemo(() => data?.data, [data]);
   const profileImageUri = useMemo(
-    () => `https://eduapi.senaycreatives.com/${memoizedData?.profilePic}`,
+    () => `http://192.168.1.9:3000/${memoizedData?.profilePic}`,
     [memoizedData?.profilePic]
   );
-
 
 
   if (isError || isCafeStatusError) {

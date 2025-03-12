@@ -9,9 +9,7 @@ import React from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function DownloadCard({ item }) {
-  console.log(item);
-  console.log(item?.resource.split("/")[1]);
-
+ 
   const download = () => {
     Linking.openURL(`http://192.168.1.6:3000/${item?.resource}`);
   };

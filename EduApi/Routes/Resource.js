@@ -73,9 +73,7 @@ Router.get("/", Authetication, async (req, res) => {
       model: "Class",
     });
     if (!user) return res.status(400).send("Invalid user");
-    console.log(user[0].Class.department);
-    console.log(user[0].Class.yearLevel);
-    console.log(user[0].Class.semister);
+
 
     const offerdCourse = await CourseOffering.findOne({
       department: user[0].Class.department,
@@ -88,12 +86,12 @@ Router.get("/", Authetication, async (req, res) => {
     if (offerdCourse.courses.length === 0)
       return res.status(400).send("No course found");
     const courseIds = offerdCourse?.courses?.map((course) => course.course._id);
-    console.log(courseIds);
+
     // Find resources associated with the extracted course IDs
     const resources = await CourseResource.find({
       course: { $in: courseIds },
     }).populate("course");
-    console.log(resources);
+   
     res.send(resources);
   } catch (err) {
     res.status(500).send(err.message || "Something went wrong");
@@ -193,9 +191,9 @@ Router.post(
       if (!req.params.courseid)
         return res.status(400).send("No course ID provided");
       req.body.type = uploadedFile.mimetype;
-      req.body.resource = uploadedFile.path;
+      req.body.resource = uploadedFile.path.replace(/\\/g, "/");
       req.body.size = uploadedFile.size;
-      console.log("uploading")
+   
       const cls=await Class.findOneAndUpdate(
         {
           department: req.body.department,
@@ -212,7 +210,7 @@ Router.post(
           new: true
         }
       );
-      console.log(cls,"class")
+     
       const resource = new CourseResource({
         course: req.params.courseid,
         resource: req.body.resource,
@@ -220,7 +218,7 @@ Router.post(
         type: req.body.type,
         size: req.body.size,
       });
-      console.log("uplo",resource)
+      
       await resource.save();
       res.send(resource);
     } catch (err) {

@@ -16,8 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Header from "../../../Components/Header";
 export default function resources() {
   const { data } = UseFetchResource();
-  const navigation = useNavigation();
-  console.log(data?.data);
+ 
 
   return (
     <LinearGradient

@@ -21,17 +21,17 @@ export default function login() {
 
   const mutation = useMutation({
     mutationFn: async (newTodo) => {
-      console.log(newTodo);
+
 
       return await axios.post("http://192.168.1.6:3000/auth/login", newTodo);
     },
     onSuccess: async (response) => {
       const isapproved = response.data.isapproved;
-      console.log(response.data);
+
 
       if (isapproved) {
         const token = response.data.token;
-        console.log(response.data);
+     
         await AsyncStorage.setItem("token", token);
 
         router.replace("/(app)/Home");

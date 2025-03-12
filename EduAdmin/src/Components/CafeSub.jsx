@@ -26,7 +26,7 @@ export default function CafeSub() {
       }, 3000);
     },
     onError: (error) => {
-      console.log(error, "error Message");
+    
       seterror(error.response.data || "error ocured");
       setTimeout(() => {
         seterror(null);

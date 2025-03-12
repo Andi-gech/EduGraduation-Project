@@ -1,16 +1,22 @@
-// DownloadCard.js
 import { 
   Linking, 
   TouchableOpacity, 
   View, 
   Text, 
-  Animated 
+  Animated,
+  Alert
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as FileSystem from 'expo-file-system';
+import * as Progress from 'react-native-progress';
+
+import * as Sharing from 'expo-sharing';
 
 export default function DownloadCard({ item, accentColor, colorScheme }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -26,8 +32,41 @@ export default function DownloadCard({ item, accentColor, colorScheme }) {
     }).start();
   };
 
-  const download = () => {
-    Linking.openURL(`https://eduapi.senaycreatives.com/${item?.resource}`);
+  const download = async () => {
+    const fileUri = `${FileSystem.documentDirectory}${item?.course?.Coursename}.pdf`;
+    const downloadResumable = FileSystem.createDownloadResumable(
+      `http://192.168.1.9:3000/${item?.resource}`,
+      fileUri,
+      {},
+      (downloadProgress) => {
+        const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+        setDownloadProgress(progress);
+      }
+    );
+
+    try {
+      setIsDownloading(true);
+      const { uri } = await downloadResumable.downloadAsync();
+      setIsDownloading(false);
+      Alert.alert('Download Complete', `File saved at ${uri}`, [
+        { text: 'Open', onPress: () => openPdf(uri) },
+        { text: 'OK', onPress: () => {} }
+      ]);
+    } catch (e) {
+      setIsDownloading(false);
+      Alert.alert('Download Failed', e.message);
+    }
+  };
+
+  const openPdf = async (uri) => {
+    try {
+      await Sharing.shareAsync(uri, {
+        mimeType: 'application/pdf',
+        dialogTitle: 'Open PDF',
+      });
+    } catch (e) {
+      Alert.alert('Error', 'Unable to open PDF');
+    }
   };
 
   return (
@@ -61,23 +100,31 @@ export default function DownloadCard({ item, accentColor, colorScheme }) {
         </Text>
       </View>
 
-      <TouchableOpacity
-        onPress={download}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        activeOpacity={0.8}
-        style={{ 
-          backgroundColor: `${accentColor}20`,
-          borderRadius: 24,
-          padding: 12
-        }}
-      >
-        <MaterialCommunityIcons
-          name="download-outline"
-          size={24}
-          color={accentColor}
+      {isDownloading ? (
+        <Progress.Circle 
+          size={24} 
+          progress={downloadProgress} 
+          color={accentColor} 
         />
-      </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={download}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          activeOpacity={0.8}
+          style={{ 
+            backgroundColor: `${accentColor}20`,
+            borderRadius: 24,
+            padding: 12
+          }}
+        >
+          <MaterialCommunityIcons
+            name="download-outline"
+            size={24}
+            color={accentColor}
+          />
+        </TouchableOpacity>
+      )}
     </Animated.View>
   );
 }

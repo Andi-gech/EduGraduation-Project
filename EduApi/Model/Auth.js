@@ -11,6 +11,7 @@ const authSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    lowercase: true, // Convert email to lowercase
   },
   Role: {
     type: String,
@@ -42,6 +43,7 @@ const authSchema = new mongoose.Schema({
 });
 
 const Auth = mongoose.model("Auth", authSchema);
+authSchema.index({ email: 1 }, { unique: true, collation: { locale: "en", strength: 2 } });
 
 const validateAuth = (auth) => {
   const schema = Joi.object({

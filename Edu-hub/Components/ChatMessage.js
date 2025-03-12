@@ -11,7 +11,7 @@ const ChatMessage = ({ message, sender }) => {
 
   // Memoize the profile picture data to avoid unnecessary refetching
   const { profile } = UseFetchProfilepic(sender);
-  console.log(profile);
+ 
   const isSender = sender === data?.userdata?._id;
 
   return (

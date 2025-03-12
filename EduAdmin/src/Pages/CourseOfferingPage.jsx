@@ -93,7 +93,7 @@ export default function CourseOfferingPage() {
           onClick={() => {mutation.mutate({
             courseId: params.row.id,
           })
-        console.log(params.row.id)}}
+        }}
         >
           Delete
         </Button>
@@ -126,7 +126,7 @@ export default function CourseOfferingPage() {
       ),
     mutationKey: "addCourse",
     onSuccess: (data) => {
-      console.log("Course added successfully!", data);
+   
       queryClient.invalidateQueries("addCourse");
       onClose();
     },

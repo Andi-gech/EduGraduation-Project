@@ -25,10 +25,10 @@ async function sendtoadmin(notificationData) {
 
 async function sendPushNotification(userId, notificationData) {
   try {
-    console.log("Sending push notification to user:", userId);
+  
     const user = await User.findById(userId);
     if (!user) throw new Error("User not found");
-    console.log("Sending push notification to user:", user);
+  
 
     const notification = new Notifications(notificationData);
     await notification.save();
@@ -90,7 +90,7 @@ async function sendPushNotificationToAll(notificationData) {
     const tickets = [];
 
     for (const [experienceId, messages] of Object.entries(groupedMessages)) {
-      console.log(`Sending notifications for project: ${experienceId}`);
+
       const chunks = expo.chunkPushNotifications(messages);
 
       for (const chunk of chunks) {
@@ -143,7 +143,7 @@ async function sendPushNotificationToClass(classid,notificationData) {
     const tickets = [];
 
     for (const [experienceId, messages] of Object.entries(groupedMessages)) {
-      console.log(`Sending notifications for project: ${experienceId}`);
+
       const chunks = expo.chunkPushNotifications(messages);
 
       for (const chunk of chunks) {

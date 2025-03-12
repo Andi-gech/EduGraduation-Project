@@ -23,7 +23,7 @@ export default function Profile() {
   const { data } = UseFetchMyData();
 
   const pickImage = async () => {
-    console.log("image");
+    
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -32,18 +32,18 @@ export default function Profile() {
       quality: 1,
     });
 
-    console.log(result);
+ 
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      console.log(result);
+   
       setImagefile(result.assets[0]);
     }
   };
   const queryclient = useQueryClient();
   const onSubmit = async () => {
     try {
-      console.log("statinng ");
+     
       setLoading(true);
       const response = await FileSystem.uploadAsync(
         `http://192.168.1.6:3000/user/updateProfilePic`,
@@ -58,7 +58,7 @@ export default function Profile() {
           },
         }
       );
-      console.log(JSON.stringify(response, null, 4), "sucess");
+     
       setLoading(false);
       queryclient.invalidateQueries("me");
 

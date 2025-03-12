@@ -57,7 +57,7 @@ export default function Verification() {
   ];
 
   const handleOpenModal = (student) => {
-    console.log("Selected student:", student);
+
     setSelectedStudent(student);
     setOpenModal(true);
   };

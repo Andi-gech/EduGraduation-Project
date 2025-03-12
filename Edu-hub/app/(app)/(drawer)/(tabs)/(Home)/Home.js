@@ -74,7 +74,7 @@ export default function Home() {
     [timeRemaining]
   );
   const memoizedData = useMemo(() => data?.data, [data]);
-  console.log(memoizedData);
+
 
   const profileImageUri = useMemo(
     () => `http://192.168.1.6:3000/${memoizedData?.profilePic}`,
@@ -254,7 +254,7 @@ export default function Home() {
                 name="Class"
                 icon="school-outline"
                 onpress={() => {
-                  console.log("memo", memoizedData);
+            
                   router.push({
                     pathname: "(class)",
                     params: {

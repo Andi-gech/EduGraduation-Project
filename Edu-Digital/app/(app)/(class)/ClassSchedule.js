@@ -14,7 +14,7 @@ export default function ClassSchedule() {
   const accentColor = colorScheme === "dark" ? "#f59e0b" : "#3b82f6";
 
   const week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-console.log(data?.data)
+
   return (
     <LinearGradient
       colors={

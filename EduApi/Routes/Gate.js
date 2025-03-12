@@ -41,7 +41,7 @@ const haspermision=async(studentid)=>{
     user: studentid,
     permissionDate: new Date().toISOString().split("T")[0],
   });
-  console.log(permission,"permission")
+
   if (!permission) return false;
   return true;
 }

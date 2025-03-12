@@ -8,7 +8,7 @@ export default function UseFetchMyCourse() {
   };
 
   return useQuery({
-    queryKey: ["enrollment"],
+    queryKey: ["enrollments"],
     queryFn: Fetchqr,
     refetchOnWindowFocus: false,
   });

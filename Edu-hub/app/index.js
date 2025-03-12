@@ -17,8 +17,7 @@ const Index = () => {
     const inAuthGroup = segments[0] === "(auth)";
 
     if (!isLoggedIn && !inAuthGroup) {
-      // Redirect to the login page.
-      console.log("redirecting to login");
+    
       router.push("/(Auth)/Startup");
     } else if (isLoggedIn) {
       // go to tabs root.

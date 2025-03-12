@@ -32,7 +32,7 @@ export default function Complain() {
     mutationFn: async (data) => await api.post(`/complain`, data),
     mutationKey: ["complain"],
     onSuccess: async (response) => {
-      console.log(response.data);
+      
       setSucess(true);
 
       setTimeout(() => {

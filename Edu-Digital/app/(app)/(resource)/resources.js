@@ -1,4 +1,3 @@
-// resources.js
 import { 
   FlatList, 
   useColorScheme, 
@@ -41,7 +40,7 @@ export default function Resources() {
           </Text>
 
           <FlatList
-            data={data}
+            data={data?.data}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 40 }}
             renderItem={({ item }) => (

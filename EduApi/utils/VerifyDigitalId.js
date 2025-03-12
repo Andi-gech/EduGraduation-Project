@@ -1,7 +1,7 @@
 const { verifyData } = require("./Signiture");
 const { decrypt } = require("./Crypto");
 const verifyDigitalId = (qrurl) => {
-console.log("verifying digital id");
+
     const data = qrurl.split(":");
     
   

@@ -68,19 +68,17 @@ const { roleAuth } = require("../MiddleWare/RoleAuth");
  */
 Router.post(
   "/",
-  AuthMiddleware,
-
-  upload.single("Image"),
+  AuthMiddleware, upload.single("Image"),
   async (req, res) => {
     try {
       const { error } = validatePost(req.body);
+      console.log(req.body);
       const uploadedFile = req.file;
       if (!uploadedFile) {
         return res.status(400).send("No file uploaded");
       }
-
-      req.body.image = uploadedFile.path;
-      console.log(req.body.image);
+      console.log(uploadedFile.path);
+      req.body.image = uploadedFile.path.replace(/\\/g, "/"); 
 
       if (error) return res.status(400).send(error.details[0].message);
       const post = new Post({

@@ -70,7 +70,7 @@ Router.get("/me", AuthMiddleware, async (req, res) => {
       .select("-password") // Exclude password from the response
       .populate("Class"); // Populate related Class data
 
-    console.log("user", user); // Corrected from console.long to console.log
+
     res.send(user);
   } catch (err) {
     console.error(err.message); // Log the error message
@@ -125,10 +125,7 @@ Router.get("/getprofilepic/:id", Authetication, async (req, res) => {
   try {
     const user = await User.findById(req.params.id, "profilePic firstName lastName");
     if (!user) return res.status(400).send("User not found");
-    console.log({
-      profilePic: user.profilePic,
-      name: user.firstName + " " + user.lastName
-    });
+   
     res.send({
       profilePic: user.profilePic,
       name: user.firstName + " " + user.lastName,
@@ -146,7 +143,9 @@ Router.put(
     try {
       const uploadedFile = req.file;
       if (!uploadedFile) return res.status(400).send("No file uploaded");
-      req.body.profilePic = uploadedFile.path;
+      console.log(uploadedFile.path)
+      req.body.profilePic = uploadedFile.path.replace(/\\/g, "/");
+      console.log(req.body.profilePic)
       const user = await User.findOneAndUpdate(
         { auth: req.user._id },
         {
@@ -302,7 +301,7 @@ Router.get("/", async (req, res) => {
 });
 Router.get("/get/teachers", async (req, res) => {
   try {
-    console.log("getting teachers");
+
     const teachers = await User.find({
       auth: { $in: await Auth.find({ Role: "teacher" }) },
 
@@ -342,8 +341,7 @@ Router.post("/teacher", Authetication, async (req, res) => {
 
 Router.put("/pushnotification", AuthMiddleware, async (req, res) => {
   try {
-    console.log(req.body);
-    console.log("setting push token", req.user);
+
     const user = await User.findByIdAndUpdate(
       req.user.userid,
       {
@@ -351,8 +349,7 @@ Router.put("/pushnotification", AuthMiddleware, async (req, res) => {
       },
       { new: true }
     );
-    console.log(user);
-
+  
     res.send(user);
   } catch (err) {
     res.send(err.message);
@@ -366,7 +363,7 @@ Router.get("/get/Digitalid", AuthMiddleware, async (req, res) => {
     if (!user) return res.status(400).send("User not found");
 
     let idCard = await IDCard.findOne({ Auth: req.user._id });
-    console.log(idCard);
+
     if (!idCard) {
       const encrypted = encrypt(req.user._id);
       const signed = signData(encrypted);
@@ -384,7 +381,7 @@ Router.get("/get/Digitalid", AuthMiddleware, async (req, res) => {
         Gender: user.gender,
         Qr: qrcode,
       });
-      console.log("ID card created", idCard);
+    
     }
     if (idCard.isComplete === false) {
       console.log("ID card not complete");
@@ -451,7 +448,7 @@ Router.put(
       }
 
       if (uploadedFile) {
-        const originalFilePath = uploadedFile.path;
+        const originalFilePath = uploadedFile.path.replace(/\\/g, "/");
         const tempFilePath = path.join("temp", uploadedFile.filename);
         const processedFilePath = path.join("uploads", uploadedFile.filename);
 

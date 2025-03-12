@@ -32,7 +32,7 @@ export default function Login() {
   const mutation = useMutation({
     mutationFn: async (credentials) => {
       return await axios.post(
-        "https://eduapi.senaycreatives.com/auth/login",
+        "http://192.168.1.9:3000/auth/login",
         credentials
       );
     },

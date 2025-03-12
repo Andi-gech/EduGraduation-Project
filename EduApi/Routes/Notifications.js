@@ -63,7 +63,7 @@ Router.post("/", async (req, res) => {
 
 Router.post("/all", async (req, res) => {
   try {
-    console.log(req.body);
+
     if (req.body.notification === undefined) {
       return res.status(400).send("Notification field is required");
     }
@@ -81,7 +81,7 @@ Router.post("/class",async (req,res)=>{
   const cls=await Class.findOne({department:department,yearLevel:year,semister:semester});
 
   if(!cls) return res.status(404).send("Class not found");
- console.log(newNotification);
+
 
 const tickets = await sendPushNotificationToClass(
   cls._id,

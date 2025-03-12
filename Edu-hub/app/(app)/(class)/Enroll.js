@@ -15,8 +15,6 @@ import Loading from "../../../Components/Loading";
 export default function Enroll() {
   const { data, isLoading: loading } = UseFetchCourseOffering();
   const { data: MyCourse, isLoading } = UseFetchMyCourse();
-  console.log(data?.data);
-  console.log(MyCourse?.data);
 
   const sendData = async (postdata) => {
     return await api.post(`/enrollment/enroll`, postdata);
@@ -26,7 +24,7 @@ export default function Enroll() {
     mutationKey: ["Enrolls"],
     mutationFn: sendData,
     onSuccess: async (response) => {
-      console.log(response.data);
+     
       queryClient.invalidateQueries("enrollment");
     },
     onError: (error) => {

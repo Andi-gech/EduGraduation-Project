@@ -28,7 +28,7 @@ export default function Signup_step2() {
     mutationFn: (data) =>
       axios.post("http://192.168.1.6:3000/auth/register", data),
     onSuccess: async (response) => {
-      console.log(response.data);
+    
       router.push("/(Auth)/login");
     },
     onError: (error) => {
@@ -60,7 +60,7 @@ export default function Signup_step2() {
         semister: params.semister,
       },
     };
-    console.log("data", data);
+   
 
     mutation.mutate(data);
   };

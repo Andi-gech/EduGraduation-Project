@@ -17,7 +17,8 @@ const AuthMiddleware = require("../MiddleWare/AuthMiddleware");
 
 Router.post("/register", async (req, res) => {
   const session = await mongoose.startSession();
-  console.log("req.body", req.body);
+  req.body.auth.email = req.body.auth.email.toLowerCase();
+console.log(req.body.auth.email)
   session.startTransaction();
 
   try {
@@ -58,6 +59,7 @@ Router.post("/register", async (req, res) => {
 
     const hashedPassword = securePassword(req.body.auth.password);
     const emailToken = GenerateEmailCode();
+  
     auth = new Auth({
       email: req.body.auth.email,
       password: hashedPassword,
@@ -101,7 +103,7 @@ if(req.body.auth.Role==="student"){
     // Commit transaction
     await session.commitTransaction();
     session.endSession();
-    console.log("emailToken", emailToken);
+   
 
     sendMail(
       req.body.auth.email,
@@ -140,13 +142,14 @@ if(req.body.auth.Role==="student"){
 Router.post("/verify", async (req, res) => {
   try {
     const { email, code } = req.body;
-    const user = await Auth.findOne({ email: email });
+    
+    const user = await Auth.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(404).send("User not found");
     if (user.emailToken !== code)
       return res.status(400).send("Invalid verification code");
     user.isVerified = true;
     await user.save();
-    console.log("user verified");
+ 
     res.send("User verified successfully");
   } catch (err) {
     res.send(err.message);
@@ -155,8 +158,8 @@ Router.post("/verify", async (req, res) => {
 Router.post("/resendCode", async (req, res) => {
   try {
     const { email } = req.body;
-    console.log("email", email);
-    const user = await Auth.findOne({ email: email });
+
+    const user = await Auth.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(404).send("User not found");
     const emailToken = GenerateEmailCode();
     user.emailToken = emailToken;
@@ -178,8 +181,8 @@ Router.post("/resendCode", async (req, res) => {
 Router.post("/VerifyEmailforPassword", async (req, res) => {
   try {
     const { email, code } = req.body;
-    console.log("email", email);
-    const user = await Auth.findOne({ email: email });
+  
+    const user = await Auth.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(404).send("User not found");
     if (user.emailToken !== code)
       return res.status(400).send("Invalid verification code");
@@ -202,7 +205,7 @@ Router.post("/changepassword", AuthMiddleware, async (req, res) => {
     const { password } = req.body;
     const { error } = validateAuthpassword(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-    console.log("req.user", req.user);
+ 
     const user = await Auth.findById(req.user._id);
     if (!user) return res.status(404).send("User not found");
     user.password = securePassword(password);
@@ -223,7 +226,7 @@ Router.post("/createTeacher",  async (req, res) => {
     const teacher=new Teacher({
       firstName:req.body.firstName,
       lastName:req.body.lastName,
-      email:req.body.email,
+      email:req.body.email.toLowerCase(),
      department:req.body.department,
      gender:req.body.gender,
       isMilitary:req.body.isMilitary
@@ -241,7 +244,7 @@ Router.get("/generate/admin", async (req, res) => {
     const password = securePassword("10987126@Ndi");
     const email = "admin@admin.com";
     const Role = "systemadmin";
-    const admin= await Auth.findOne({ email: email });
+    const admin= await Auth.findOne({ email: email.toLowerCase() });
     if (admin) return res.status(400).send("Admin already created");
     
     const auth = new Auth({
@@ -262,9 +265,9 @@ Router.post("/login", async (req, res) => {
   try {
     const { error } = validateAuth(req.body);
     console.log(error);
-console.log("req.body",req.body)
+
     if (error) return res.status(400).send(error.details[0].message);
-    const user = await Auth.findOne({ email: req.body.email });
+    const user = await Auth.findOne({ email: req.body.email.toLowerCase() });
     if (!user) return res.status(400).send("Invalid email or password");
     const validPassword = comparePassword(req.body.password, user.password);
     if (!validPassword)
@@ -302,7 +305,7 @@ Router.post("/adminlogin", async (req, res) => {
 
     if (error) return res.status(400).send(error.details[0].message);
     const user = await Auth.findOne(
-      { email : req.body.email, Role: { $in: ["teacher", "systemadmin"] } },
+      { email : req.body.email.toLowerCase(), Role: { $in: ["teacher", "systemadmin"] } },
     )
 
     if (!user) return res.status(400).send("Invalid email or password");
@@ -320,7 +323,7 @@ Router.post("/adminlogin", async (req, res) => {
       Role: user.Role,
       userid: Profile?._id,
     });
-    console.log('loginSucess')
+   
     res.send({
       token: token,
       user: {
@@ -336,7 +339,7 @@ Router.post("/adminlogin", async (req, res) => {
 });
 Router.put("/approve/:id", async (req, res) => {
   try {
-    console.log("req.params.id", req.params.id);
+
     const user = await Auth.findById(req.params.id);
 
     if (!user) return res.status(404).send("User not found");

@@ -87,8 +87,7 @@ Router.put("/update/:id", async (req, res) => {
       user: permission.user,
       type: "Notice",
     };
-    console.log("Notification data:", notificationData);
-
+ 
     const { notification, ticket } = await sendPushNotification(
       permission.user,
       notificationData
