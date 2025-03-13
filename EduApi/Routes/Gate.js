@@ -39,6 +39,7 @@ Router.put(
 const haspermision=async(studentid)=>{
   const permission = await Permission.findOne({
     user: studentid,
+    status:"approved",
     permissionDate: new Date().toISOString().split("T")[0],
   });
 
@@ -63,10 +64,12 @@ Router.put(
     const student = await User.findOne({ auth: studentid });
     if (!student) return res.status(400).send("Student not found.");
     const today = new Date().getDay(); 
+    
     const isWeekend = today === 0 || today === 5 || today === 6; 
+    console.log(isWeekend, student.isMilitary, await haspermision(student._id));
 
     if (
-      !haspermision(student._id) && 
+      !await haspermision(student._id) && 
       !(isWeekend && !student.isMilitary) 
     ) {
       return res.status(400).send("You don't have permission to leave the campus");

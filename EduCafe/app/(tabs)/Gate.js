@@ -1,5 +1,5 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ActivityIndicator,
   Button,
@@ -19,7 +19,8 @@ export default function Gate() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [scanning, setScanning] = useState(true); // Add a state to control scanning
-
+  const timeoutRef = useRef(null);
+  
 //cafe/check/meal/
   const mutation = useMutation({
     mutationFn: async (qrdata) => {
@@ -41,7 +42,16 @@ export default function Gate() {
     },
     mutationKey: ["todos"],
   });
-
+  const handleRescan = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setScanning(true);
+    setError("");
+    setSuccess("");
+    setBarcodeBounds(null);
+  };
   if (!permission) {
     return <View />;
   }
@@ -79,6 +89,7 @@ export default function Gate() {
     <View style={styles.container}>
       {/* Camera View */}
       <View style={styles.cameraContainer}>
+        <Text style={styles.message}>Scan a QR Code To Leave the Compound</Text>
         {mutation.isLoading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
@@ -110,7 +121,11 @@ export default function Gate() {
                   }
                   </>
         )}
-
+{!scanning && (
+          <TouchableOpacity style={styles.rescanButton} onPress={handleRescan}>
+            <Text style={styles.rescanButtonText}>Tap to Scan Again</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Status Messages */}
@@ -120,14 +135,32 @@ export default function Gate() {
         ) : success ? (
           <Text style={[styles.statusText, styles.successText]}>{success}</Text>
         ) : (
-          <Text style={styles.statusText}>Scan a QR Code To Enter the Compound</Text>
+          <Text style={styles.statusText}>Scan a QR Code To Leave the Compound</Text>
         )}
       </View>
+      {scanning && (
+                <TouchableOpacity style={styles.rescanButton} onPress={() => setScanning(false)}>
+                  <Text style={styles.rescanButtonText}>stop scanning</Text>
+                </TouchableOpacity>
+              )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  rescanButton: {
+    marginTop: 15,
+    backgroundColor: "#007bff",
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 30,
+    elevation: 3,
+  },
+  rescanButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",

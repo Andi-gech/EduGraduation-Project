@@ -1,5 +1,5 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   ActivityIndicator,
   Button,
@@ -18,10 +18,9 @@ export default function HomeScreen() {
   const [barcodeBounds, setBarcodeBounds] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [scanning, setScanning] = useState(true);
+  const timeoutRef = useRef(null);
 
-  const [scanning, setScanning] = useState(true); // Add a state to control scanning
-
-//cafe/check/meal/
   const mutation = useMutation({
     mutationFn: async (qrdata) => {
       return await axios.put("http://192.168.1.9:3000/cafe/check/meal/", {
@@ -30,23 +29,47 @@ export default function HomeScreen() {
     },
     onSuccess: async (response) => {
       setSuccess(response.data);
-      setTimeout(() => {
-        setSuccess("");
-      }, 3000);
+      setTimeout(() => setSuccess(""), 3000);
     },
     onError: (error) => {
       setError(error.response.data);
-      setTimeout(() => {
-        setError("");
-      }, 3000);
+      setTimeout(() => setError(""), 3000);
     },
     mutationKey: ["todos"],
   });
 
-  if (!permission) {
-    return <View />;
-  }
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
+  const handleBarcodeScanned = ({ bounds, data }) => {
+    if (bounds && bounds.origin && bounds.size && scanning) {
+      setScanning(false);
+      setBarcodeBounds(bounds);
+      mutation.mutate(data);
+      
+      timeoutRef.current = setTimeout(() => {
+        setScanning(true);
+        setBarcodeBounds(null);
+      }, 2000);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }
+  };
+
+  const handleRescan = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setScanning(true);
+    setError("");
+    setSuccess("");
+    setBarcodeBounds(null);
+  };
+
+  if (!permission) return <View />;
   if (!permission.granted) {
     return (
       <View style={styles.container}>
@@ -58,70 +81,58 @@ export default function HomeScreen() {
     );
   }
 
-  const handleBarcodeScanned = ({ bounds, data }) => {
-    if (bounds && bounds.origin && bounds.size && scanning) {
-      setScanning(false); // Disable scanning temporarily
-      setBarcodeBounds(bounds);
-      mutation.mutate(data);
-      setTimeout(() => {
-        setScanning(true); // Re-enable scanning after 2 seconds
-        setBarcodeBounds(null);
-      }, 2000); // Adjust timeout as needed
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    } else {
-      setBarcodeBounds(null);
-    }
-  };
-  
-
   return (
     <View style={styles.container}>
-      {/* Camera View */}
       <View style={styles.cameraContainer}>
         {mutation.isLoading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
-          <>
-          {
-            scanning &&
-          
-          <CameraView
-            barcodeScannerSettings={{ barcodeTypes: "qr" }}
-            style={styles.camera}
-            onBarcodeScanned={handleBarcodeScanned}
-            facing={facing}
-          >
-            {barcodeBounds && (
-              <View
-                style={[
-                  styles.boundingBox,
-                  {
-                    top: barcodeBounds.origin.y,
-                    left: barcodeBounds.origin.x,
-                    width: barcodeBounds.size.width,
-                    height: barcodeBounds.size.height,
-                  },
-                ]}
-              />
-            )}
-          </CameraView>
-          }
-          </>
+          scanning && (
+            <CameraView
+              barcodeScannerSettings={{ barcodeTypes: "qr" }}
+              style={styles.camera}
+              onBarcodeScanned={handleBarcodeScanned}
+              facing={facing}
+            >
+              {barcodeBounds && (
+                <View
+                  style={[
+                    styles.boundingBox,
+                    {
+                      top: barcodeBounds.origin.y,
+                      left: barcodeBounds.origin.x,
+                      width: barcodeBounds.size.width,
+                      height: barcodeBounds.size.height,
+                    },
+                  ]}
+                />
+              )}
+            </CameraView>
+          )
         )}
-
-        
+        {!scanning && (
+          <TouchableOpacity style={styles.rescanButton} onPress={handleRescan}>
+            <Text style={styles.rescanButtonText}>Tap to Scan Again</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* Status Messages */}
       <View style={styles.statusContainer}>
         {error ? (
           <Text style={[styles.statusText, styles.errorText]}>{error}</Text>
         ) : success ? (
           <Text style={[styles.statusText, styles.successText]}>{success}</Text>
         ) : (
-          <Text style={styles.statusText}>Scan a QR Code  To Use Cafe</Text>
+          <Text style={styles.statusText}>Scan a QR Code To Use Cafe</Text>
         )}
+        
+        
       </View>
+        {scanning && (
+                      <TouchableOpacity style={styles.rescanButton} onPress={() => setScanning(false)}>
+                        <Text style={styles.rescanButtonText}>stop scanning</Text>
+                      </TouchableOpacity>
+                    )}
     </View>
   );
 }
@@ -203,5 +214,18 @@ const styles = StyleSheet.create({
     color: "#333",
     margin: 20,
     textAlign: "center",
+  },
+  rescanButton: {
+    marginTop: 15,
+    backgroundColor: "#007bff",
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 30,
+    elevation: 3,
+  },
+  rescanButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

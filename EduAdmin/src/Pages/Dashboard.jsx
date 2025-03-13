@@ -354,7 +354,9 @@ const linksSearchData = [
     [`& .${gaugeClasses.referenceArc}`]: {
       fill: theme.palette.text.disabled,
     },
-  })} value={60} text={"60%"}  />
+  })} value={
+    ((gatereport?.data?.civilian+(gatereport?.data?.military||0))/users?.data?.length)*100
+  } text={String( ((gatereport?.data?.civilian+(gatereport?.data?.military||0))/users?.data?.length)*100)}  />
 
           </div>
         
