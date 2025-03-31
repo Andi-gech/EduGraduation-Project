@@ -35,7 +35,7 @@ function DigitalIdCards() {
     {field: "profilePic", headerName: "Profile Picture", width: 80, renderCell: (params) => {
         return (
           <img
-            src={`${import.meta.env.VITE_API_URL}/`+params.value}
+            src={`https://eduapi.senaycreatives.com/`+params.value}
             
             alt="Pp"
             

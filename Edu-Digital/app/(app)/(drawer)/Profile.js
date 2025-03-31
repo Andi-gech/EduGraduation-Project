@@ -41,7 +41,7 @@ export default function Profile() {
   const mutation = useMutation({
     mutationFn: async (data) => {
       const response = await FileSystem.uploadAsync(
-        `http://192.168.1.9:3000/user/updateProfilePic`,
+        `https://eduapi.senaycreatives.com/user/updateProfilePic`,
         data,
         {
           fieldName: "profilePic",
@@ -128,7 +128,7 @@ export default function Profile() {
             <Image
               source={{
                 uri: data?.data?.profilePic 
-                  ? `http://192.168.1.9:3000/${data.data.profilePic}`
+                  ? `https://eduapi.senaycreatives.com/${data.data.profilePic}`
                   : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
               }}
               className="w-full h-full rounded-full"

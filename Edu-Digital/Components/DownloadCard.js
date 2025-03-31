@@ -35,7 +35,7 @@ export default function DownloadCard({ item, accentColor, colorScheme }) {
   const download = async () => {
     const fileUri = `${FileSystem.documentDirectory}${item?.course?.Coursename}.pdf`;
     const downloadResumable = FileSystem.createDownloadResumable(
-      `http://192.168.1.9:3000/${item?.resource}`,
+      `https://eduapi.senaycreatives.com/${item?.resource}`,
       fileUri,
       {},
       (downloadProgress) => {

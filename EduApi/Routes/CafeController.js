@@ -69,7 +69,7 @@ const checkValidSubscription = async (userId) => {
 };
 
 const handleChapaPayment = async (user, price, res) => {
-  const CALLBACK_URL = "https://d0h0c4d7-3000.uks1.devtunnels.ms/cafe/cafeinfo/verify";
+  const CALLBACK_URL = "https://eduapi.senaycreatives.com/cafe/cafeinfo/verify";
  
   const customerInfo = {
     amount: price,
@@ -297,7 +297,7 @@ Router.post("/subscribe/manual", async (req, res) => {
 
 Router.get("/report", async (req, res) => {
   try {
-    const cafe = await CafeGate.find()
+    const cafe = await CafeGate.find().populate("user");
     return res.send(cafe);
   } catch (err) {
     res.status(500).send(err.message || "Something went wrong");

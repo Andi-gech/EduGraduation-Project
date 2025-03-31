@@ -85,7 +85,7 @@ export default function Id() {
       {isLoading && <Loading />}
 
       {data?.data && (
-        <ScrollView className="flex-1 p-4" contentContainerStyle={{ paddingBottom: 100 }}>
+        <ScrollView className="flex-1 p-2" contentContainerStyle={{ paddingBottom: 100 }}>
           {/* Front ID Card */}
           <View
             from={{ translateY: 50, opacity: 0 }}
@@ -100,7 +100,7 @@ export default function Id() {
             <ViewShot ref={frontShotRef} options={{ format: "png", quality: 1 }}>
               <View className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-xl">
                 <LinearGradient
-                  colors={["#c2410c", "#ea580c"]}
+                  colors={["rgb(92, 61, 31)", "rgb(32, 31, 31)"]}
                   className="p-4 flex-row items-center justify-between"
                 >
                   <Image
@@ -121,7 +121,7 @@ export default function Id() {
                 <View className="flex-row p-4 bg-white/90 dark:bg-zinc-800/90">
                   <View className="relative">
                     <Image
-                      source={{ uri: `http://192.168.1.9:3000/${data?.data?.Photo}` }}
+                      source={{ uri: `https://eduapi.senaycreatives.com/${data?.data?.Photo}` }}
                       className="w-28 h-36 rounded-lg border-2 border-orange-500"
                     />
                    

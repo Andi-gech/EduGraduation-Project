@@ -304,7 +304,7 @@ const calculatePrice = (offering) => {
 };
 
 const handleChapaPayment = async (user, price, res) => {
-  const CALLBACK_URL = "https://d0h0c4d7-3000.uks1.devtunnels.ms/enrollment/vetifyPayment";
+  const CALLBACK_URL = "https://eduapi.senaycreatives.com/enrollment/vetifyPayment";
   const customerInfo = {
     amount: price,
     currency: "ETB",

@@ -11,6 +11,7 @@ import DigitalIdCards from "../Components/DigitalIdCards";
 import Verification from "./Verification";
 import AddteacherForm from "../Popups/AddTeacherPopup";
 import { useParams } from "react-router-dom";
+import CreateCoursePopup from "../Popups/CreateCoursePopup";
 
 
 
@@ -36,6 +37,8 @@ export default function Student() {
         return <StudentList />;
       case "Digital Id Requests":
         return <DigitalIdCards />;
+      case "Create Course":
+        return <CreateCoursePopup/>
       case "Account Verification Requests":
         return <Verification />;
     
@@ -98,6 +101,13 @@ export default function Student() {
                 }
                 className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
                 <p className="text-lg font-normal text-gray-800">Account Verification Requests</p>
+                </div>
+                <div
+                onClick={
+                  () => setSelected("Create Course")
+                }
+                className="flex w-full h-[50px] shadow-sm mt-2 shadow-zinc-100  cursor-pointer hover:bg-yellow-50 px-3 items-center">
+                <p className="text-lg font-normal text-gray-800">Create Course</p>
                 </div>
                 
                          

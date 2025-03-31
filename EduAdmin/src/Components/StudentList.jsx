@@ -35,7 +35,7 @@ export default function StudentList() {
         renderCell: (params) => {
           return (
             <img
-            src={`https:eduapi.senaycreatives.com/`+ params.value}
+            src={`https://eduapi.senaycreatives.com/`+ params.value}
             
            
             className='w-[40px] h-[40px] rounded-full bg-zinc-100'

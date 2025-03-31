@@ -23,7 +23,7 @@ export default function HomeScreen() {
 
   const mutation = useMutation({
     mutationFn: async (qrdata) => {
-      return await axios.put("http://192.168.1.9:3000/cafe/check/meal/", {
+      return await axios.put("https://eduapi.senaycreatives.com/cafe/check/meal/", {
         qrurl: qrdata,
       });
     },

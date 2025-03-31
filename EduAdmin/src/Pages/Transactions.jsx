@@ -85,7 +85,7 @@ export default function Transactions() {
     {field:"profilepic", headerName:"Photo", width: 60,renderCell: (params) => {
       return (
         <img
-        src={`https:eduapi.senaycreatives.com/`+ params.value}
+        src={`https://eduapi.senaycreatives.com/`+ params.value}
         
        
         className='w-[40px] h-[40px] rounded-full bg-zinc-100'

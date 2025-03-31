@@ -8,7 +8,7 @@ const authHeader = useAuthHeader();
 console.log(authHeader.split(' ')[1]);
   // Create the axios instance with the Authorization header
   const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: "https://eduapi.senaycreatives.com",
     headers: {
       Authorization: authHeader.split(' ')[1],
     },

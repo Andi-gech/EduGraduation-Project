@@ -21,7 +21,7 @@ const initialteacherData = {
   email: "",
   password: "",
   agreeToPrivacy: false,
-  studentId: "",
+ 
 };
 
 export default function AddteacherForm() {

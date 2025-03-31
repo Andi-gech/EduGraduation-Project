@@ -1,10 +1,6 @@
 const crypto = require("crypto");
 const fs = require("fs");
 
-// const { privateKey, publicKey } = crypto.generateKeyPairSync('ec', {
-//     namedCurve: 'sect239k1',
-//   });
-
 const privateKey = fs.readFileSync("server/private-key.pem", "utf8");
 const publicKey = fs.readFileSync("server/public-key.pem", "utf8");
 

@@ -69,7 +69,7 @@ const ChatMessage = ({ message, sender, date }) => {
           >
             {profile?.image ? (
               <Image
-                source={{ uri: `http://192.168.1.9:3000/${profile?.image}` }}
+                source={{ uri: `https://eduapi.senaycreatives.com/${profile?.image}` }}
                 className="w-10 h-10 rounded-full border-2"
                 style={{ borderColor: accentColor }}
                 placeholder={blurhash}

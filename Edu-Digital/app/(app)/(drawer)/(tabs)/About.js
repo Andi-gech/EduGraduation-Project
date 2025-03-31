@@ -82,7 +82,7 @@ export default function About() {
                 Project Advisor
               </Text>
             </View>
-            <Text className="text-zinc-600 dark:text-zinc-300 pl-7">Lt Solomon.T</Text>
+            <Text className="text-zinc-600 dark:text-zinc-300 pl-7">Cpt Solomon.T</Text>
           </View>
 
           <View className="space-y-2">

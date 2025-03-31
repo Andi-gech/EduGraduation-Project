@@ -218,7 +218,7 @@ export default function IdcardPopup({ onClose, id }) {
             <img
               src={
                 previewImage
-                  ? `${import.meta.env.VITE_API_URL}/${data?.data?.Photo}`
+                  ? `https://eduapi.senaycreatives.com/${data?.data?.Photo}`
                   : previewImage
               }
               alt="Preview"
@@ -314,7 +314,7 @@ export default function IdcardPopup({ onClose, id }) {
 
              <div className="flex">
                <img
-                 src={`${import.meta.env.VITE_API_URL}/${previewImage}`}
+                 src={`https://eduapi.senaycreatives.com/${previewImage}`}
                  alt="Student"
                  className="w-28 h-32 ml-2 mt-3"
                />

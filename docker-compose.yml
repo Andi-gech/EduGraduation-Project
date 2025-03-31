@@ -1,0 +1,17 @@
+
+services:
+
+  eduadmin:
+    container_name: eduadmin-dockerize_c
+
+    image: eduadmin-dockerize_i
+    build:
+      context: ./EduAdmin
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"  
+   
+    volumes:
+      - ./EduAdmin:/app
+      - /app/node_modules
+    command: npm run dev
