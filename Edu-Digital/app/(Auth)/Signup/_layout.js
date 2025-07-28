@@ -8,7 +8,7 @@ export default function Layout() {
     >
       <Stack.Screen name="Signup_step1" options={{ headerShown: false }} />
       <Stack.Screen name="Signup_step2" options={{ headerShown: false }} />
-      <Stack.Screen name="Verification" options={{ headerShown: false }} />
+   
     </Stack>
   );
 }

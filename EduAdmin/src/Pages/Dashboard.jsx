@@ -356,7 +356,16 @@ const linksSearchData = [
     },
   })} value={
     ((gatereport?.data?.civilian+(gatereport?.data?.military||0))/users?.data?.length)*100
-  } text={String( ((gatereport?.data?.civilian+(gatereport?.data?.military||0))/users?.data?.length)*100)}  />
+  } text={
+    String(
+      (
+        ((gatereport?.data?.civilian || 0) + (gatereport?.data?.military || 0)) / 
+        (users?.data?.length || 1) * 100
+      ).toFixed(2)
+    )
+  } 
+  />
+  
 
           </div>
         

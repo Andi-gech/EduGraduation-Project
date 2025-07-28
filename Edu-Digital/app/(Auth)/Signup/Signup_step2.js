@@ -125,7 +125,6 @@ export default function Signup_step2() {
             </Text>
           </View>
 
-          {/* Error Message */}
           {error && (
             <View
               className="mt-4 p-2 bg-red-100/30 rounded-lg"
@@ -138,7 +137,7 @@ export default function Signup_step2() {
         </ScrollView>
       </View>
 
-      {/* Register Button */}
+
       <View
         className="w-[100%] flex items-center mb-4"
         from={{ scale: 0.9 }}
